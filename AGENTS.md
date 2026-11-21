@@ -7,6 +7,23 @@ content lives in **Markdown/YAML files**, it is hosted on **Cloudflare Pages**, 
 Most requests you will get are content changes from school staff who are not developers. Make the change,
 keep the site building, and explain what you did in plain language (Georgian if they wrote in Georgian).
 
+## Talking with staff: read docs/assistant/PLAYBOOK.md first
+
+People who open this folder are usually **school staff and partners, not developers**. Act as the site assistant
+described in **[docs/assistant/PLAYBOOK.md](docs/assistant/PLAYBOOK.md)**: it is the conversation script
+(greeting, setup help, plain-Georgian vocabulary with no git words, the life of a change, recipes, what to do
+when something breaks).
+
+- **Be proactive at the start of every conversation**, whatever the first message is: run `npm run hello`
+  (Claude Code already runs it through a SessionStart hook and hands you the result), fix or guide setup
+  problems, mention unfinished work, then greet with the menu from the playbook.
+- **All git/GitHub steps go through `node scripts/assistant/flow.mjs`** (`begin`, `changes`, `publish`,
+  `proposals`, `set-aside`, `bring-back`, `done`). Photos go through `node scripts/assistant/add-photo.mjs`
+  (it strips location data).
+- **Never** push to `main`, merge a pull request, force-push, `reset --hard` or delete files to make something
+  work. Staff propose; an approver (see `.github/CODEOWNERS`) merges on GitHub.
+- Developers can turn the greeting off with the environment variable `ACTON_ASSISTANT=off`.
+
 ## Golden rules
 
 1. **Content goes in `src/content/`, never hard-coded in components.** If text is visible on the site, it should be
@@ -31,6 +48,7 @@ keep the site building, and explain what you did in plain language (Georgian if 
 | Command | What it does |
 | --- | --- |
 | `npm install` | Install dependencies (Node 22+) |
+| `npm run hello` | Assistant status: is this computer ready, unfinished work, open proposals |
 | `npm run dev` | Local site at http://localhost:4321 (forms show an error locally: no API) |
 | `npm run dev:full` | Build + run with Cloudflare Functions at http://localhost:8788 (forms work in mock mode) |
 | `npm run build` | Production build into `dist/` |
@@ -67,8 +85,9 @@ src/styles/tokens.css        design tokens (colours, type, spacing)
 src/i18n/ui.ts               interface strings
 functions/api/               Cloudflare Pages Functions: lead, vote, votes, subscribe (newsletter), feedback ("was it helpful")
 google/apps-script/Code.gs   Google Sheets bridge (deployed by hand, see docs/BACKEND.md)
-scripts/                     check-content.mjs, new.mjs
-docs/                        CONTENT, DESIGN-SYSTEM, BACKEND, DEPLOY, ASSISTANT, I18N, OPEN-QUESTIONS, EDITING-GUIDE.ka
+scripts/                     check-content.mjs, new.mjs, assistant/ (hello, flow, add-photo)
+_new-photos/                 staff drop folder for new photos (git-ignored)
+docs/                        assistant/PLAYBOOK, SETUP.ka, PARTNER-ACCESS, CONTENT, DESIGN-SYSTEM, BACKEND, DEPLOY, ASSISTANT, I18N, OPEN-QUESTIONS, EDITING-GUIDE.ka
 ```
 
 ## Common tasks (recipes)
@@ -85,8 +104,8 @@ docs/                        CONTENT, DESIGN-SYSTEM, BACKEND, DEPLOY, ASSISTANT,
   `conclusion:` (the kids' summary) to that file. The homepage automatically shows the highest number.
 - **Add / edit an FAQ** → `src/content/faq/ka/`. Add `keywords:` so the assistant can find it; `chip:` makes it a
   quick-pick button; `showOnHome: true` puts it on the homepage; `handoff: true` for sensitive topics.
-- **Add a photo** → put the file in `src/assets/photos/` (JPG/WebP, ≤ 2000px, lowercase-dashed name), add an entry
-  to `src/content/photos.yaml` with Georgian alt text and consent status, then reference its `id`.
+- **Add a photo** → `node scripts/assistant/add-photo.mjs <file> <id> "<Georgian alt>" <consent>` (resizes, strips
+  EXIF/GPS, registers it in `src/content/photos.yaml`), then reference its `id`.
 - **Add a team member** → copy a file in `src/content/team/ka/`, change the fields and the bio.
 - **Add a new homepage section** → new component in `src/components/home/`, its text in `home.yaml`
   (extend the schema in `src/content.config.ts`), add it to the list in `src/pages/index.astro`, document it.
