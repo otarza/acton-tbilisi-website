@@ -62,23 +62,39 @@ Body (Markdown) = the full answer. URL anchor: `/faq#<slug>`.
 The age buttons on the homepage are generated from the min/max of all studios.
 
 ### `team/ka/<slug>.md`
-`name`, `group` (founder | guide), `role`, `isParent`, `facts` (badges), `photo` (optional), `order`. Body = bio.
-Investors are a simple list in `about.yaml`.
+`name`, `group` (founder | guide | contributor), `role`, `isParent`, `facts` (badges), `photo` (optional),
+`since` (optional, e.g. "2025 წლიდან", shown on the author page), `order`. Body = bio.
+Founders and guides appear in the About page team block. `contributor` = someone who only writes articles (a parent,
+an investor). Investors are a simple list in `about.yaml`. The same file feeds the article author card and the
+author page `/articles/authors/<file name>`, so bio and photo are edited in one place.
 
 ### `testimonials/ka/<slug>.md`
 `name`, `role`, `order`, `approved` (the parent approved this exact wording). Body = quote.
 `npm run check` refuses `placeholder: false` without `approved: true`.
 
-### `posts/ka/<slug>.md` — blog
-`title`, `description`, `date`, `cover` (photo id), `tags`, `author`, `draft`. Body = Markdown.
-URL = `/blog/<file name>`. Drafts are visible in `npm run dev` only.
+### `articles/ka/<slug>.md` — articles (სტატიები)
+| Field | Meaning |
+| --- | --- |
+| `title` | Headline. `titleAccent` (optional) = the words of the title that get the highlight bar. |
+| `description` | 1–2 sentences: card text, page lead and Google description. |
+| `date` | Publication date (YYYY-MM-DD). Lists are newest first. |
+| `author` | File name of a team member in `team/ka/` (without `.md`). |
+| `topics` | 1–3 of the fixed list: `method` (სწავლის მეთოდი), `life` (სტუდიის ცხოვრება), `quests` (ქვესტები), `clubs` (კლუბები), `parents` (მშობლებს), `acton` (Acton-ის ფილოსოფია). |
+| `cover` | Photo id from `photos.yaml`. `coverCaption` optional. The "published with parents' consent" note shows when the photo's consent is `signed`. |
+| `summary` | Optional 1–4 points for the "მოკლედ, თუ 30 წამი გაქვთ" box. |
+| `readMinutes` | Optional; otherwise counted from the text (words ÷ 130). |
+| `draft` | `true` = only visible in `npm run dev`. |
+
+Body = Markdown. Every `## heading` becomes an entry in the table of contents. `> quote` is shown as a navy quote card.
+URLs: `/articles/<file name>`; author pages `/articles/authors/<author>`. Old `/blog/...` links redirect (`public/_redirects`).
+Page copy (hero, topic labels and colours, newsletter, trial-week CTA, homepage section 08): `pages/ka/articles.yaml`.
 
 ### `photos.yaml` — photo register
 ```yaml
 - id: market-stall
   file: market-stall.jpg          # in src/assets/photos/
   alt: "ბავშვები შაბათის ბაზრობაზე…" # Georgian description, no child names
-  consent: pending                 # signed | pending | none-needed
+  consent: signed                  # signed | pending | none-needed (enrolled families: signed via the enrolment contract)
   source: "Facebook, 2026"
 ```
 Every file in `src/assets/photos/` must be listed (the check fails otherwise). Images are resized and converted

@@ -2,7 +2,7 @@
 <!-- One or two sentences. Georgian or English. -->
 
 ## Type
-- [ ] Content (text, FAQ, weekly question, blog, photo)
+- [ ] Content (text, FAQ, weekly question, article, photo)
 - [ ] Design / component
 - [ ] Backend / config
 

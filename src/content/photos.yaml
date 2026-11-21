@@ -7,34 +7,42 @@
 #   none-needed = no identifiable children (backs of heads, hands, objects, adults who agreed)
 #
 # Source of the current photos: cropped from the school's public Facebook posts (2026-11).
-# They are already public there, but the school must still confirm consent for website use.
+# Consent: every enrolled family signs the school contract, which includes written consent to public use
+# of photos (confirmed by Otar, 2026-11-21). Photos of enrolled children → consent: signed.
+# Children who are NOT enrolled (visitors, siblings, trial-week children) still need their own consent.
 - id: studio-girl
   file: studio-girl.jpg
   alt: გოგონა ვარდისფერი სათვალით სტუდიაში, ხელში კვერცხი უჭირავს
-  consent: pending
+  consent: signed
   source: Facebook, 2026
+  note: covered by the enrolment contract photo clause
 - id: market-stall
   file: market-stall.jpg
   alt: ბავშვები და მშობლები შაბათის ბაზრობაზე, მაგიდაზე ნამცხვრები და სასმელები
-  consent: pending
+  consent: signed
   source: Facebook, 2026
+  note: covered by the enrolment contract photo clause
 - id: ant-quest
   file: ant-quest.jpg
   alt: ბავშვები მრგვალ მაგიდასთან ჭიანჭველების ფერმას აკვირდებიან მეგზურთან ერთად
-  consent: pending
+  consent: signed
   source: Facebook, 2026
+  note: covered by the enrolment contract photo clause
 - id: market-parents
   file: market-parents.jpg
   alt: მშობლები და ბავშვები ბაზრობაზე ბავშვების ნაწარმს ათვალიერებენ
-  consent: pending
+  consent: signed
   source: Facebook, 2026
+  note: covered by the enrolment contract photo clause
 - id: teen-seller
   file: teen-seller.jpg
   alt: მოზარდი თავის დახლთან ბაზრობაზე ყიდის
-  consent: pending
+  consent: signed
   source: Facebook, 2026
+  note: covered by the enrolment contract photo clause
 - id: exhibition-talk
   file: exhibition-talk.jpg
   alt: გოგონა ლურჯ ქურთუკში გამოფენაზე საჯაროდ საუბრობს
-  consent: pending
+  consent: signed
   source: Facebook, 2026
+  note: covered by the enrolment contract photo clause

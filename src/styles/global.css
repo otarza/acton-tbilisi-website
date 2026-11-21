@@ -44,7 +44,9 @@ p { margin: 0; }
 .bg-sky { background: var(--color-bg-sky); }
 .bg-cyan { background: var(--color-cyan); color: var(--color-navy); }
 .bg-navy { background: var(--color-navy); color: var(--color-on-dark); }
-.bg-cyan a:not(.btn), .bg-cyan .muted, .bg-cyan .lead { color: var(--color-navy); }
+.bg-cyan a:not(.btn):not(.tag), .bg-cyan .muted, .bg-cyan .lead { color: var(--color-navy); }
+a.tag { text-decoration: none; }
+a.tag:hover { text-decoration: underline; }
 
 /* Giant decorative "?" on cyan bands (aria-hidden) */
 .qmark-band { position: relative; overflow: hidden; }
@@ -108,6 +110,16 @@ p { margin: 0; }
 /* Quiz answer options */
 .opt { min-height: 56px; text-align: left; padding: 10px 20px; border-radius: var(--radius-control); border: 2px solid var(--color-line); background: var(--color-white); color: var(--color-navy); font-size: 17px; font-weight: 600; cursor: pointer; }
 .opt:hover { border-color: var(--color-blue); background: var(--color-bg-ice); }
+
+/* Filter chips and segmented sort control (articles list, author page) */
+.fchip { min-height: var(--tap); padding: 0 16px; border-radius: var(--radius-pill); border: 2px solid var(--color-navy); background: var(--color-white); color: var(--color-navy); font-weight: 800; font-size: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.fchip small { font-size: 13px; opacity: .75; }
+.fchip[aria-pressed="true"] { background: var(--color-navy); color: var(--color-white); }
+.seg { display: flex; background: var(--color-white); border-radius: var(--radius-pill); padding: 4px; border: 2px solid var(--color-navy); }
+.seg button { min-height: 40px; padding: 0 16px; border-radius: var(--radius-pill); border: 0; background: transparent; color: var(--color-navy); font-weight: 800; font-size: 15px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--color-navy); color: var(--color-white); }
+.meta { font-size: 14px; color: var(--color-muted); line-height: 1.4; }
+.meta b { color: var(--color-navy); }
 
 /* Dashed achievement badge */
 .badge { width: 96px; height: 96px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-weight: 900; font-size: 12px; line-height: 1.2; border: 3px dashed currentColor; flex: none; }

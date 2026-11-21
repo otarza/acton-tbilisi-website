@@ -15,7 +15,7 @@
     "check": "astro check && node scripts/check-content.mjs",
     "check:content": "node scripts/check-content.mjs",
     "placeholders": "node scripts/check-content.mjs --placeholders",
-    "new:post": "node scripts/new.mjs post",
+    "new:article": "node scripts/new.mjs article",
     "new:question": "node scripts/new.mjs question",
     "new:faq": "node scripts/new.mjs faq"
   },

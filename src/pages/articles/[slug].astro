@@ -1,0 +1,270 @@
+---
+/**
+ * ONE ARTICLE: /articles/<file name without .md>.
+ * Summary box, table of contents (from the "## " headings), share buttons, author card (from the team file),
+ * trial-week CTA, previous/next and 3 related articles.
+ */
+import { render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Photo from '@/components/ui/Photo.astro';
+import Button from '@/components/ui/Button.astro';
+import ArticleCard from '@/components/articles/ArticleCard.astro';
+import AuthorAvatar from '@/components/articles/AuthorAvatar.astro';
+import ShareButtons from '@/components/articles/ShareButtons.astro';
+import { getPage, getPhoto, slugOf } from '@/lib/content';
+import { getArticles, cardData, getAuthor, getTopics, authorColor, authorUrl, articleUrl, readMinutes, related, splitTitle, type Article } from '@/lib/articles';
+import { formatDateKa, genitiveFirstName } from '@/lib/georgian';
+import { t } from '@/i18n/ui';
+
+export async function getStaticPaths() {
+  const all = await getArticles();
+  return all.map((article, i) => ({
+    params: { slug: slugOf(article.id) },
+    // previous = the older article, next = the newer one (wraps around so both always exist)
+    props: { article, all, older: all.length > 1 ? all[(i + 1) % all.length] : undefined, newer: all.length > 1 ? all[(i - 1 + all.length) % all.length] : undefined },
+  }));
+}
+interface Props { article: Article; all: Article[]; older?: Article; newer?: Article }
+const { article, all, older, newer } = Astro.props;
+const d = article.data;
+const ui = t().articles;
+const p = await getPage('articlesPage');
+const { Content, headings } = await render(article);
+const toc = headings.filter((h) => h.depth === 2);
+const author = await getAuthor(d.author);
+const { Content: Bio } = await render(author);
+const color = await authorColor(d.author);
+const topics = (await getTopics()).filter((tp) => d.topics.includes(tp.key)).sort((a, b) => d.topics.indexOf(a.key) - d.topics.indexOf(b.key));
+const byAuthor = all.filter((a) => a.data.author === d.author).length;
+const relatedCards = await Promise.all(related(article, all).map((a) => cardData(a)));
+const cover = await getPhoto(d.cover);
+const [before, accent, after] = splitTitle(d.title, d.titleAccent);
+const url = new URL(articleUrl(article), Astro.site).toString();
+const minutes = readMinutes(article);
+const slug = slugOf(article.id);
+---
+<BaseLayout title={`${d.title} · ექტონის აკადემია`} description={d.description} ogPhoto={d.cover} type="article">
+  <div slot="hero" class="wrap ah" data-placeholder={d.placeholder || undefined}>
+    <nav aria-label={ui.breadcrumb} class="ah__crumb"><a href="/articles">{p.hero.label}</a> <span aria-hidden="true">/</span> <a href={`/articles?topic=${topics[0].key}`}>{topics[0].label}</a></nav>
+    <div class="row" style="--row-gap: 8px">{topics.map((tp) => <a href={`/articles?topic=${tp.key}`} class={`tag ${tp.tag}`}>{tp.label}</a>)}</div>
+    <h1 class="display ah__h">{before}{accent && <span class="hl">{accent}</span>}{after}</h1>
+    <p class="lead ah__lead">{d.description}</p>
+    <a href={authorUrl(d.author)} class="ah__by">
+      <AuthorAvatar name={author.data.name} color="var(--color-white)" photo={author.data.photo} size={52} />
+      <span><b>{author.data.name}</b><br /><span class="ah__meta">{author.data.role.split(' · ')[0]} · {formatDateKa(d.date)} · {ui.minutes(minutes)}{d.draft && ` · ${ui.draft}`}</span></span>
+    </a>
+  </div>
+
+  <div class="wrap ac">
+    <figure class="ac__fig">
+      <div class="ac__img"><Photo id={d.cover} loading="eager" sizes="(max-width: 1248px) 100vw, 1152px" widths={[600, 1200, 1800]} /></div>
+      {(d.coverCaption || cover.consent === 'signed') && (
+        <figcaption class="ac__cap">
+          <span>{d.coverCaption}</span>
+          {cover.consent === 'signed' && <span class="ac__consent"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6 Q12 2 21 6 V12 Q21 19 12 22 Q3 19 3 12 Z M8 12 L11 15 L16 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"></path></svg>{ui.consentNote}</span>}
+        </figcaption>
+      )}
+    </figure>
+  </div>
+
+  <section class="wrap ab">
+    <aside class="ab__side">
+      {toc.length > 1 && (
+        <nav class="toc" aria-label={ui.inThisArticle} data-toc>
+          <b class="toc__t">{ui.inThisArticle}</b>
+          {toc.map((h) => <a href={`#${h.slug}`}>{h.text}</a>)}
+        </nav>
+      )}
+      <ShareButtons url={url} title={d.title} class="ab__share" />
+    </aside>
+
+    <article class="ab__main">
+      {toc.length > 1 && (
+        <details class="toc-m">
+          <summary>{ui.inThisArticleN(toc.length)}</summary>
+          <nav aria-label={ui.inThisArticle}>{toc.map((h) => <a href={`#${h.slug}`}>{h.text}</a>)}</nav>
+        </details>
+      )}
+      {d.summary.length > 0 && (
+        <div class="sum">
+          <b>{ui.shortVersion}</b>
+          <ul>{d.summary.map((s) => <li>{s}</li>)}</ul>
+        </div>
+      )}
+      <div class="prose aprose"><Content /></div>
+
+      <div class="afoot">
+        <div class="row" style="--row-gap: 8px; align-items: center"><b class="afoot__l">{ui.topics}</b>{topics.map((tp) => <a href={`/articles?topic=${tp.key}`} class={`tag ${tp.tag}`}>{tp.label}</a>)}</div>
+        <div class="helpful" data-helpful={slug} data-yes={ui.thanksYes} data-no={ui.thanksNo}>
+          <b class="afoot__l" id="helpful-label">{ui.helpful}</b>
+          <div class="row" style="--row-gap: 8px" role="group" aria-labelledby="helpful-label">
+            <button type="button" class="choice" aria-pressed="false" data-v="yes">{ui.yes}</button>
+            <button type="button" class="choice" aria-pressed="false" data-v="no">{ui.no}</button>
+          </div>
+        </div>
+      </div>
+      <p class="meta helpful__msg" aria-live="polite" data-helpful-msg></p>
+      <ShareButtons url={url} title={d.title} class="share-m" />
+
+      <div class="authorcard" data-placeholder={author.data.placeholder || undefined}>
+        <AuthorAvatar name={author.data.name} color={color} photo={author.data.photo} size={88} />
+        <div class="stack" style="--stack-gap: 8px; flex: 1 1 360px">
+          <span class="authorcard__l">{ui.authorLabel}</span>
+          <b class="display authorcard__n">{author.data.name}</b>
+          <span class="authorcard__r">{author.data.role}{author.data.facts[0] && ` · ${author.data.facts[0]}`}</span>
+          <div class="authorcard__bio"><Bio /></div>
+          <a href={authorUrl(d.author)} class="authorcard__more">{ui.allBy(genitiveFirstName(author.data.name), byAuthor)}</a>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="wrap" style="padding-bottom: 72px">
+    <div class="acta bg-cyan qmark-band">
+      <span class="qmark acta__q" aria-hidden="true">?</span>
+      <div class="stack" style="--stack-gap: 10px; flex: 1 1 480px">
+        <h2 class="display acta__h">{p.cta.title} <span class="hl">{p.cta.accent}</span></h2>
+        <p>{p.cta.text}</p>
+      </div>
+      <div class="row" style="--row-gap: 10px"><Button href="/#join">{p.cta.button}</Button><Button href="/faq" variant="light">{p.cta.secondary}</Button></div>
+    </div>
+  </section>
+
+  {older && newer && (
+    <nav class="wrap pn" aria-label={ui.breadcrumb}>
+      <a href={articleUrl(older)} class="pn__a"><span class="meta">{ui.prev}</span><b class="display">{older.data.title}</b></a>
+      <a href={articleUrl(newer)} class="pn__a pn__a--next"><span class="meta">{ui.next}</span><b class="display">{newer.data.title}</b></a>
+    </nav>
+  )}
+
+  {relatedCards.length > 0 && (
+    <section class="bg-sky sec">
+      <div class="wrap stack" style="--stack-gap: 28px">
+        <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 16px">
+          <h2 class="display rel__h">{ui.related} <span class="hl">{ui.relatedAccent}</span></h2>
+          <a href="/articles" class="strong-navy">{ui.allLink}</a>
+        </div>
+        <div class="relgrid">{relatedCards.map((c) => <ArticleCard a={c} variant="related" />)}</div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<script>
+  // Highlight the table-of-contents entry for the section being read.
+  for (const toc of document.querySelectorAll<HTMLElement>('[data-toc]')) {
+    const links = [...toc.querySelectorAll<HTMLAnchorElement>('a')];
+    const targets = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1)))).filter(Boolean) as HTMLElement[];
+    const setActive = (id: string) => links.forEach((a) => a.toggleAttribute('aria-current', decodeURIComponent(a.hash.slice(1)) === id));
+    if (targets[0]) setActive(targets[0].id);
+    const io = new IntersectionObserver((entries) => {
+      const vis = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+      if (vis) setActive(vis.target.id);
+    }, { rootMargin: '0px 0px -70% 0px' });
+    targets.forEach((t) => io.observe(t));
+  }
+  // "Was this helpful?" → /api/feedback (one answer per article per browser).
+  for (const box of document.querySelectorAll<HTMLElement>('[data-helpful]')) {
+    const key = `helpful:${box.dataset.helpful}`;
+    const msg = document.querySelector<HTMLElement>('[data-helpful-msg]')!;
+    const show = (v: string) => {
+      box.querySelectorAll<HTMLButtonElement>('[data-v]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+      msg.textContent = v === 'yes' ? box.dataset.yes! : box.dataset.no!;
+    };
+    let saved: string | null = null;
+    try { saved = localStorage.getItem(key); } catch {}
+    if (saved) show(saved);
+    box.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-v]');
+      if (!b) return;
+      const v = b.dataset.v!;
+      const first = !saved;
+      show(v); saved = v;
+      try { localStorage.setItem(key, v); } catch {}
+      if (first) fetch('/api/feedback', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ article: box.dataset.helpful, helpful: v === 'yes' }) }).catch(() => {});
+    });
+  }
+</script>
+
+<style>
+  .ah { padding-top: 24px; padding-bottom: 150px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; container-type: inline-size; }
+  .ah__crumb { font-size: 15px; font-weight: 800; }
+  .ah__h { font-size: min(clamp(40px, 5.2vw, 74px), 9.4cqi); line-height: 1.06; max-width: 980px; overflow-wrap: normal; }
+  .ah__lead { font-size: 21px; max-width: 760px; }
+  .ah__by { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--color-navy); margin-top: 6px; line-height: 1.35; }
+  .ah__by b { font-size: 17px; text-decoration: underline; }
+  .ah__meta { font-size: 15px; }
+
+  .ac { margin-top: -110px; position: relative; }
+  .ac__fig { margin: 0; }
+  .ac__img { height: clamp(280px, 42vw, 560px); border-radius: var(--radius-big); overflow: hidden; border: 6px solid var(--color-white); box-shadow: 0 30px 60px rgba(11, 31, 74, .18); background: var(--color-bg-sky); }
+  .ac__cap { margin-top: 12px; display: flex; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; font-size: 14px; color: var(--color-muted); }
+  .ac__consent { display: inline-flex; align-items: center; gap: 6px; }
+
+  .ab { padding-top: 64px; padding-bottom: 72px; display: flex; flex-wrap: wrap; gap: 56px; align-items: flex-start; }
+  .ab__side { flex: 0 1 250px; display: flex; flex-direction: column; gap: 28px; position: sticky; top: 24px; }
+  .ab__side :global(.ab__share) { padding: 0 14px; }
+  .ab__main { flex: 999 1 560px; min-width: 0; max-width: 760px; }
+  .toc { display: flex; flex-direction: column; gap: 2px; }
+  .toc__t { color: var(--color-navy); font-size: 14px; padding: 0 14px 8px; }
+  .toc a, .toc-m a { display: block; padding: 8px 14px; border-radius: 12px; text-decoration: none; color: var(--color-navy); font-weight: 700; font-size: 15px; line-height: 1.4; }
+  .toc a:hover, .toc a[aria-current] { background: var(--color-bg-sky); }
+  .toc a[aria-current] { box-shadow: inset 3px 0 0 var(--color-blue); }
+  .toc-m, .ab__main :global(.share-m) { display: none; }
+
+  .sum { background: var(--color-bg-sky); border-radius: 22px; padding: 24px 28px; margin-bottom: 36px; color: var(--color-navy); }
+  .sum b { font-size: 15px; }
+  .sum ul { margin: 10px 0 0; padding-left: 20px; font-size: 17px; line-height: 1.6; }
+
+  .aprose { max-width: none; font-size: 19px; line-height: 1.75; }
+  .aprose :global(h2) { font-size: 32px; line-height: 1.18; margin-top: 48px; scroll-margin-top: 24px; }
+  .aprose :global(ol li::marker), .aprose :global(ul li::marker) { color: var(--color-blue); font-weight: 900; }
+  .aprose :global(blockquote) { margin: 36px 0; background: var(--color-navy); border: 0; border-radius: var(--radius-card); padding: 36px 40px; color: var(--color-white); font-weight: var(--weight-display); font-size: 26px; line-height: 1.35; letter-spacing: -.01em; }
+  .aprose :global(blockquote)::before { content: "„"; display: block; color: var(--color-hl); font-size: 64px; line-height: .6; margin-bottom: 14px; }
+  .aprose :global(blockquote p) { margin: 0; }
+  .aprose :global(img) { border-radius: 22px; }
+
+  .afoot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding: 24px 0; border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); margin-top: 12px; }
+  .afoot__l { color: var(--color-navy); font-size: 15px; margin-right: 4px; }
+  .helpful { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .helpful__msg { margin-top: 10px; min-height: 1em; }
+
+  .authorcard { margin-top: 36px; background: var(--color-bg-sky); border-radius: var(--radius-card); padding: 32px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+  .authorcard__l { font-size: 13px; font-weight: 800; color: var(--color-blue-dark); }
+  .authorcard__n { font-size: 26px; line-height: 1.2; }
+  .authorcard__r { font-weight: 700; color: var(--color-navy); font-size: 16px; }
+  .authorcard__bio { font-size: 17px; }
+  .authorcard__more { font-weight: 900; color: var(--color-navy); margin-top: 4px; }
+
+  .acta { border-radius: var(--radius-big); padding: 48px; display: flex; flex-wrap: wrap; gap: 28px; align-items: center; justify-content: space-between; }
+  .acta__q { font-size: 300px; right: 20px; top: -80px; }
+  .acta__h { font-size: clamp(28px, 3vw, 42px); line-height: 1.12; }
+
+  .pn { padding-bottom: 40px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .pn__a { display: flex; flex-direction: column; gap: 6px; padding: 24px 28px; background: var(--color-white); border: 1px solid var(--color-line); border-radius: var(--radius-card); text-decoration: none; }
+  .pn__a:hover { box-shadow: var(--shadow-float); }
+  .pn__a b { font-size: 20px; line-height: 1.25; }
+  .pn__a--next { text-align: right; }
+
+  .rel__h { font-size: clamp(30px, 3.4vw, 44px); line-height: 1.1; }
+  .relgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 24px; }
+
+  @media (max-width: 860px) {
+    .ah { padding-bottom: 110px; }
+    .ah__lead { font-size: 18px; }
+    .ac { margin-top: -80px; }
+    .ab { padding-top: 32px; gap: 0; }
+    .ab__side { display: none; }
+    .toc-m { display: block; border: 2px solid var(--color-navy); border-radius: var(--radius-control); margin-bottom: 20px; }
+    .toc-m summary { min-height: var(--tap); padding: 12px 16px; font-weight: 800; color: var(--color-navy); cursor: pointer; }
+    .toc-m nav { padding: 0 6px 10px; }
+    .ab__main :global(.share-m) { display: flex; margin-top: 20px; }
+    .aprose { font-size: 17px; }
+    .aprose :global(h2) { font-size: 24px; margin-top: 32px; }
+    .aprose :global(blockquote) { padding: 24px; font-size: 20px; }
+    .authorcard { padding: 22px; }
+    .acta { padding: 28px 20px; }
+    .pn { grid-template-columns: 1fr; }
+    .pn__a--next { text-align: left; }
+  }
+</style>

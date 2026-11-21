@@ -1,0 +1,56 @@
+---
+/** "One email a week" sign-up (articles page). Sends the address to /api/subscribe → Google Sheet tab "Subscribers". */
+import { t } from '@/i18n/ui';
+interface Props { title: string; accent: string; text: string; success: string; placeholder?: boolean }
+const { title, accent, text, success, placeholder } = Astro.props;
+const ui = t().articles;
+---
+<section class="wrap nl-wrap" data-placeholder={placeholder || undefined}>
+  <div class="nl bg-navy qmark-band">
+    <span class="qmark nl__mark" aria-hidden="true">✎</span>
+    <div class="nl__text stack" style="--stack-gap: 10px">
+      <h2 class="display nl__h">{title} <span class="hl">{accent}</span></h2>
+      <p>{text}</p>
+    </div>
+    <form class="nl__form stack" style="--stack-gap: 8px" data-newsletter data-success={success} data-error={ui.subscribeError} novalidate>
+      <label for="nl-email" class="nl__lbl">{ui.email}</label>
+      <div class="row" style="--row-gap: 8px">
+        <input id="nl-email" name="email" type="email" required autocomplete="email" placeholder="name@example.com" />
+        <input type="text" name="website" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />
+        <button type="submit" class="btn btn--hl">{ui.subscribe}</button>
+      </div>
+      <p class="nl__status" aria-live="polite" data-status></p>
+    </form>
+  </div>
+</section>
+<script>
+  for (const form of document.querySelectorAll<HTMLFormElement>('[data-newsletter]')) {
+    const started = Date.now();
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = (form.elements.namedItem('email') as HTMLInputElement).value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { status.textContent = form.dataset.error!; return; }
+      const btn = form.querySelector('button')!; btn.disabled = true;
+      try {
+        const res = await fetch('/api/subscribe', { method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ email, website: (form.elements.namedItem('website') as HTMLInputElement).value, elapsedMs: Date.now() - started, page: location.pathname }) });
+        if (!res.ok) throw new Error();
+        form.innerHTML = `<p class="nl__ok"></p>`; form.querySelector('.nl__ok')!.textContent = form.dataset.success!;
+      } catch { status.textContent = form.dataset.error!; btn.disabled = false; }
+    });
+  }
+</script>
+<style>
+  .nl-wrap { padding-bottom: var(--section-y); }
+  .nl { border-radius: var(--radius-big); padding: 48px; display: flex; flex-wrap: wrap; gap: 32px; align-items: center; justify-content: space-between; }
+  .nl__mark { font-size: 320px; right: 30px; top: -90px; color: rgba(122, 253, 255, .10); }
+  .nl__text { flex: 1 1 420px; }
+  .nl__h { font-size: clamp(28px, 3vw, 40px); line-height: 1.12; }
+  .nl__form { flex: 1 1 380px; }
+  .nl__lbl { color: var(--color-white); font-weight: 800; font-size: 15px; }
+  .nl input[type="email"] { flex: 1 1 220px; min-height: 52px; border-radius: var(--radius-pill); border: 0; padding: 0 20px; font: inherit; font-size: 16px; }
+  .nl__status { color: var(--color-hl); font-size: 15px; min-height: 1em; }
+  .nl :global(.nl__ok) { background: var(--color-white); color: var(--color-navy); border-radius: 20px; padding: 20px; font-weight: 800; }
+  @media (max-width: 860px) { .nl { padding: 28px 20px; } }
+</style>

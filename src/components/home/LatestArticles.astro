@@ -1,0 +1,49 @@
+---
+/** Homepage section 08: the 3 newest articles + topic links. Copy: src/content/pages/ka/articles.yaml → home. */
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Button from '@/components/ui/Button.astro';
+import ArticleCard from '@/components/articles/ArticleCard.astro';
+import { getPage } from '@/lib/content';
+import { getArticles, cardData, getTopics } from '@/lib/articles';
+import { t } from '@/i18n/ui';
+const { home } = await getPage('articlesPage');
+const ui = t().articles;
+const latest = await Promise.all((await getArticles()).slice(0, 3).map((a) => cardData(a)));
+const topics = await getTopics();
+const [first, ...side] = latest;
+---
+{first && (
+  <section id="articles" class="wrap sec stack" style="--stack-gap: 32px">
+    <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
+      <div class="stack" style="--stack-gap: 12px">
+        <SectionHeading num="08" label={home.label} title={home.title} accent={home.accent} placeholder={home.placeholder} />
+        <p style="max-width: 620px">{home.intro}</p>
+      </div>
+      <Button href="/articles" variant="ghost" class="la__all">{ui.allLink}</Button>
+    </div>
+    <div class="la">
+      <div class="la__main"><ArticleCard a={first} variant="grid" badge={`${ui.newShort} · ${first.topics[0].label}`} /></div>
+      {side.length > 0 && <div class="la__side">{side.map((c) => <ArticleCard a={c} variant="row" />)}</div>}
+    </div>
+    <div class="row" style="--row-gap: 10px; align-items: center">
+      <b class="strong-navy" style="font-size: 15px; margin-right: 4px">{ui.topics}</b>
+      {topics.map((tp) => <a href={`/articles?topic=${tp.key}`} class={`tag ${tp.tag} la__tag`}>{tp.label}</a>)}
+    </div>
+  </section>
+)}
+<style>
+  .la { display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch; }
+  .la__main { flex: 3 1 560px; display: flex; }
+  .la__main :global(.acard) { flex: 1; border: 3px solid var(--color-navy); }
+  .la__main :global(.acard__img) { height: 380px; }
+  .la__main :global(.acard__body) { padding: 32px; }
+  .la__main :global(.acard__t) { font-size: clamp(26px, 2.6vw, 36px); line-height: 1.15; }
+  .la__side { flex: 2 1 380px; display: flex; flex-direction: column; gap: 24px; }
+  .la__side :global(.acard) { flex: 1; }
+  .la__tag { min-height: 36px; text-decoration: none; }
+  :global(.la__all) { border: 3px solid var(--color-navy); }
+  @media (max-width: 860px) {
+    .la__main :global(.acard__img) { height: 220px; }
+    .la__main :global(.acard__body) { padding: 22px; }
+  }
+</style>

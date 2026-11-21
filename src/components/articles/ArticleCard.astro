@@ -1,0 +1,95 @@
+---
+/**
+ * One article as a card. Variants:
+ *   grid     — photo on top (lists, author page)            [default]
+ *   featured — big, photo left, used for the newest article
+ *   row      — photo left, small (homepage side cards)
+ *   related  — like grid, shorter, no description
+ * The data-* attributes are used by the filters on /articles (see ArticleFilters.astro).
+ */
+import Photo from '@/components/ui/Photo.astro';
+import AuthorAvatar from './AuthorAvatar.astro';
+import { formatDateKa } from '@/lib/georgian';
+import { t } from '@/i18n/ui';
+import type { CardData } from '@/lib/articles';
+interface Props { a: CardData; variant?: 'grid' | 'featured' | 'row' | 'related'; showAuthor?: boolean; badge?: string; eager?: boolean; headingLevel?: 2 | 3 }
+const { a, variant = 'grid', showAuthor = true, badge, eager = false, headingLevel = 3 } = Astro.props;
+const ui = t().articles;
+const H = headingLevel === 2 ? 'h2' : 'h3';
+const sizes = variant === 'featured' ? '(max-width: 860px) 100vw, 600px' : variant === 'row' ? '(max-width: 860px) 40vw, 220px' : '(max-width: 860px) 100vw, 400px';
+const search = `${a.title} ${a.description} ${a.authorName} ${a.topics.map((t) => t.label).join(' ')}`.toLowerCase();
+---
+<a
+  href={a.url}
+  class:list={['acard', `acard--${variant}`]}
+  data-article
+  data-topics={a.topics.map((t) => t.key).join(' ')}
+  data-author={a.authorSlug}
+  data-date={a.date.toISOString().slice(0, 10)}
+  data-minutes={a.minutes}
+  data-search={search}
+  data-placeholder={a.placeholder || undefined}
+>
+  <div class="acard__img">
+    <Photo id={a.cover} alt="" sizes={sizes} loading={eager ? 'eager' : 'lazy'} widths={variant === 'row' ? [400] : [400, 800, 1200]} />
+    {variant !== 'row' && (badge
+      ? <span class="tag tag--navy acard__badge">{badge}</span>
+      : <span class={`tag ${a.topics[0].tag} acard__badge`}>{a.topics[0].label}</span>)}
+  </div>
+  <div class="acard__body">
+    {variant === 'row' && <span class={`tag ${a.topics[0].tag}`}>{a.topics[0].label}</span>}
+    {variant === 'featured' && <span class="row" style="--row-gap: 8px">{a.topics.map((tp) => <span class={`tag ${tp.tag}`}>{tp.label}</span>)}</span>}
+    <H class="display acard__t">{a.title}</H>
+    {(variant === 'grid' || variant === 'featured') && <p class="acard__d">{a.description}</p>}
+    <div class="acard__meta">
+      {showAuthor && variant !== 'row' && <AuthorAvatar name={a.authorName} color={a.authorColor} photo={a.authorPhoto} size={variant === 'featured' ? 44 : 36} />}
+      <span class="meta">
+        {showAuthor && variant !== 'row' && <><b>{a.authorName}</b><br /></>}
+        {variant === 'row' && <>{a.authorName} · </>}
+        {formatDateKa(a.date)} · {variant === 'row' ? ui.minutesShort(a.minutes) : ui.minutes(a.minutes)}{a.draft && ` · ${ui.draft}`}
+      </span>
+      {variant === 'featured' && <span class="acard__go" aria-hidden="true">{ui.read}</span>}
+    </div>
+  </div>
+</a>
+<style>
+  .acard { display: flex; flex-direction: column; background: var(--color-white); border: 1px solid var(--color-line); border-radius: var(--radius-card); overflow: hidden; text-decoration: none; color: var(--color-ink); transition: transform .15s, box-shadow .15s; }
+  .acard:hover { transform: translateY(-3px); box-shadow: var(--shadow-float); color: var(--color-ink); }
+  .acard[hidden] { display: none; }
+  .acard__img { position: relative; height: 220px; flex: none; }
+  .acard__badge { position: absolute; left: 14px; top: 14px; }
+  .acard__body { padding: 24px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .acard__t { font-size: 23px; line-height: 1.22; }
+  .acard__d { font-size: 16px; line-height: 1.55; }
+  .acard__meta { margin-top: auto; padding-top: 12px; display: flex; align-items: center; gap: 10px; }
+  .acard__go { margin-left: auto; font-weight: 900; color: var(--color-navy); white-space: nowrap; }
+
+  .acard--featured { flex-direction: row; flex-wrap: wrap; border: 3px solid var(--color-navy); }
+  .acard--featured .acard__img { flex: 1 1 520px; height: auto; min-height: 420px; }
+  .acard--featured .acard__img :global(img) { position: absolute; inset: 0; }
+  .acard--featured .acard__body { flex: 1 1 420px; padding: 44px; gap: 16px; }
+  .acard--featured .acard__t { font-size: clamp(30px, 3vw, 44px); line-height: 1.1; }
+  .acard--featured .acard__d { font-size: 18px; }
+  .acard--featured .meta b { font-size: 16px; }
+
+  .acard--row { flex-direction: row; }
+  .acard--row .acard__img { flex: 0 0 42%; height: auto; min-height: 200px; }
+  .acard--row .acard__img :global(img) { position: absolute; inset: 0; }
+  .acard--row .acard__body { padding: 22px; gap: 8px; }
+  .acard--row .acard__body .tag { align-self: flex-start; }
+  .acard--row .acard__t { font-size: 20px; line-height: 1.25; }
+
+  .acard--related .acard__img { height: 200px; }
+  .acard--related .acard__body { padding: 22px 24px; }
+  .acard--related .acard__t { font-size: 22px; }
+
+  @media (max-width: 860px) {
+    .acard--featured .acard__img { min-height: 240px; flex-basis: 100%; }
+    .acard--featured .acard__body { padding: 24px; }
+    .acard--row .acard__img { min-height: 140px; flex-basis: 38%; }
+    .acard--row .acard__body { padding: 16px; }
+    .acard--row .acard__t { font-size: 17px; }
+    .acard__img { height: 190px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .acard { transition: none; } }
+</style>

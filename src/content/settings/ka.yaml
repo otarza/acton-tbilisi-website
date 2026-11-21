@@ -38,8 +38,8 @@ nav:
     href: "/#price"
   - label: "კითხვები"
     href: "/faq"
-  - label: "ბლოგი"
-    href: "/blog"
+  - label: "სტატიები"
+    href: "/articles"
 
 footer:
   headline: შენი თავგადასავალი

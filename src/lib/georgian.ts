@@ -29,3 +29,12 @@ const MONTHS = ['იანვარი', 'თებერვალი', 'მა�
 export function formatDateKa(date: Date): string {
   return `${date.getUTCDate()} ${MONTHS[date.getUTCMonth()]}, ${date.getUTCFullYear()}`;
 }
+
+/**
+ * Genitive of a first name, for "სალომეს სტატიები": vowel ending → +ს, consonant ending → +ის.
+ * ("სალომე" → "სალომეს", "გიორგი" → "გიორგის", "ოთარ" → "ოთარის").
+ */
+export function genitiveFirstName(fullName: string): string {
+  const first = fullName.trim().split(/\s+/)[0] ?? fullName;
+  return /[აეიოუ]$/.test(first) ? `${first}ს` : `${first}ის`;
+}

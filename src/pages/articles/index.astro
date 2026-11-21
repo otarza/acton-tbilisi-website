@@ -1,0 +1,230 @@
+---
+/**
+ * ARTICLES LIST (/articles). Articles: src/content/articles/ka/<slug>.md. Page copy: src/content/pages/ka/articles.yaml.
+ * Filters work in the browser (topic, author, sort, search) and are kept in the URL: /articles?topic=quests&author=salome-davituliani
+ * Without JavaScript every article is still listed.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/shared/PageHero.astro';
+import ArticleCard from '@/components/articles/ArticleCard.astro';
+import AuthorAvatar from '@/components/articles/AuthorAvatar.astro';
+import Newsletter from '@/components/articles/Newsletter.astro';
+import { getPage } from '@/lib/content';
+import { getArticles, cardData, getTopics, authorColor, getAuthor } from '@/lib/articles';
+import { t } from '@/i18n/ui';
+
+const p = await getPage('articlesPage');
+const ui = t().articles;
+const articles = await getArticles();
+const cards = await Promise.all(articles.map((a) => cardData(a)));
+const topics = (await getTopics()).map((tp) => ({ ...tp, count: cards.filter((c) => c.topics.some((x) => x.key === tp.key)).length }));
+const authorSlugs = [...new Set(cards.map((c) => c.authorSlug))];
+const authors = await Promise.all(authorSlugs.map(async (slug) => {
+  const a = await getAuthor(slug);
+  return { slug, name: a.data.name, short: a.data.name.split(' ')[0], color: await authorColor(slug), photo: a.data.photo, count: cards.filter((c) => c.authorSlug === slug).length };
+}));
+const [newest, ...rest] = cards;
+const PAGE = 6;
+---
+<BaseLayout title={p.seo.title} description={p.seo.description} ogPhoto={newest?.cover}>
+  <PageHero slot="hero" label={p.hero.label} title={p.hero.title} accent={p.hero.accent} after={p.hero.after} lead={p.hero.lead} />
+
+  {newest && (
+    <section class="wrap featured" data-featured>
+      <ArticleCard a={newest} variant="featured" badge={ui.new} eager headingLevel={2} />
+    </section>
+  )}
+
+  <section id="all" class="wrap sec stack" style="--stack-gap: 28px" data-articles data-page={PAGE} data-total={cards.length}>
+    <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
+      <h2 class="display al__h">{p.list.title} <span class="hl">{p.list.accent}</span></h2>
+      <div class="search">
+        <label for="article-search" class="sr-only">{ui.search}</label>
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.5"></circle><path d="M16.5 16.5 L21 21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></path></svg>
+        <input id="article-search" type="search" placeholder={ui.searchPlaceholder} data-q autocomplete="off" />
+      </div>
+    </div>
+
+    <div class="af">
+      <div class="af__row af__topics" role="group" aria-label={ui.topic}>
+        <b class="af__lbl">{ui.topic}</b>
+        <button type="button" class="fchip" aria-pressed="true" data-topic="">{ui.all} <small>{cards.length}</small></button>
+        {topics.map((tp) => <button type="button" class="fchip" aria-pressed="false" data-topic={tp.key}>{tp.label} <small>{tp.count}</small></button>)}
+      </div>
+      <button type="button" class="btn btn--ghost btn--sm af__open" aria-expanded="false" aria-controls="article-more-filters" data-open-filters>
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></path></svg>
+        {ui.filter}<span data-filter-badge></span>
+      </button>
+      <div class="af__backdrop" data-close-filters hidden></div>
+      <div id="article-more-filters" class="af__more" data-more-filters>
+        <div class="af__sheet-head"><b class="display">{ui.filter}</b><button type="button" class="af__x" aria-label={t().close} data-close-filters>✕</button></div>
+        <div class="af__row" role="group" aria-label={ui.author}>
+          <b class="af__lbl">{ui.author}</b>
+          <button type="button" class="fchip fchip--av" aria-pressed="true" data-author=""><span class="fchip__av" style="background: var(--color-bg-sky)" aria-hidden="true">∗</span>{ui.all}</button>
+          {authors.map((a) => <button type="button" class="fchip fchip--av" aria-pressed="false" data-author={a.slug}><AuthorAvatar name={a.name} color={a.color} photo={a.photo} size={32} />{a.short}</button>)}
+        </div>
+        <div class="af__row af__sortrow">
+          <b class="af__lbl" id="sort-label">{ui.sort}</b>
+          <div class="seg" role="group" aria-labelledby="sort-label">
+            <button type="button" aria-pressed="true" data-sort="new">{ui.sortNew}</button>
+            <button type="button" aria-pressed="false" data-sort="old">{ui.sortOld}</button>
+            <button type="button" aria-pressed="false" data-sort="short">{ui.sortShort}</button>
+          </div>
+        </div>
+        <div class="af__sheet-foot">
+          <button type="button" class="btn btn--ghost" data-clear>{ui.clearShort}</button>
+          <button type="button" class="btn btn--primary" data-close-filters data-show-n>{ui.showN(cards.length)}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="justify-content: space-between; align-items: center; --row-gap: 16px">
+      <span class="strong-navy" aria-live="polite" data-count>{ui.total(cards.length)} · {p.list.cadence}</span>
+      <button type="button" class="linkbtn" data-clear hidden>{ui.clear}</button>
+    </div>
+
+    <div class="agrid" data-grid>
+      {newest && <ArticleCard a={newest} />}
+      {rest.map((c) => <ArticleCard a={c} />)}
+    </div>
+
+    <div class="empty" data-empty hidden>
+      <span class="display empty__q" aria-hidden="true">?</span>
+      <b class="display empty__t">{ui.emptyTitle}</b>
+      <p>{ui.emptyText}</p>
+      <button type="button" class="btn btn--primary" data-clear>{ui.emptyButton}</button>
+    </div>
+
+    <div class="more" data-more-wrap hidden><button type="button" class="btn btn--ghost" data-more></button></div>
+  </section>
+
+  {p.newsletter.enabled && <Newsletter title={p.newsletter.title} accent={p.newsletter.accent} text={p.newsletter.text} success={p.newsletter.success} placeholder={p.newsletter.placeholder} />}
+</BaseLayout>
+
+<script>
+  import { t } from '@/i18n/ui';
+  const ui = t().articles;
+  for (const root of document.querySelectorAll<HTMLElement>('[data-articles]')) {
+    const PAGE = Number(root.dataset.page) || 6;
+    const cards = [...root.querySelectorAll<HTMLAnchorElement>('[data-grid] [data-article]')];
+    const featured = document.querySelector<HTMLElement>('[data-featured]');
+    const newestHref = featured?.querySelector('a')?.getAttribute('href');
+    const q = root.querySelector<HTMLInputElement>('[data-q]')!;
+    const count = root.querySelector<HTMLElement>('[data-count]')!;
+    const defaultCount = count.textContent;
+    const empty = root.querySelector<HTMLElement>('[data-empty]')!;
+    const moreWrap = root.querySelector<HTMLElement>('[data-more-wrap]')!;
+    const moreBtn = root.querySelector<HTMLButtonElement>('[data-more]')!;
+    const badge = root.querySelector<HTMLElement>('[data-filter-badge]')!;
+    const showN = root.querySelector<HTMLElement>('[data-show-n]')!;
+    const sheet = root.querySelector<HTMLElement>('[data-more-filters]')!;
+    const backdrop = root.querySelector<HTMLElement>('.af__backdrop')!;
+    const openBtn = root.querySelector<HTMLButtonElement>('[data-open-filters]')!;
+
+    const params = new URLSearchParams(location.search);
+    const state = { topic: params.get('topic') ?? '', author: params.get('author') ?? '', sort: params.get('sort') ?? 'new', q: params.get('q') ?? '', all: false };
+    q.value = state.q;
+
+    const press = (sel: string, attr: string, value: string) =>
+      root.querySelectorAll<HTMLButtonElement>(sel).forEach((b) => b.setAttribute('aria-pressed', String((b.dataset[attr] ?? '') === value)));
+
+    function render() {
+      const query = state.q.trim().toLowerCase();
+      const filtered = Boolean(state.topic || state.author || query || state.sort !== 'new');
+      let list = cards.filter((c) =>
+        (!state.topic || c.dataset.topics!.split(' ').includes(state.topic)) &&
+        (!state.author || c.dataset.author === state.author) &&
+        (!query || c.dataset.search!.includes(query)));
+      const by = { new: (a: HTMLElement, b: HTMLElement) => b.dataset.date!.localeCompare(a.dataset.date!),
+                   old: (a: HTMLElement, b: HTMLElement) => a.dataset.date!.localeCompare(b.dataset.date!),
+                   short: (a: HTMLElement, b: HTMLElement) => Number(a.dataset.minutes) - Number(b.dataset.minutes) }[state.sort as 'new'] ?? (() => 0);
+      list.sort(by);
+      if (featured) featured.hidden = filtered;
+      const gridList = filtered ? list : list.filter((c) => c.getAttribute('href') !== newestHref);
+      const visible = state.all ? gridList : gridList.slice(0, PAGE);
+      const grid = root.querySelector('[data-grid]')!;
+      cards.forEach((c) => { c.hidden = !visible.includes(c); });
+      visible.forEach((c) => grid.appendChild(c)); // keeps the sort order in the DOM (and for screen readers)
+      empty.hidden = list.length > 0;
+      moreWrap.hidden = state.all || gridList.length <= PAGE;
+      moreBtn.textContent = ui.more(gridList.length - PAGE);
+      count.textContent = filtered ? ui.found(list.length) : defaultCount;
+      root.querySelectorAll<HTMLElement>('.linkbtn[data-clear]').forEach((b) => { b.hidden = !filtered; });
+      const extra = (state.author ? 1 : 0) + (state.sort !== 'new' ? 1 : 0);
+      badge.textContent = extra ? ` · ${extra}` : '';
+      showN.textContent = ui.showN(list.length);
+      press('[data-topic]', 'topic', state.topic);
+      press('[data-author]', 'author', state.author);
+      press('[data-sort]', 'sort', state.sort);
+      const url = new URL(location.href);
+      for (const k of ['topic', 'author', 'sort', 'q'] as const) {
+        const v = state[k]; if (v && !(k === 'sort' && v === 'new')) url.searchParams.set(k, v); else url.searchParams.delete(k);
+      }
+      history.replaceState(null, '', url);
+    }
+
+    const setOpen = (open: boolean) => { sheet.toggleAttribute('data-open', open); backdrop.hidden = !open; openBtn.setAttribute('aria-expanded', String(open)); document.body.classList.toggle('no-scroll', open); };
+    root.addEventListener('click', (e) => {
+      const el = (e.target as HTMLElement).closest<HTMLElement>('button, [data-close-filters]');
+      if (!el) return;
+      if (el.dataset.topic !== undefined) { state.topic = el.dataset.topic; state.all = false; }
+      else if (el.dataset.author !== undefined) { state.author = el.dataset.author; state.all = false; }
+      else if (el.dataset.sort !== undefined) state.sort = el.dataset.sort;
+      else if (el.hasAttribute('data-clear')) { Object.assign(state, { topic: '', author: '', sort: 'new', q: '', all: false }); q.value = ''; }
+      else if (el.hasAttribute('data-more')) state.all = true;
+      if (el.hasAttribute('data-open-filters')) { setOpen(true); return; }
+      if (el.hasAttribute('data-close-filters')) { setOpen(false); if (el !== backdrop) openBtn.focus(); }
+      render();
+    });
+    backdrop.addEventListener('click', () => setOpen(false));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sheet.hasAttribute('data-open')) { setOpen(false); openBtn.focus(); } });
+    q.addEventListener('input', () => { state.q = q.value; state.all = false; render(); });
+    render();
+  }
+</script>
+
+<style>
+  .featured { padding-top: 56px; }
+  .al__h { font-size: clamp(30px, 3.4vw, 44px); line-height: 1.1; }
+  .search { flex: 0 1 380px; position: relative; color: var(--color-navy); }
+  .search svg { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+  .search input { width: 100%; min-height: 52px; border-radius: var(--radius-pill); border: 2px solid var(--color-navy); padding: 0 20px 0 48px; font: inherit; font-size: 16px; color: var(--color-navy); background: var(--color-white); }
+  .agrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 24px; }
+  .af { background: var(--color-bg-sky); border-radius: var(--radius-card); padding: 24px 28px; display: flex; flex-direction: column; gap: 18px; }
+  .af__row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .af__lbl { color: var(--color-navy); font-size: 15px; min-width: 76px; }
+  .af__more { display: flex; flex-wrap: wrap; gap: 18px 24px; justify-content: space-between; align-items: center; }
+  .af__open, .af__sheet-head, .af__sheet-foot, .af__backdrop { display: none; }
+  .fchip--av { padding-left: 6px; }
+  .fchip__av { width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--color-navy); font-weight: 900; }
+  .af__sortrow .af__lbl { min-width: 0; }
+  .linkbtn { background: none; border: 0; font: inherit; font-weight: 800; color: var(--color-blue-dark); cursor: pointer; min-height: 44px; text-decoration: underline; }
+  .empty { border: 3px dashed var(--color-trail); border-radius: var(--radius-card); padding: 56px 32px; text-align: center; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .empty__q { font-size: 72px; line-height: 1; color: var(--color-blue); }
+  .empty__t { font-size: 26px; }
+  .empty p { max-width: 520px; }
+  .more { display: flex; justify-content: center; }
+  .more[hidden], .empty[hidden] { display: none; }
+  .btn--ghost { border: 3px solid var(--color-navy); }
+
+  /* Phone: topics scroll sideways, author + sort move into a bottom sheet behind the "ფილტრი" button. */
+  @media (max-width: 860px) {
+    .search { flex-basis: 100%; }
+    .af { background: none; padding: 0; border-radius: 0; gap: 12px; }
+    .af__topics { flex-wrap: nowrap; overflow-x: auto; margin: 0 calc(var(--gutter) * -1); padding: 2px var(--gutter) 6px; scrollbar-width: none; }
+    .af__topics .af__lbl { display: none; }
+    .af__open { display: inline-flex; align-self: flex-start; order: -1; }
+    .af__more { display: none; }
+    .af__more[data-open] { display: flex; flex-direction: column; align-items: stretch; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; background: var(--color-white); border-radius: 26px 26px 0 0; padding: 20px var(--gutter) 24px; max-height: 85vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(11, 31, 74, .25); }
+    .af__more[data-open] .af__sheet-head, .af__more[data-open] .af__sheet-foot { display: flex; }
+    .af__sheet-head { justify-content: space-between; align-items: center; font-size: 24px; }
+    .af__x { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--color-bg-sky); color: var(--color-navy); font-size: 18px; cursor: pointer; }
+    .af__sheet-foot { gap: 10px; }
+    .af__sheet-foot .btn { flex: 1; }
+    .af__more .af__lbl { flex-basis: 100%; }
+    .af__backdrop:not([hidden]) { display: block; position: fixed; inset: 0; z-index: 59; background: rgba(11, 31, 74, .45); }
+  }
+</style>
+<style is:global>
+  body.no-scroll { overflow: hidden; }
+</style>

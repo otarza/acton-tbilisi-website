@@ -1,0 +1,48 @@
+# ARTICLES PAGE COPY (/articles, article pages, author pages, homepage section).
+# The articles themselves are files in src/content/articles/ka/.
+seo:
+  title: "სტატიები · ექტონის აკადემია, საბურთალო"
+  description: "მეგზურები, მშობლები და დამფუძნებლები წერენ იმაზე, რაც სტუდიაში ხდება: ქვესტებზე, კამათზე, შეცდომებზე და ერთად სწავლაზე."
+
+hero:
+  label: "სტატიები"
+  title: "ჩანაწერები სკოლის"
+  accent: "შიგნიდან."
+  lead: "მეგზურები, მშობლები და დამფუძნებლები წერენ იმაზე, რაც სტუდიაში ხდება: ქვესტებზე, კამათზე, შეცდომებზე და იმაზე, როგორ ვსწავლობთ ერთად."
+
+# The fixed topic list. Keys must match ARTICLE_TOPICS in src/content.config.ts.
+# color: blue | teal | gold | red | green | navy
+topics:
+  method: { label: "სწავლის მეთოდი", color: "blue" }
+  life: { label: "სტუდიის ცხოვრება", color: "teal" }
+  quests: { label: "ქვესტები", color: "gold" }
+  clubs: { label: "კლუბები", color: "red" }
+  parents: { label: "მშობლებს", color: "green" }
+  acton: { label: "Acton-ის ფილოსოფია", color: "navy" }
+
+list:
+  title: "ყველა"
+  accent: "სტატია"
+  cadence: "ახალი ყოველ პარასკევს"
+
+newsletter:
+  enabled: true
+  title: "კვირაში ერთი წერილი:"
+  accent: "რა გააკეთეს ბავშვებმა."
+  text: "ახალი სტატია, კვირის კითხვა და ერთი ფოტო სტუდიიდან. სპამის გარეშე, გაუქმება ერთი დაჭერით."
+  success: "✓ გმადლობთ! პირველ წერილს პარასკევს მიიღებთ."
+  placeholder: true  # the school must confirm it will really send a weekly email
+
+cta:
+  title: "გინდათ ნახოთ, როგორ მუშაობს ეს"
+  accent: "სტუდიაში?"
+  text: "საცდელი კვირა უფასოა. თქვენი შვილი ერთ კვირას გაატარებს სტუდიაში, თქვენ კი ნახავთ, მოერგება თუ არა."
+  button: "დაჯავშნე შეხვედრა"
+  secondary: "კითხვები და პასუხები"
+
+# Homepage section "08 სტატიები" (shows the 3 newest articles).
+home:
+  label: "სტატიები"
+  title: "ახალი ამბები"
+  accent: "სტუდიიდან"
+  intro: "მეგზურები და მშობლები წერენ, რა ხდება სკოლაში ყოველ კვირას. ახალი სტატია ყოველ პარასკევს."

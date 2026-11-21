@@ -14,8 +14,9 @@ keep the site building, and explain what you did in plain language (Georgian if 
 2. **Never invent facts about the school.** Prices, dates, accreditation, names, quotes, safety claims: only write
    what the person gave you. If you must leave a gap, set `placeholder: true` on that block and say so.
 3. **Children's privacy.** Every photo must be listed in `src/content/photos.yaml` with alt text and a `consent`
-   value. Never add a photo of an identifiable child with `consent: signed` unless the person confirms written
-   parental consent exists (Georgian law №3144). Never put a child's full name next to their photo.
+   value. Every enrolled family signs the school contract, which includes written consent to public photo use,
+   so photos of **enrolled** children are `consent: signed`. For anyone else (visitors, siblings, trial-week
+   children) ask whether written consent exists (Georgian law №3144). Never put a child's full name next to their photo.
 4. **The assistant only repeats approved answers.** Don't connect it to an LLM or let it answer outside
    `src/content/faq/` without reading `docs/ASSISTANT.md`.
 5. **Georgian typography:** never use CSS `text-transform: uppercase` on Georgian; use `<Caps>` / `toMtavruli()`.
@@ -35,7 +36,7 @@ keep the site building, and explain what you did in plain language (Georgian if 
 | `npm run build` | Production build into `dist/` |
 | `npm run check` | Type check (`astro check`) + content checks. **Must pass.** |
 | `npm run placeholders` | List every file that still has invented/unconfirmed content |
-| `npm run new:post -- slug "სათაური"` | New blog post (draft) |
+| `npm run new:article -- slug "სათაური" author` | New article (draft); author = file name in `src/content/team/ka/` |
 | `npm run new:question -- "კითხვა?"` | New question of the week (auto-numbered) |
 | `npm run new:faq -- slug "კითხვა?" category` | New FAQ entry |
 
@@ -52,17 +53,19 @@ src/content/                 ← ALL CONTENT (see docs/CONTENT.md for every fiel
   faq/ka/*.md                one file per FAQ question (body = answer)
   questions/ka/NNN.md        question of the week archive; highest number = current week
   studios/ka/*.md            age groups (5–7, 8–11, 12–14)
-  team/ka/*.md               founders and guides (body = bio)
+  team/ka/*.md               founders, guides and contributors (body = bio); article authors come from here
   testimonials/ka/*.md       parent quotes (body = quote)
-  posts/ka/*.md              blog posts (file name = URL)
+  articles/ka/*.md           articles / სტატიები (file name = URL /articles/<name>)
+  pages/ka/articles.yaml     articles page copy, the 6 topic labels + colours, newsletter, homepage section 08
   photos.yaml                photo register: id, file, alt, consent
 src/assets/photos/           photo files (referenced by id, never by path)
 src/content.config.ts        the content schema (field names + types). Change docs/CONTENT.md with it.
-src/pages/                   routes: index, about, faq, blog/, design-system, 404
-src/components/              home/, about/, shared/, layout/, ui/ (see docs/DESIGN-SYSTEM.md)
+src/pages/                   routes: index, about, faq, articles/ (list, [slug], authors/[author]), design-system, 404
+src/components/              home/, about/, articles/, shared/, layout/, ui/ (see docs/DESIGN-SYSTEM.md)
+src/lib/articles.ts          article helpers: reading time, author lookup, related articles
 src/styles/tokens.css        design tokens (colours, type, spacing)
 src/i18n/ui.ts               interface strings
-functions/api/               Cloudflare Pages Functions: lead.ts, vote.ts, votes.ts
+functions/api/               Cloudflare Pages Functions: lead, vote, votes, subscribe (newsletter), feedback ("was it helpful")
 google/apps-script/Code.gs   Google Sheets bridge (deployed by hand, see docs/BACKEND.md)
 scripts/                     check-content.mjs, new.mjs
 docs/                        CONTENT, DESIGN-SYSTEM, BACKEND, DEPLOY, ASSISTANT, I18N, OPEN-QUESTIONS, EDITING-GUIDE.ka
@@ -72,8 +75,12 @@ docs/                        CONTENT, DESIGN-SYSTEM, BACKEND, DEPLOY, ASSISTANT,
 
 - **Change a price / phone / date / any sentence** → find it with a search in `src/content/`, edit, run checks.
   If the change confirms a placeholder, remove `placeholder: true` from that block.
-- **Add a blog post** → `npm run new:post -- my-slug "სათაური"`, write the body, set `draft: false`.
-  Cover must be a photo id from `photos.yaml`.
+- **Add an article** → `npm run new:article -- my-slug "სათაური" salome-davituliani`, write the body with `##`
+  subheadings (they become the table of contents), pick 1–3 `topics` from the fixed list, set `draft: false`.
+  Cover must be a photo id from `photos.yaml`. The author must be a team file; a parent/investor who writes gets a
+  team file with `group: contributor`. Reading time, author card, related articles and the homepage section are automatic.
+- **Add an article topic** → add the key to `ARTICLE_TOPICS` in `src/content.config.ts`, its label + colour to
+  `topics` in `pages/ka/articles.yaml`, and the key list in `scripts/check-content.mjs`. Keep the list short.
 - **New question of the week** (every Monday) → `npm run new:question -- "კითხვა?"`. On Friday, add
   `conclusion:` (the kids' summary) to that file. The homepage automatically shows the highest number.
 - **Add / edit an FAQ** → `src/content/faq/ka/`. Add `keywords:` so the assistant can find it; `chip:` makes it a
@@ -102,4 +109,4 @@ docs/                        CONTENT, DESIGN-SYSTEM, BACKEND, DEPLOY, ASSISTANT,
 ## Things that need a human (don't guess)
 
 Listed in `docs/OPEN-QUESTIONS.md`: state (NCEQE) authorisation status, "Acton Academy" vs "American School" naming,
-real prices/fees, schedule, address, guide bios, parent quotes approval, photo consent, video links.
+real prices/fees, schedule, address, guide bios, parent quotes approval, video links, real articles and author bios.
