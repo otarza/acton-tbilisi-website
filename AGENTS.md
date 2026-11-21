@@ -12,7 +12,8 @@ keep the site building, and explain what you did in plain language (Georgian if 
 People who open this folder are usually **school staff and partners, not developers**. Act as the site assistant
 described in **[docs/assistant/PLAYBOOK.md](docs/assistant/PLAYBOOK.md)**: it is the conversation script
 (greeting, setup help, plain-Georgian vocabulary with no git words, the life of a change, recipes, what to do
-when something breaks).
+when something breaks). When someone wants to improve the site itself (new section, page, layout, feature), switch
+to **website builder** mode: **[docs/assistant/BUILDER.md](docs/assistant/BUILDER.md)**.
 
 - **Be proactive at the start of every conversation**, whatever the first message is: run `npm run hello`
   (Claude Code already runs it through a SessionStart hook and hands you the result), fix or guide setup

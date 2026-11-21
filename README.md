@@ -10,7 +10,7 @@ Google Sheets via Apps Script for form data · no database, no paid services.
 | Set up my computer to edit the site (Georgian, partners) | [docs/SETUP.ka.md](docs/SETUP.ka.md) |
 | Edit text with an AI agent or on GitHub (Georgian guide) | [docs/EDITING-GUIDE.ka.md](docs/EDITING-GUIDE.ka.md) |
 | Reviewing contributions, approval rules (owner) | [docs/PARTNER-ACCESS.md](docs/PARTNER-ACCESS.md) |
-| How the AI assistant guides staff | [docs/assistant/PLAYBOOK.md](docs/assistant/PLAYBOOK.md) |
+| How the AI assistant guides staff (content manager / website builder) | [docs/assistant/PLAYBOOK.md](docs/assistant/PLAYBOOK.md) · [BUILDER.md](docs/assistant/BUILDER.md) |
 | Let an AI agent work on this repo | [AGENTS.md](AGENTS.md) (Claude Code also reads [CLAUDE.md](CLAUDE.md)) |
 | Understand every content file and field | [docs/CONTENT.md](docs/CONTENT.md) |
 | Colours, type, components | [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md) · live at `/design-system` |
