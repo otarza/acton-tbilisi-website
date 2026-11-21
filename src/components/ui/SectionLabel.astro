@@ -10,7 +10,8 @@ const { num, text, onDark = false } = Astro.props;
 </span>
 <style>
   .label { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 14px; letter-spacing: .04em; color: var(--color-blue); }
-  .label b { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--color-blue); font-size: 13px; letter-spacing: 0; }
-  .label--dark { color: var(--color-blue-soft); }
-  .label--dark b { border-color: var(--color-blue-soft); color: var(--color-blue-soft); }
+  .label b { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: var(--color-navy); color: var(--color-hl); font-size: 13px; letter-spacing: 0; flex: none; }
+  :global(.bg-cyan) .label { color: var(--color-navy); }
+  .label--dark { color: var(--color-hl); }
+  .label--dark b { background: var(--color-hl); color: var(--color-navy); }
 </style>

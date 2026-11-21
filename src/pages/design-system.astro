@@ -13,17 +13,18 @@ import Photo from '@/components/ui/Photo.astro';
 import { getCollection } from 'astro:content';
 
 const colors = [
-  ['--color-navy', 'Primary. Headings, buttons, dark sections'], ['--color-navy-2', 'Raised surface on navy'],
-  ['--color-blue', 'Accent words, progress'], ['--color-blue-dark', 'Links, tags'], ['--color-blue-soft', 'Accent text on navy'],
-  ['--color-cyan', 'Logo + decorative lines ONLY (no white text on it)'], ['--color-ink', 'Body text'], ['--color-muted', 'Captions'],
-  ['--color-bg-mist', 'Page heroes'], ['--color-bg-paper', 'Alternating sections'], ['--color-bg-blue', 'Price block'], ['--color-bg-ice', 'Callouts in cards'],
+  ['--color-navy', 'Primary. Headings, buttons, dark sections'], ['--color-navy-2', 'Hover on navy buttons'],
+  ['--color-cyan', 'Hero bands, CTA bands, lines. Navy text only'], ['--color-hl', 'Highlight bars; accents on navy'],
+  ['--color-blue', 'Labels, links, progress, join box'], ['--color-blue-dark', 'Links, tags'], ['--color-trail', 'Dashed trails'],
+  ['--color-ink', 'Body text'], ['--color-muted', 'Captions'],
+  ['--color-bg-sky', 'Alternating sections, soft cards'], ['--color-bg-ice', 'Callouts in cards'],
   ['--color-line', 'Borders'], ['--color-yellow', 'Exhibition highlight'], ['--color-green', 'Success, call button'], ['--color-red', 'Tag colour'],
 ];
 const photos = await getCollection('photos');
 ---
 <BaseLayout title="Design system · Acton Tbilisi" noindex>
   <section slot="hero" class="wrap" style="padding: 32px var(--gutter) 64px">
-    <SectionHeading level={1} label="დიზაინ სისტემა" num="✦" title="Design system" accent="S5 · calm navy" />
+    <SectionHeading level={1} label="დიზაინ სისტემა" num="✦" title="Design system" accent="S4 · bright" />
     <p class="lead" style="margin-top: 16px">Tokens: <code>src/styles/tokens.css</code> · Docs: <code>docs/DESIGN-SYSTEM.md</code></p>
   </section>
 
@@ -34,11 +35,12 @@ const photos = await getCollection('photos');
     </div>
   </section>
 
-  <section class="wrap sec stack bg-paper" style="border-radius: 12px">
+  <section class="wrap sec stack bg-sky" style="border-radius: var(--radius-card)">
     <h2 class="display h3">Typography</h2>
     <p class="display h1">Display H1 · სწავლა თავგადასავალია</p>
-    <p class="display h2">Display H2 · <span class="accent">accent</span></p>
-    <p class="display h3">H3 · Noto Serif Georgian 700</p>
+    <p class="display h2">Display H2 · <span class="hl">highlight bar</span></p>
+    <p class="display h3">H3 · Noto Sans Georgian 900</p>
+    <p class="small"><span class="accent">.accent</span> = small blue words (dates, little labels)</p>
     <p class="lead">Lead · Noto Sans Georgian 19px</p>
     <p>Body · 18px / 1.6 · ბავშვი თავად მართავს თავის განათლებას.</p>
     <p class="small muted">Small muted · 15px</p>
@@ -49,14 +51,16 @@ const photos = await getCollection('photos');
     <h2 class="display h3">Buttons, tags, choices</h2>
     <div class="row"><Button>Primary</Button><Button variant="ghost">Ghost</Button><Button variant="soft">Soft</Button><Button size="sm">Small</Button><Button size="lg">Large</Button></div>
     <div class="row" style="--row-gap: 8px"><span class="tag tag--blue">blue</span><span class="tag tag--teal">teal</span><span class="tag tag--red">red</span><span class="tag tag--gold">gold</span><span class="tag tag--green">green</span><span class="tag tag--navy">navy</span></div>
-    <div class="row" style="--row-gap: 8px"><button class="choice" aria-pressed="true">Selected</button><button class="choice" aria-pressed="false">Choice</button></div>
-    <div class="bg-navy" style="padding: 24px; border-radius: 12px"><Button variant="light">Light on navy</Button></div>
+    <div class="row" style="--row-gap: 8px"><button class="choice" aria-pressed="true">Selected</button><button class="choice" aria-pressed="false">Choice</button><button class="chip" aria-pressed="false">.chip</button><button class="opt">.opt (quiz answer)</button></div>
+    <div class="row" style="--row-gap: 12px"><span class="badge" style="color: var(--color-blue)">.badge</span><span class="badge" style="color: var(--color-teal)">dashed</span></div>
+    <div class="bg-navy row" style="padding: 24px; border-radius: var(--radius-card)"><Button variant="light">Light on navy</Button><Button variant="hl">Highlight on navy</Button><p class="display h3">On navy <span class="hl">highlight</span></p></div>
+    <div class="bg-cyan qmark-band row" style="padding: 24px; border-radius: var(--radius-card)"><span class="qmark" style="font-size: 260px; top: -60px" aria-hidden="true">?</span><Button>Primary on cyan</Button><p class="display h3">On cyan the bar is <span class="hl">white</span></p></div>
   </section>
 
   <section class="wrap sec stack">
     <h2 class="display h3">Cards & bars</h2>
     <div class="grid-auto">
-      <div class="card card--paper">.card.card--paper</div>
+      <div class="card card--sky">.card.card--sky</div>
       <div class="card card--outline">.card.card--outline</div>
       <div class="card card--float">.card.card--float</div>
       <div class="card card--dashed">.card.card--dashed</div>
@@ -73,7 +77,7 @@ const photos = await getCollection('photos');
 </BaseLayout>
 <style>
   .sw { display: flex; flex-direction: column; gap: 4px; }
-  .sw__c { height: 64px; border-radius: 8px; border: 1px solid var(--color-line); }
+  .sw__c { height: 64px; border-radius: var(--radius-sm); border: 1px solid var(--color-line); }
   .ph { margin: 0; display: flex; flex-direction: column; gap: 6px; }
-  .ph__img { height: 140px; border-radius: 8px; overflow: hidden; }
+  .ph__img { height: 140px; border-radius: var(--radius-sm); overflow: hidden; }
 </style>

@@ -28,7 +28,7 @@ npm run dev:full   # with the Cloudflare form functions, http://localhost:8788
 ```
 
 ## Pages
-`/` homepage (10 sections from design S5) · `/about` · `/faq` (FAQ + question-of-the-week archive) · `/blog` ·
+`/` homepage (10 sections from design S4) · `/about` · `/faq` (FAQ + question-of-the-week archive) · `/blog` ·
 `/design-system` (internal style guide).
 
 ## How changes flow

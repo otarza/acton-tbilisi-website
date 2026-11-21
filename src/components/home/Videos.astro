@@ -18,7 +18,7 @@ const [main, ...rest] = v.items;
       {main && (
         <button type="button" class="vid vid--main" data-video={main.youtubeId} aria-label={`${ui.playVideo}: ${main.title}`}>
           <Photo id={main.photo} alt="" sizes="(max-width: 860px) 100vw, 760px" />
-          <span class="vid__ov"><span class="vid__play"><svg width="26" height="30" viewBox="0 0 24 28" aria-hidden="true"><path d="M2 2 L22 14 L2 26 Z" fill="#0C2A50"></path></svg></span></span>
+          <span class="vid__ov"><span class="vid__play"><svg width="26" height="30" viewBox="0 0 24 28" aria-hidden="true"><path d="M2 2 L22 14 L2 26 Z" fill="#0B1F4A"></path></svg></span></span>
           <span class="vid__cap"><span class="vid__title">{main.title}</span>{main.subtitle && <span class="small">{main.subtitle}</span>}</span>
           <span class="vid__dur">{main.duration}</span>
         </button>

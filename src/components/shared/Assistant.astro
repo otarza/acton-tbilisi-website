@@ -101,7 +101,7 @@ const chips = faqs.filter((f) => f.data.chip).sort((a, b) => a.data.order - b.da
 <style>
   .asst__log { display: flex; flex-direction: column; gap: 10px; max-height: 360px; overflow-y: auto; }
   .asst :global(.msg) { padding: 12px 16px; font-size: 16px; max-width: 92%; }
-  .asst :global(.msg--bot) { background: #F1F6FB; border-radius: 12px 18px 18px 4px; align-self: flex-start; }
+  .asst :global(.msg--bot) { background: var(--color-bg-sky); border-radius: 18px 18px 18px 4px; align-self: flex-start; }
   .asst :global(.msg--me) { background: var(--color-blue); color: var(--color-white); border-radius: 12px 18px 4px 18px; align-self: flex-end; max-width: 85%; }
   .asst :global(.msg__src) { margin-top: 6px; font-size: var(--text-xs); color: var(--color-muted); }
   .asst :global(.msg__human) { display: inline-block; margin-top: 6px; font-weight: 800; }

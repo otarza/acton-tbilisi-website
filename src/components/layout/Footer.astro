@@ -6,7 +6,7 @@ const ui = t();
 ---
 <footer class="ftr bg-navy">
   <div class="wrap ftr__inner">
-    <p class="display ftr__headline">{s.footer.headline} <span class="accent">{s.footer.headlineAccent}</span></p>
+    <p class="display ftr__headline">{s.footer.headline} <span class="hl">{s.footer.headlineAccent}</span></p>
     <div class="grid-auto ftr__cols" style="--min: 220px; --grid-gap: 24px">
       <div><b>{s.schoolNameShort}</b>{s.footer.about.map((l) => <><br />{l}</>)}</div>
       <div>
@@ -27,10 +27,10 @@ const ui = t();
 </footer>
 <style>
   .ftr__inner { padding-top: 64px; padding-bottom: 40px; display: flex; flex-direction: column; gap: 40px; }
-  .ftr__headline { font-size: clamp(33px, 4.8vw, 66px); line-height: 1; }
+  .ftr__headline { font-size: clamp(36px, 6vw, 88px); line-height: 1; color: var(--color-white); }
   .ftr__cols { font-size: var(--text-sm); }
   .ftr b { color: var(--color-white); }
-  .ftr a { color: var(--color-blue-soft); }
+  .ftr a { color: var(--color-hl); }
   .ftr__legal { color: var(--color-on-dark); opacity: .8; }
   @media (max-width: 860px) { .ftr__inner { padding-bottom: 112px; } }
 </style>

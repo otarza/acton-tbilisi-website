@@ -20,7 +20,7 @@ import FaqPreview from '@/components/home/FaqPreview.astro';
 import { getPage } from '@/lib/content';
 const { seo } = await getPage('homePage');
 ---
-<BaseLayout title={seo.title} description={seo.description}>
+<BaseLayout title={seo.title} description={seo.description} bigQmark>
   <HomeHero slot="hero" />
   <Marquee />
   <Honest />

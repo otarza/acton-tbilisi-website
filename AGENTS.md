@@ -19,7 +19,8 @@ keep the site building, and explain what you did in plain language (Georgian if 
 4. **The assistant only repeats approved answers.** Don't connect it to an LLM or let it answer outside
    `src/content/faq/` without reading `docs/ASSISTANT.md`.
 5. **Georgian typography:** never use CSS `text-transform: uppercase` on Georgian; use `<Caps>` / `toMtavruli()`.
-   Never put white text on cyan `#00C0FF` (contrast 2.1:1).
+   Never put white text on cyan `#00C0FF` (contrast 2.1:1): text on cyan is navy. Highlighted heading words use
+   SectionHeading's `accent` (cyan bar). The approved design is **S4** (see docs/DESIGN-SYSTEM.md).
 6. **Use design tokens** from `src/styles/tokens.css`. No new hex colours, fonts or font sizes in components.
 7. **Always quote text in YAML** (`title: "…"`). Georgian sentences contain `:` and `,` which break unquoted YAML.
 8. **Run the checks before you finish** (see below). Don't commit if they fail.

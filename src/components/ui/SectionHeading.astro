@@ -1,6 +1,7 @@
 ---
 /**
- * Label + big serif heading. `accent` is shown in blue after `title`; `after` follows the accent.
+ * Label + big heavy heading. `accent` is shown with a cyan highlight bar after `title` (white bar on cyan bands);
+ * `after` follows the accent.
  * Set `level={1}` for the page's main heading.
  */
 import SectionLabel from './SectionLabel.astro';
@@ -11,7 +12,7 @@ const Tag = level === 1 ? 'h1' : 'h2';
 <div class="heading" data-placeholder={placeholder || undefined}>
   {label && <SectionLabel num={num} text={label} onDark={onDark} />}
   <Tag id={id} class:list={['display', level === 1 ? 'h1' : 'h2']}>
-    {title}{accent && <>{' '}<span class="accent">{accent}</span></>}{after && <>{' '}{after}</>}
+    {title}{accent && <>{' '}<span class="hl">{accent}</span></>}{after && <>{' '}{after}</>}
   </Tag>
 </div>
 <style>

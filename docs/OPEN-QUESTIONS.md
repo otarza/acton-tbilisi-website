@@ -1,6 +1,6 @@
 # Open questions (need the school, not a developer)
 
-Most text came from design round 9 (S5) and is **invented placeholder** content. Nothing below should go live
+Most text came from the design rounds (S4, approved 2026-11-21) and is **invented placeholder** content. Nothing below should go live
 unconfirmed. `npm run placeholders` shows the files; this list explains what to ask.
 
 | # | Question | Where it is used |

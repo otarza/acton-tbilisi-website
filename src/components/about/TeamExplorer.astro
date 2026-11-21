@@ -17,7 +17,7 @@ const groups = [
 ] as const;
 const colors = ['#E6EEF8', '#D6ECFB', '#FFF3C4', '#DDF7F8', '#FBE2E2'];
 ---
-<section id="team" class="bg-paper sec">
+<section id="team" class="bg-sky sec">
   <div class="wrap stack" style="--stack-gap: 28px" data-team>
     <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
       <SectionHeading num="02" label={team.label} title={team.title} accent={team.accent} />
@@ -82,12 +82,13 @@ const colors = ['#E6EEF8', '#D6ECFB', '#FFF3C4', '#DDF7F8', '#FBE2E2'];
   .team__intro { max-width: 760px; }
   .team__grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: start; }
   .team__people { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-  .person { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 18px 10px; border-radius: var(--radius-card); cursor: pointer; color: var(--color-navy); background: var(--color-white); border: 1.5px solid transparent; }
+  .person { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 18px 10px; border-radius: var(--radius-card); cursor: pointer; color: var(--color-navy); background: var(--color-white); border: 2px solid transparent; }
   .person[aria-pressed="true"] { border-color: var(--color-navy); }
-  .bio { display: flex; flex-direction: column; gap: 16px; }
+  .bio { display: flex; flex-direction: column; gap: 16px; border: 2px solid var(--color-navy); }
   .bio[hidden], [data-panel][hidden] { display: none; }
-  .av--lg { width: 64px; height: 64px; font-size: 24px; }
+  .av--lg { width: 72px; height: 72px; font-size: 26px; background: var(--color-cyan); }
+  .bio :global(.tag) { background: var(--color-bg-sky); color: var(--color-navy); padding: 6px 12px; }
   .investors { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
-  .investors li { display: flex; align-items: center; gap: 12px; background: var(--color-white); border-radius: var(--radius-card); padding: 12px 14px; color: var(--color-navy); }
+  .investors li { display: flex; align-items: center; gap: 12px; background: var(--color-white); border-radius: var(--radius-control); padding: 12px 14px; color: var(--color-navy); }
   @media (max-width: 860px) { .team__grid { grid-template-columns: 1fr; } .team__people { grid-template-columns: repeat(2, 1fr); } }
 </style>

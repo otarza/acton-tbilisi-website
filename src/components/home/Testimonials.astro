@@ -61,13 +61,13 @@ const ui = t();
   .quotes { flex: 2 1 520px; display: grid; }
   .quote { grid-area: 1 / 1; margin: 0; background: var(--color-navy); border-radius: var(--radius-card); padding: 44px; display: flex; flex-direction: column; gap: 20px; min-height: 300px; }
   .quote[hidden] { display: none; }
-  .quote__mark { color: var(--color-blue-soft) !important; font-size: 80px; line-height: .6; }
+  .quote__mark { color: var(--color-hl) !important; font-size: 80px; line-height: .6; }
   .quote__text { color: var(--color-white) !important; font-size: clamp(18px, 1.9vw, 22px); line-height: 1.4; }
   .quote__by { display: flex; align-items: center; gap: 12px; color: var(--color-on-dark); }
   .quote__by b { color: var(--color-white); }
   .people { flex: 1 1 280px; }
   .person { display: flex; align-items: center; gap: 12px; min-height: 52px; border-radius: var(--radius-card); padding: 6px 14px; cursor: pointer; font-size: var(--text-sm); border: 2px solid var(--color-track); background: var(--color-white); color: var(--color-ink); text-align: left; }
-  .person[aria-selected="true"] { border-color: var(--color-navy); background: var(--color-bg-paper); color: var(--color-navy); }
+  .person[aria-selected="true"] { border-color: var(--color-navy); background: var(--color-bg-sky); color: var(--color-navy); }
   .av--sm { width: 34px; height: 34px; font-size: 14px; }
   @media (max-width: 860px) { .quote { padding: 28px; min-height: 0; } .people { display: none; } }
 </style>

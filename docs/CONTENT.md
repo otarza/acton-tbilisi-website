@@ -13,7 +13,7 @@ message if a file doesn't match. Run `npm run check` to validate.
 | `photo:` / `cover:` | A photo **id** from `src/content/photos.yaml`, not a file path. |
 | `order:` | Sort order, lower first. |
 | `label:` | Small label above a heading. Write normal letters; the site renders Georgian capitals (Mtavruli). |
-| `title` + `accent` (+ `titleAfter`/`after`) | Heading; `accent` is shown in blue. |
+| `title` + `accent` (+ `titleAfter`/`after`) | Heading; `accent` gets the cyan highlight bar. |
 
 **YAML tip:** wrap every text value in double quotes. Georgian sentences often contain `:` or `,`, which
 otherwise break YAML (`title: "ფასი: 1000 ₾"`).

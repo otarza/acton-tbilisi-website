@@ -1,18 +1,24 @@
 ---
-/** Placeholder shield mark + wordmark. Replace the SVG with the real logo file when available (docs/DESIGN-SYSTEM.md). */
+/**
+ * Placeholder shield mark + wordmark. Replace the SVG with the real logo file when available (docs/DESIGN-SYSTEM.md).
+ * The shield is white on cyan bands (page tops), navy elsewhere, white on navy.
+ */
 import Caps from './Caps.astro';
 interface Props { name: string; subtitle: string; size?: 'md' | 'sm'; onDark?: boolean }
 const { name, subtitle, size = 'md', onDark = false } = Astro.props;
 ---
 <a href="/" class:list={['logo', `logo--${size}`, { 'logo--dark': onDark }]} aria-label={`${name} — მთავარი გვერდი`}>
-  <svg width="34" height="40" viewBox="0 0 40 48" aria-hidden="true"><path d="M3 6 Q20 -1 37 6 V22 Q37 38 20 46 Q3 38 3 22 Z" fill="currentColor"></path><path d="M11 17 Q20 14 20 19 Q20 14 29 17 V31 Q20 28 20 33 Q20 28 11 31 Z" fill="#00C0FF"></path></svg>
+  <svg width="34" height="40" viewBox="0 0 40 48" aria-hidden="true"><path d="M3 6 Q20 -1 37 6 V22 Q37 38 20 46 Q3 38 3 22 Z" class="shield"></path><path d="M11 17 Q20 14 20 19 Q20 14 29 17 V31 Q20 28 20 33 Q20 28 11 31 Z" class="book"></path></svg>
   <span class="words"><Caps text={name} class="name" /><span class="sub">{subtitle}</span></span>
 </a>
 <style>
   .logo { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; color: var(--color-navy); }
   .logo--dark { color: var(--color-white); }
   .words { display: flex; flex-direction: column; line-height: 1.15; }
-  .words :global(.name) { font-weight: 800; font-size: 17px; }
+  .shield { fill: currentColor; }
+  .book { fill: var(--color-cyan); }
+  :global(.bg-cyan) .shield { fill: var(--color-white); }
+  .words :global(.name) { font-weight: 900; font-size: 17px; }
   .sub { font-size: 12px; font-weight: 700; }
   .logo--sm svg { width: 28px; height: 34px; }
   .logo--sm .words :global(.name) { font-size: 15px; }

@@ -1,20 +1,23 @@
 /*
  * DESIGN TOKENS — the only place colours, fonts, spacing and radii are defined.
+ * Design: S4 ("bright"), approved by the school 2026-11-21.
  * Components must use these variables, never raw hex values.
  * Documented in docs/DESIGN-SYSTEM.md and shown live at /design-system.
  *
  * Accessibility rules baked in:
- *  - Never put white text on --color-cyan (#00C0FF): contrast is only 2.1:1. Cyan is for lines/accents only.
+ *  - Never put white text on --color-cyan (#00C0FF): contrast is only 2.1:1. On cyan, text is always navy.
+ *  - Highlight bars (--color-hl) always carry navy text.
  *  - Never use CSS text-transform: uppercase on Georgian. Use the <Caps> component / toMtavruli() instead.
  */
 :root {
   /* Brand */
-  --color-navy: #0C2A50;        /* primary: headings, buttons, dark sections */
-  --color-navy-2: #14325F;      /* raised surfaces on navy */
-  --color-blue: #2F6DCB;        /* accent words, links on light, progress */
+  --color-navy: #0B1F4A;        /* primary: headings, buttons, dark sections */
+  --color-navy-2: #163A69;      /* hover on navy buttons */
+  --color-blue: #2F6DCB;        /* section labels, links, progress, the "join" box */
   --color-blue-dark: #1F56A8;   /* link text, tags */
-  --color-blue-soft: #A9C8EE;   /* accent text ON navy */
-  --color-cyan: #00C0FF;        /* logo colour; decorative lines only */
+  --color-cyan: #00C0FF;        /* logo colour: hero bands, CTA bands, timeline lines. Navy text only. */
+  --color-hl: #7AFDFF;          /* highlight bars behind accent words; accents on navy */
+  --color-trail: #9FD8F5;       /* dashed timeline trails */
 
   /* Text */
   --color-ink: #2A3B57;         /* body text */
@@ -24,47 +27,52 @@
 
   /* Surfaces */
   --color-bg: #FFFFFF;
-  --color-bg-mist: #F4F6F9;     /* page heroes */
-  --color-bg-paper: #FAFAF7;    /* alternating sections */
-  --color-bg-blue: #E6EEF8;     /* price block, avatars */
+  --color-bg-sky: #EEF6FD;      /* alternating sections, soft cards */
   --color-bg-ice: #F1F8FE;      /* callouts inside cards */
   --color-line: #D5E1EE;
   --color-line-strong: #C3D4E8;
+  --color-line-dashed: #9AB0CB;
   --color-track: #E3ECF6;       /* progress bar track */
+  --color-qmark: rgba(11, 31, 74, .10); /* giant "?" shapes on cyan */
 
   /* Signals (tags, badges, status) */
   --color-yellow: #FFD84D;
   --color-green: #1E9E5A;
   --color-red: #C42528;
+  --color-red-bright: #E8383B;
   --color-teal: #00828B;
+  --color-teal-bright: #00A5B0;
   --color-gold: #8A6A00;
   --tag-teal-bg: #E9FDFE;   --tag-teal-fg: #00828B;
-  --tag-blue-bg: #EAF2FD;   --tag-blue-fg: #1F56A8;
+  --tag-blue-bg: #E3F1FC;   --tag-blue-fg: #1F56A8;
   --tag-red-bg: #FDEDED;    --tag-red-fg: #C42528;
   --tag-gold-bg: #FFF6D6;   --tag-gold-fg: #8A6A00;
   --tag-green-bg: #E6F6EC;  --tag-green-fg: #157A43;
 
-  /* Type */
+  /* Type: one family, Noto Sans Georgian. Display = weight 900. */
   --font-sans: 'Noto Sans Georgian', system-ui, sans-serif;
-  --font-serif: 'Noto Serif Georgian', Georgia, serif;
+  --weight-display: 900;
   --text-xs: 13px;
   --text-sm: 15px;
   --text-base: 18px;
   --text-lg: 20px;
   --text-h3: 22px;
-  --text-h2: clamp(30px, 4.4vw, 58px);
-  --text-h1: clamp(34px, 5.4vw, 75px);
+  --text-h2: clamp(34px, 4.4vw, 58px);
+  --text-h1: clamp(46px, 6vw, 88px);
+  --text-h1-home: clamp(44px, 5.4vw, 80px);
   --leading-body: 1.6;
-  --leading-tight: 1.08;
+  --leading-tight: 1.02;
 
   /* Space & shape */
   --wrap: 1200px;
   --gutter: 24px;
-  --section-y: 112px;
-  --radius-button: 6px;
-  --radius-control: 8px;
-  --radius-card: 12px;
-  --radius-pill: 999px;
+  --section-y: 96px;
+  --radius-sm: 14px;         /* small tiles, menu items */
+  --radius-control: 16px;    /* quiz options, callouts, switches */
+  --radius-card: 26px;       /* cards, forms */
+  --radius-big: 28px;        /* hero photo, price block, quotes */
+  --radius-box: 36px;        /* the "join" box */
+  --radius-pill: 999px;      /* buttons, chips, tabs, tags */
   --shadow-float: 0 20px 50px rgba(11, 31, 74, .08);
   --shadow-pop: 0 10px 30px rgba(11, 31, 74, .2);
   --tap: 48px;               /* minimum touch target */
@@ -75,5 +83,8 @@
     --gutter: 16px;
     --section-y: 56px;
     --text-base: 17px;
+    --radius-card: 22px;
+    --radius-big: 22px;
+    --radius-box: 22px;
   }
 }

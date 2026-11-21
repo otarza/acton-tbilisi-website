@@ -6,7 +6,7 @@ import { t } from '@/i18n/ui';
 const { progress: p } = await getPage('homePage');
 const s = await getSettings();
 const ui = t();
-const barColor = { blue: 'var(--color-blue)', teal: '#00A5B0', red: '#E8383B' };
+const barColor = { blue: 'var(--color-blue)', teal: 'var(--color-teal-bright)', red: 'var(--color-red-bright)' };
 const badgeColor = { blue: 'var(--color-blue)', teal: 'var(--color-teal)', red: 'var(--color-red)', gold: 'var(--color-gold)' };
 ---
 <section class="bg-navy sec">

@@ -9,7 +9,7 @@ const s = await getSettings();
 <section class="wrap hero" data-placeholder={hero.placeholder || undefined}>
   <div class="hero__text stack">
     <p class="hero__kicker">{hero.kicker}</p>
-    <h1 class="display h1">{hero.title} <span class="accent">{hero.accent}</span></h1>
+    <h1 class="display h1">{hero.title} <span class="hl">{hero.accent}</span></h1>
     <p class="lead">{hero.lead}</p>
     <div class="row" style="--row-gap: 20px; align-items: center">
       <Button href="#join" size="lg">{hero.cta}</Button>
@@ -26,16 +26,17 @@ const s = await getSettings();
 </section>
 <style>
   .hero { padding-top: 48px; padding-bottom: 88px; display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-end; }
-  .hero__text { flex: 1 1 600px; min-width: 0; }
-  .hero__text :global(.h1) { font-size: clamp(36px, 4.6vw, 66px); overflow-wrap: normal; }
+  .hero__text { flex: 1 1 680px; min-width: 0; container-type: inline-size; }
+  .hero__text :global(.h1) { /* capped by column width so the longest Georgian word (~10em) never overflows */
+    font-size: min(var(--text-h1-home), 9.4cqi); line-height: 1.04; overflow-wrap: normal; }
   .hero__kicker { font-weight: 800; font-size: var(--text-lg); color: var(--color-navy); max-width: 640px; }
-  .hero__fig { flex: 1 1 360px; margin: 0; position: relative; }
-  .hero__img { height: 460px; border-radius: var(--radius-card); overflow: hidden; }
-  .hero__badge { position: absolute; left: -22px; bottom: 28px; background: var(--color-white); color: var(--color-navy); font-weight: 800; font-size: var(--text-sm); padding: 12px 16px; border-radius: var(--radius-card); box-shadow: var(--shadow-pop); display: flex; align-items: center; gap: 10px; }
+  .hero__fig { flex: 1 1 300px; margin: 0; position: relative; }
+  .hero__img { height: 460px; border-radius: var(--radius-big); overflow: hidden; border: 6px solid var(--color-white); }
+  .hero__badge { position: absolute; left: -22px; bottom: 28px; background: var(--color-white); color: var(--color-navy); font-weight: 800; font-size: var(--text-sm); padding: 12px 16px; border-radius: var(--radius-control); box-shadow: var(--shadow-pop); display: flex; align-items: center; gap: 10px; }
   @media (max-width: 860px) {
     .hero { padding-top: 12px; padding-bottom: 36px; gap: 24px; }
     .hero__kicker { font-size: 16px; }
-    .hero__img { height: 300px; }
+    .hero__img { height: 260px; border-width: 5px; }
     .hero__badge { left: 12px; bottom: 12px; }
   }
 </style>

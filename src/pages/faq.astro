@@ -45,7 +45,7 @@ const topicTag = { fairness: 'tag--red', science: 'tag--teal', money: 'tag--gold
     </div>
   </section>
 
-  <section id="archive" class="bg-paper sec">
+  <section id="archive" class="bg-sky sec">
     <div class="wrap stack" style="--stack-gap: 28px" data-archive>
       <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
         <div class="stack" style="--stack-gap: 12px; flex: 1 1 560px">
@@ -60,7 +60,7 @@ const topicTag = { fairness: 'tag--red', science: 'tag--teal', money: 'tag--gold
       {current && (
         <a href="/#day" class="current">
           <span><span class="tag tag--navy">№{current.data.number} · {ui.archive.thisWeek}</span><br /><span class="display current__q">{current.data.question}</span></span>
-          <span class="btn btn--light">{ui.archive.answerToo}</span>
+          <span class="btn btn--hl">{ui.archive.answerToo}</span>
         </a>
       )}
       <div class="weeks">
@@ -106,18 +106,18 @@ const topicTag = { fairness: 'tag--red', science: 'tag--teal', money: 'tag--gold
   .faq__list details[hidden] { display: none; }
   .faq__a { padding-top: 4px; max-width: 720px; }
   .faq__asst { margin-top: 16px; }
-  .cat { display: flex; justify-content: space-between; align-items: center; min-height: var(--tap); padding: 0 18px; border-radius: var(--radius-control); border: 1px solid var(--color-line); background: var(--color-white); color: var(--color-navy); font-weight: 700; font-size: 16px; cursor: pointer; }
+  .cat { display: flex; justify-content: space-between; align-items: center; min-height: var(--tap); padding: 0 18px; border-radius: var(--radius-sm); border: 2px solid var(--color-navy); background: var(--color-white); color: var(--color-navy); font-weight: 800; font-size: 16px; cursor: pointer; }
   .cat[aria-pressed="true"] { background: var(--color-navy); color: var(--color-white); }
   .current { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; background: var(--color-navy); border-radius: var(--radius-card); padding: 28px 32px; text-decoration: none; }
   .current__q { color: var(--color-white); font-size: clamp(22px, 2.4vw, 30px); line-height: 1.2; }
   .weeks { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 16px; align-items: start; }
-  .week { background: var(--color-white); border-radius: var(--radius-card); padding: 22px; border: 1.5px solid transparent; }
+  .week { background: var(--color-white); border-radius: 22px; padding: 22px; border: 3px solid transparent; }
   .week[open] { border-color: var(--color-navy); }
   .week[hidden] { display: none; }
   .week summary { list-style: none; cursor: pointer; display: flex; flex-direction: column; gap: 10px; }
   .week summary::-webkit-details-marker { display: none; }
   .week__q { font-size: 20px; line-height: 1.3; }
   .week[open] .week__more { display: none; }
-  .week__c { margin-top: 14px; background: var(--color-bg-ice); border-radius: var(--radius-card); padding: 16px; color: var(--color-navy); }
+  .week__c { margin-top: 14px; background: var(--color-bg-ice); border-radius: var(--radius-control); padding: 16px; color: var(--color-navy); }
   @media (max-width: 860px) { .faq__side { position: static; flex-basis: 100%; } .faq__asst { display: none; } }
 </style>
