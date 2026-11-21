@@ -10,6 +10,7 @@ import { execSync } from 'node:child_process';
 import { existsSync, readdirSync } from 'node:fs';
 import { createConnection } from 'node:net';
 import { join } from 'node:path';
+import { UPSTREAM, upstreamRemote } from './repo.mjs';
 
 const ROOT = new URL('../..', import.meta.url).pathname;
 const args = process.argv.slice(2);
@@ -40,7 +41,7 @@ const status = {
   branch: sh('git rev-parse --abbrev-ref HEAD'),
   changedFiles: (sh('git status --porcelain') || '').split('\n').filter(Boolean).map((l) => l.slice(3)),
   unpushed: Number(sh('git rev-list --count @{u}..HEAD') ?? -1), // -1 = branch not on GitHub yet
-  behindMain: Number(sh('git fetch -q origin main && git rev-list --count HEAD..origin/main') ?? 0),
+  behindMain: Number((() => { try { const r = upstreamRemote(); return sh(`git fetch -q ${r} main && git rev-list --count HEAD..${r}/main`); } catch { return 0; } })() ?? 0),
   openPRs: [],
   newPhotos: existsSync(join(ROOT, '_new-photos'))
     ? readdirSync(join(ROOT, '_new-photos')).filter((f) => /\.(jpe?g|png|webp|heic)$/i.test(f)) : [],
@@ -48,7 +49,7 @@ const status = {
 };
 for (const p of [4321, 4322]) if (await portOpen(p)) { status.previewRunning = `http://localhost:${p}`; break; }
 if (status.ghLoggedIn) {
-  const raw = sh('gh pr list --author "@me" --state open --json number,title,url,headRefName');
+  const raw = sh(`gh pr list --repo ${UPSTREAM} --author "@me" --state open --json number,title,url,headRefName`);
   try { status.openPRs = JSON.parse(raw || '[]'); } catch {}
 }
 const onMain = status.branch === 'main';

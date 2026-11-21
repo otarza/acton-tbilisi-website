@@ -20,6 +20,8 @@ when something breaks).
 - **All git/GitHub steps go through `node scripts/assistant/flow.mjs`** (`begin`, `changes`, `publish`,
   `proposals`, `set-aside`, `bring-back`, `done`). Photos go through `node scripts/assistant/add-photo.mjs`
   (it strips location data).
+- Anyone can contribute without an invite: `publish` pushes to the person's fork (created automatically) and opens
+  the pull request against `otarza/acton-tbilisi-website`. Never ask staff to fork or clone by hand.
 - **Never** push to `main`, merge a pull request, force-push, `reset --hard` or delete files to make something
   work. Staff propose; an approver (see `.github/CODEOWNERS`) merges on GitHub.
 - Developers can turn the greeting off with the environment variable `ACTON_ASSISTANT=off`.

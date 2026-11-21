@@ -2,6 +2,7 @@
 /**
  * Safe, plain-language wrappers around git + GitHub for the staff assistant.
  * The agent runs these so staff never need git words. Nothing here pushes to main or deletes work.
+ * Contributors don't need an invite: proposals go from their fork to the school's repository (see repo.mjs).
  *
  *   node scripts/assistant/flow.mjs begin [short-latin-name]   start a new change (fresh copy of the live site)
  *   node scripts/assistant/flow.mjs changes                     what is changed but not yet sent
@@ -14,6 +15,7 @@
  */
 import { execSync, spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
+import { UPSTREAM, upstreamRemote, pushTarget } from './repo.mjs';
 
 const ROOT = new URL('../..', import.meta.url).pathname;
 const [cmd, ...rest] = process.argv.slice(2);
@@ -23,6 +25,7 @@ const say = (...l) => console.log(l.join('\n'));
 const fail = (msg) => { console.error(`✖ ${msg}`); process.exit(1); };
 const q = (s) => `'${String(s).replace(/'/g, `'\\''`)}'`;
 
+let UP; const up = () => (UP ||= upstreamRemote());
 const branch = () => run('git rev-parse --abbrev-ref HEAD');
 const dirty = () => run('git status --porcelain').split('\n').filter(Boolean);
 const today = () => new Date().toISOString().slice(0, 10);
@@ -47,10 +50,8 @@ function begin(hint) {
     run(`git switch -c ${q(name)}`);
     say(`Started change ${name} (kept ${dirty().length} edits that were already made).`);
   } else {
-    run('git fetch -q origin main');
-    run('git switch -q main');
-    run('git merge -q --ff-only origin/main');
-    run(`git switch -c ${q(name)}`);
+    run(`git fetch -q ${up()} main`);
+    run(`git switch -c ${q(name)} ${up()}/main`);
     say(`Started change ${name} from the latest live version.`);
   }
   return name;
@@ -59,7 +60,7 @@ function begin(hint) {
 function changes() {
   const files = dirty();
   const b = branch();
-  const committed = b === 'main' ? [] : (tryRun('git diff --name-only origin/main...HEAD') || '').split('\n').filter(Boolean);
+  const committed = b === 'main' ? [] : (tryRun(`git diff --name-only ${up()}/main...HEAD`) || '').split('\n').filter(Boolean);
   say(`Change: ${b}`, files.length ? `Not saved yet (${files.length}):` : 'Nothing unsaved.', ...files.map((f) => `  ${f}`));
   if (committed.length) say(`Already saved in this change (${committed.length}):`, ...committed.map((f) => `  ${f}`));
 }
@@ -84,19 +85,21 @@ function publish(title, bodyFile) {
     run('git add -A');
     run(`git commit -q -m ${q(title)}`);
   }
-  if (!tryRun(`git log --oneline origin/main..HEAD`)) fail('There is nothing new to send.');
-  run(`git push -q -u origin ${q(b)}`);
-  const existing = tryRun(`gh pr view ${q(b)} --json url,state -q 'select(.state=="OPEN") | .url'`);
+  run(`git fetch -q ${up()} main`);
+  if (!tryRun(`git log --oneline ${up()}/main..HEAD`)) fail('There is nothing new to send.');
+  const target = pushTarget();
+  run(`git push -q -u ${target.remote} ${q(b)}`);
+  const existing = tryRun(`gh pr list --repo ${UPSTREAM} --head ${q(b)} --author "@me" --state open --json url -q '.[0].url'`);
   if (existing) { say(`Updated the proposal: ${existing}`); return; }
-  const files = run('git diff --name-only origin/main...HEAD').split('\n').filter(Boolean);
+  const files = run(`git diff --name-only ${up()}/main...HEAD`).split('\n').filter(Boolean);
   const body = bodyFile ? readFileSync(bodyFile, 'utf8') : `## რა შეიცვალა\n${title}\n\n## ფაილები\n${files.map((f) => `- \`${f}\``).join('\n')}\n`;
-  const footer = `\n\n---\n✅ \`npm run check\` და \`npm run build\` გაიარა.\n👀 ნახვის ბმულს (preview) Cloudflare აქ დაამატებს 1-2 წუთში.\nგამოქვეყნება: დამმტკიცებელი დააჭერს **Merge**-ს.\n`;
-  const url = run(`gh pr create --base main --head ${q(b)} --title ${q(title)} --body ${q(body + footer)}`);
+  const footer = `\n\n---\n✅ \`npm run check\` და \`npm run build\` გაიარა.\nგამოქვეყნება: დამმტკიცებელი დააჭერს **Merge**-ს.\n`;
+  const url = run(`gh pr create --repo ${UPSTREAM} --base main --head ${q(target.head(b))} --title ${q(title)} --body ${q(body + footer)}`);
   say(`Sent for review: ${url}`);
 }
 
 function proposals() {
-  const raw = tryRun('gh pr list --author "@me" --state all --limit 10 --json number,title,url,state,reviewDecision,headRefName,statusCheckRollup,comments');
+  const raw = tryRun(`gh pr list --repo ${UPSTREAM} --author "@me" --state all --limit 10 --json number,title,url,state,reviewDecision,headRefName,statusCheckRollup,comments`);
   if (raw === null) fail('Could not read proposals (signed in to GitHub?)');
   const prs = JSON.parse(raw);
   if (!prs.length) return say('No proposals yet.');
@@ -122,9 +125,9 @@ function bringBack() {
 
 function done() {
   if (dirty().length) fail('There are unsent changes. Send them (publish) or set them aside first.');
-  run('git fetch -q origin main');
+  run(`git fetch -q ${up()} main`);
   run('git switch -q main');
-  run('git merge -q --ff-only origin/main');
+  run(`git merge -q --ff-only ${up()}/main`);
   say('Back on the latest live version. Ready for the next change.');
 }
 

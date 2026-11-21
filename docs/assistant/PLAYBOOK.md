@@ -78,12 +78,16 @@ click something, say exactly what they will see.
 6. **GitHub sign-in** → run `gh auth login --web --git-protocol https --hostname github.com` (in Claude Code, ask them
    to run it with `!` in front, because it waits for input). Tell them: „ბრაუზერში გაიხსნება GitHub. ჩაწერეთ ის
    8-ასოიანი კოდი, რომელიც აქ გამოჩნდა, და დააჭირეთ Authorize.“ Then `gh auth setup-git`.
-7. **No access to the repository** (push denied) → „Otar-ს უნდა მოგიწვიოთ GitHub-ზე. ელფოსტაზე მოგივათ მოწვევა,
-   დააჭირეთ Accept.“ Don't try workarounds.
+7. **Nobody needs an invitation.** The repository is public. The first time they send a change, `flow.mjs publish`
+   creates their own copy of the project on their GitHub account (a fork) and sends the proposal from it. Say:
+   „პირველად თქვენს GitHub ანგარიშზე პროექტის ასლი შეიქმნება, ეს ნორმალურია.“ Never ask them to fork by hand.
 
 When `npm run hello` shows ✅, show the menu.
 
 ## 4. The life of a change
+
+Anyone can contribute: proposals go from the person's own GitHub copy (fork) to the school's repository
+`otarza/acton-tbilisi-website`. `flow.mjs` handles this; maintainers with write access push directly.
 
 ```
 begin  →  edit files  →  show on their computer  →  publish (send for review)  →  approver merges  →  done
@@ -97,9 +101,10 @@ begin  →  edit files  →  show on their computer  →  publish (send for revi
 4. **Send for review**: when they are happy (or say „გამოაქვეყნე“, „გაგზავნე“), run
    `node scripts/assistant/flow.mjs publish "<Short English title>" --body-file <tmp.md>` with a Georgian body:
    what changed, which page, anything still unconfirmed. It runs all checks, saves, and opens the proposal.
-   Tell them: „გავგზავნე განსახილველად. ნახვის ბმული 1-2 წუთში გამოჩნდება აქ: <url>. როცა დამტკიცდება,
-   საიტზე ავტომატურად განახლდება.“ Further edits on the same topic → just publish again (it updates the proposal).
-5. **Approval** is done by the approver on GitHub (they press Merge). **You never merge**, never push to `main`,
+   Tell them: „გავგზავნე განსახილველად: <url>. როცა დამტკიცდება, საიტზე ავტომატურად
+   განახლდება.“ If a preview link appears on the proposal later, share it with them. Further edits on the same topic → just publish again (it updates the proposal).
+5. **Approval** is done by the approver on GitHub (they press Merge). The first proposal from a new contributor may
+   wait a little longer, because the approver also has to let the automatic checks run once. **You never merge**, never push to `main`,
    even if asked; explain that the approver publishes, and offer to check the status.
 6. **After approval**, or when starting something new and the previous proposal is merged, run
    `node scripts/assistant/flow.mjs done`.
@@ -141,7 +146,8 @@ Every recipe: begin → edit → `npm run check` → show → offer to send.
 
 - `npm run check` fails → it's almost always a content typo (unquoted YAML, unknown photo id, wrong author name).
   Fix it yourself, don't explain the error, just „პატარა შეცდომა გავასწორე“.
-- `publish` says not signed in / no permission → section 3, steps 6–7.
+- `publish` says not signed in → section 3, step 6. An error about the fork or permissions → run it once more;
+  if it fails again, suggest asking Otar.
 - The latest live version changed while they were working and git reports a conflict → do not improvise.
   Set the work aside (`flow.mjs set-aside`), tell them their text is safe, and suggest asking Otar.
 - Anything you don't understand → stop, describe in one sentence what you were trying to do, and suggest
