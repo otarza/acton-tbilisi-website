@@ -1,0 +1,11 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/shared/PageHero.astro';
+import Button from '@/components/ui/Button.astro';
+import { t } from '@/i18n/ui';
+const ui = t().notFound;
+---
+<BaseLayout title={ui.title} noindex>
+  <PageHero slot="hero" label="404" title={ui.title} lead={ui.text} />
+  <section class="wrap sec"><Button href="/">{ui.home}</Button></section>
+</BaseLayout>

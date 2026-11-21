@@ -1,0 +1,104 @@
+# AGENTS.md — instructions for AI coding agents
+
+This is the website of **Acton Academy Tbilisi (Saburtalo)**, a learner-driven school for children aged 5–14.
+The site is in **Georgian only** (structure is ready for more languages). It is built with **Astro** (static HTML),
+content lives in **Markdown/YAML files**, it is hosted on **Cloudflare Pages**, and forms go to **Google Sheets**.
+
+Most requests you will get are content changes from school staff who are not developers. Make the change,
+keep the site building, and explain what you did in plain language (Georgian if they wrote in Georgian).
+
+## Golden rules
+
+1. **Content goes in `src/content/`, never hard-coded in components.** If text is visible on the site, it should be
+   in a `.md` or `.yaml` file. Interface words (button labels, aria text) live in `src/i18n/ui.ts`.
+2. **Never invent facts about the school.** Prices, dates, accreditation, names, quotes, safety claims: only write
+   what the person gave you. If you must leave a gap, set `placeholder: true` on that block and say so.
+3. **Children's privacy.** Every photo must be listed in `src/content/photos.yaml` with alt text and a `consent`
+   value. Never add a photo of an identifiable child with `consent: signed` unless the person confirms written
+   parental consent exists (Georgian law №3144). Never put a child's full name next to their photo.
+4. **The assistant only repeats approved answers.** Don't connect it to an LLM or let it answer outside
+   `src/content/faq/` without reading `docs/ASSISTANT.md`.
+5. **Georgian typography:** never use CSS `text-transform: uppercase` on Georgian; use `<Caps>` / `toMtavruli()`.
+   Never put white text on cyan `#00C0FF` (contrast 2.1:1).
+6. **Use design tokens** from `src/styles/tokens.css`. No new hex colours, fonts or font sizes in components.
+7. **Always quote text in YAML** (`title: "…"`). Georgian sentences contain `:` and `,` which break unquoted YAML.
+8. **Run the checks before you finish** (see below). Don't commit if they fail.
+
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `npm install` | Install dependencies (Node 22+) |
+| `npm run dev` | Local site at http://localhost:4321 (forms show an error locally: no API) |
+| `npm run dev:full` | Build + run with Cloudflare Functions at http://localhost:8788 (forms work in mock mode) |
+| `npm run build` | Production build into `dist/` |
+| `npm run check` | Type check (`astro check`) + content checks. **Must pass.** |
+| `npm run placeholders` | List every file that still has invented/unconfirmed content |
+| `npm run new:post -- slug "სათაური"` | New blog post (draft) |
+| `npm run new:question -- "კითხვა?"` | New question of the week (auto-numbered) |
+| `npm run new:faq -- slug "კითხვა?" category` | New FAQ entry |
+
+Before finishing any task: `npm run check && npm run build`.
+
+## Where things are
+
+```
+src/content/                 ← ALL CONTENT (see docs/CONTENT.md for every field)
+  settings/ka.yaml           phone, email, address, nav, announcement bar, next exhibition date
+  pages/ka/home.yaml         every homepage section's text, in page order
+  pages/ka/about.yaml        about page text, investors list, safety, privacy
+  pages/ka/faq.yaml          FAQ page text, category + topic names
+  faq/ka/*.md                one file per FAQ question (body = answer)
+  questions/ka/NNN.md        question of the week archive; highest number = current week
+  studios/ka/*.md            age groups (5–7, 8–11, 12–14)
+  team/ka/*.md               founders and guides (body = bio)
+  testimonials/ka/*.md       parent quotes (body = quote)
+  posts/ka/*.md              blog posts (file name = URL)
+  photos.yaml                photo register: id, file, alt, consent
+src/assets/photos/           photo files (referenced by id, never by path)
+src/content.config.ts        the content schema (field names + types). Change docs/CONTENT.md with it.
+src/pages/                   routes: index, about, faq, blog/, design-system, 404
+src/components/              home/, about/, shared/, layout/, ui/ (see docs/DESIGN-SYSTEM.md)
+src/styles/tokens.css        design tokens (colours, type, spacing)
+src/i18n/ui.ts               interface strings
+functions/api/               Cloudflare Pages Functions: lead.ts, vote.ts, votes.ts
+google/apps-script/Code.gs   Google Sheets bridge (deployed by hand, see docs/BACKEND.md)
+scripts/                     check-content.mjs, new.mjs
+docs/                        CONTENT, DESIGN-SYSTEM, BACKEND, DEPLOY, ASSISTANT, I18N, OPEN-QUESTIONS, EDITING-GUIDE.ka
+```
+
+## Common tasks (recipes)
+
+- **Change a price / phone / date / any sentence** → find it with a search in `src/content/`, edit, run checks.
+  If the change confirms a placeholder, remove `placeholder: true` from that block.
+- **Add a blog post** → `npm run new:post -- my-slug "სათაური"`, write the body, set `draft: false`.
+  Cover must be a photo id from `photos.yaml`.
+- **New question of the week** (every Monday) → `npm run new:question -- "კითხვა?"`. On Friday, add
+  `conclusion:` (the kids' summary) to that file. The homepage automatically shows the highest number.
+- **Add / edit an FAQ** → `src/content/faq/ka/`. Add `keywords:` so the assistant can find it; `chip:` makes it a
+  quick-pick button; `showOnHome: true` puts it on the homepage; `handoff: true` for sensitive topics.
+- **Add a photo** → put the file in `src/assets/photos/` (JPG/WebP, ≤ 2000px, lowercase-dashed name), add an entry
+  to `src/content/photos.yaml` with Georgian alt text and consent status, then reference its `id`.
+- **Add a team member** → copy a file in `src/content/team/ka/`, change the fields and the bio.
+- **Add a new homepage section** → new component in `src/components/home/`, its text in `home.yaml`
+  (extend the schema in `src/content.config.ts`), add it to the list in `src/pages/index.astro`, document it.
+- **Add a new page** → `src/pages/<slug>.astro` using `BaseLayout` + `PageHero`; put its copy in
+  `src/content/pages/ka/<slug>.yaml` with a new collection in `content.config.ts`; add it to `nav` in settings.
+- **Change styling** → tokens first (`tokens.css`), then the component's `<style>`. Check `/design-system`.
+
+## Conventions
+
+- Astro components, plain TypeScript in `<script>` tags for interactivity (no React/Vue). Keep JS small and
+  progressive: the page must make sense without JS.
+- Each interactive widget finds its root via a `data-*` attribute and supports several instances per page.
+- Accessibility: real `<button>`s, `aria-pressed`/`aria-selected`/`aria-expanded`, visible focus,
+  48px touch targets, `prefers-reduced-motion` respected, images have Georgian alt text.
+- Mobile first: check at 390px wide. No horizontal page scroll.
+- Commit messages in English, imperative ("Add FAQ about lunch"). One topic per pull request.
+- Every pull request gets a Cloudflare preview URL. Placeholder content is outlined in yellow ("ნიმუში") on
+  previews and in `npm run dev`, never on the live site.
+
+## Things that need a human (don't guess)
+
+Listed in `docs/OPEN-QUESTIONS.md`: state (NCEQE) authorisation status, "Acton Academy" vs "American School" naming,
+real prices/fees, schedule, address, guide bios, parent quotes approval, photo consent, video links.

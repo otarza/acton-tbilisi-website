@@ -1,0 +1,73 @@
+---
+/** Parent quotes: src/content/testimonials/<lang>/*.md (body = quote). */
+import { render } from 'astro:content';
+import { getLocalized, getPage } from '@/lib/content';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { t } from '@/i18n/ui';
+const { testimonials: h } = await getPage('homePage');
+const items = (await getLocalized('testimonials')).sort((a, b) => a.data.order - b.data.order);
+const rendered = await Promise.all(items.map(async (x) => ({ ...x, Content: (await render(x)).Content })));
+const ui = t();
+---
+<section class="wrap sec stack" style="--stack-gap: 32px" data-testimonials>
+  <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
+    <SectionHeading num="07" label={h.label} title={h.title} accent={h.accent} />
+    <div class="row" style="--row-gap: 10px; align-items: center">
+      <span class="strong-navy" data-count>1 / {items.length}</span>
+      <button type="button" class="arrow" aria-label={ui.prev} data-prev>←</button>
+      <button type="button" class="arrow arrow--dark" aria-label={ui.next} data-next>→</button>
+    </div>
+  </div>
+  <div class="row" style="--row-gap: 20px">
+    <div class="quotes" aria-live="polite">
+      {rendered.map((x, i) => (
+        <blockquote class="quote pop" hidden={i !== 0} data-quote={i} data-placeholder={x.data.placeholder || undefined}>
+          <span class="display quote__mark" aria-hidden="true">„</span>
+          <div class="display quote__text"><x.Content /></div>
+          <footer class="quote__by"><span class="av">{x.data.name.charAt(0)}</span><span><b>{x.data.name}</b><br />{x.data.role}</span></footer>
+        </blockquote>
+      ))}
+    </div>
+    <div class="stack people" style="--stack-gap: 8px" role="tablist">
+      {items.map((x, i) => (
+        <button type="button" class="person" role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-pick={i}>
+          <span class="av av--sm">{x.data.name.charAt(0)}</span>
+          <span><b>{x.data.name}</b><br /><span class="xs">{x.data.role}</span></span>
+        </button>
+      ))}
+    </div>
+  </div>
+</section>
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-testimonials]')) {
+    const quotes = root.querySelectorAll<HTMLElement>('[data-quote]');
+    const picks = root.querySelectorAll<HTMLElement>('[data-pick]');
+    const count = root.querySelector('[data-count]')!;
+    let cur = 0;
+    const go = (i: number) => {
+      cur = (i + quotes.length) % quotes.length;
+      quotes.forEach((q, k) => (q.hidden = k !== cur));
+      picks.forEach((p, k) => p.setAttribute('aria-selected', String(k === cur)));
+      count.textContent = `${cur + 1} / ${quotes.length}`;
+    };
+    picks.forEach((p) => p.addEventListener('click', () => go(Number(p.dataset.pick))));
+    root.querySelector('[data-prev]')!.addEventListener('click', () => go(cur - 1));
+    root.querySelector('[data-next]')!.addEventListener('click', () => go(cur + 1));
+  }
+</script>
+<style>
+  .arrow { width: var(--tap); height: var(--tap); border-radius: var(--radius-control); border: 1.5px solid var(--color-navy); background: var(--color-white); color: var(--color-navy); cursor: pointer; font-size: 18px; }
+  .arrow--dark { background: var(--color-navy); color: var(--color-white); }
+  .quotes { flex: 2 1 520px; display: grid; }
+  .quote { grid-area: 1 / 1; margin: 0; background: var(--color-navy); border-radius: var(--radius-card); padding: 44px; display: flex; flex-direction: column; gap: 20px; min-height: 300px; }
+  .quote[hidden] { display: none; }
+  .quote__mark { color: var(--color-blue-soft) !important; font-size: 80px; line-height: .6; }
+  .quote__text { color: var(--color-white) !important; font-size: clamp(18px, 1.9vw, 22px); line-height: 1.4; }
+  .quote__by { display: flex; align-items: center; gap: 12px; color: var(--color-on-dark); }
+  .quote__by b { color: var(--color-white); }
+  .people { flex: 1 1 280px; }
+  .person { display: flex; align-items: center; gap: 12px; min-height: 52px; border-radius: var(--radius-card); padding: 6px 14px; cursor: pointer; font-size: var(--text-sm); border: 2px solid var(--color-track); background: var(--color-white); color: var(--color-ink); text-align: left; }
+  .person[aria-selected="true"] { border-color: var(--color-navy); background: var(--color-bg-paper); color: var(--color-navy); }
+  .av--sm { width: 34px; height: 34px; font-size: 14px; }
+  @media (max-width: 860px) { .quote { padding: 28px; min-height: 0; } .people { display: none; } }
+</style>

@@ -1,0 +1,15 @@
+---
+import Button from '@/components/ui/Button.astro';
+interface Props { title: string; accent: string; button: string; href?: string }
+const { title, accent, button, href = '/#join' } = Astro.props;
+---
+<section class="bg-mist">
+  <div class="wrap cta">
+    <p class="display cta__t">{title} <span class="accent">{accent}</span></p>
+    <Button href={href} size="lg">{button}</Button>
+  </div>
+</section>
+<style>
+  .cta { padding-top: 72px; padding-bottom: 72px; display: flex; flex-wrap: wrap; gap: 24px 40px; align-items: center; justify-content: space-between; }
+  .cta__t { font-size: clamp(26px, 3.2vw, 42px); line-height: 1.15; flex: 1 1 520px; }
+</style>

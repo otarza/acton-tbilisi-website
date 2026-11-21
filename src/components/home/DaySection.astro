@@ -1,0 +1,23 @@
+---
+import { getPage } from '@/lib/content';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import WeeklyQuestion from '@/components/shared/WeeklyQuestion.astro';
+const { day } = await getPage('homePage');
+---
+<section id="day" class="sec">
+  <div class="wrap row" style="--row-gap: 48px; align-items: flex-start">
+    <div class="stack" style="flex: 1 1 380px; --stack-gap: 20px">
+      <SectionHeading num="03" label={day.label} title={day.title} accent={day.accent} />
+      <ol class="sched" data-placeholder={day.placeholder || undefined}>
+        {day.schedule.map((s) => <li><b>{s.time} · {s.title}</b> {s.text}</li>)}
+      </ol>
+    </div>
+    <div style="flex: 1 1 520px; min-width: 0"><WeeklyQuestion /></div>
+  </div>
+</section>
+<style>
+  .sched { list-style: none; margin: 0; padding: 0; border-left: 3px solid var(--color-cyan); }
+  .sched li { padding: 0 0 16px 24px; }
+  .sched li:last-child { padding-bottom: 0; }
+  .sched b { color: var(--color-navy); }
+</style>

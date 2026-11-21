@@ -1,0 +1,52 @@
+---
+/** Sticky bottom bar on phones: book / Messenger / call. "Book" opens a bottom sheet with the lead form. */
+import { getSettings } from '@/lib/content';
+import { t } from '@/i18n/ui';
+import LeadForm from '@/components/shared/LeadForm.astro';
+const s = await getSettings();
+const ui = t();
+---
+<div class="mab" data-mab>
+  <button type="button" class="btn btn--primary mab__book" data-sheet-open>{ui.bookMeeting}</button>
+  <a href={s.messengerUrl} class="mab__icon mab__icon--blue" aria-label="Messenger" rel="noopener">
+    <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.5 2 2 6.1 2 11.3c0 2.9 1.4 5.5 3.7 7.2V22l3.4-1.9c.9.3 1.9.4 2.9.4 5.5 0 10-4.1 10-9.2S17.5 2 12 2zm1 12.4-2.6-2.7-4.9 2.7 5.4-5.7 2.6 2.7 4.9-2.7-5.4 5.7z" fill="#FFFFFF"></path></svg>
+  </a>
+  <a href={s.phoneHref} class="mab__icon mab__icon--green" aria-label={ui.call}>
+    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" fill="#FFFFFF"></path></svg>
+  </a>
+</div>
+<dialog class="sheet" data-sheet aria-label={ui.bookMeeting}>
+  <div class="sheet__grip" aria-hidden="true"></div>
+  <div class="sheet__head">
+    <b class="display">{ui.sheetTitle}</b>
+    <button type="button" class="sheet__close" data-sheet-close aria-label={ui.close}>✕</button>
+  </div>
+  <LeadForm source="mobile-sheet" compact note={ui.sheetNote} />
+</dialog>
+<script>
+  const dlg = document.querySelector<HTMLDialogElement>('[data-sheet]');
+  if (dlg) {
+    document.querySelectorAll('[data-sheet-open]').forEach((b) => b.addEventListener('click', () => dlg.showModal()));
+    dlg.querySelector('[data-sheet-close]')?.addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  }
+</script>
+<style>
+  .mab { display: none; }
+  @media (max-width: 860px) {
+    .mab { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; gap: 8px; align-items: center; background: var(--color-white); border-top: 1px solid var(--color-line); box-shadow: 0 -8px 24px rgba(11,31,74,.12); padding: 10px 12px calc(12px + env(safe-area-inset-bottom)); }
+  }
+  .mab__book { flex: 1; }
+  .mab__icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: none; }
+  .mab__icon--blue { background: var(--color-blue); }
+  .mab__icon--green { background: var(--color-green); }
+  .sheet { border: 0; padding: 12px 16px 24px; width: 100%; max-width: 520px; margin: auto auto 0; border-radius: 12px 24px 0 0; max-height: 92vh; }
+  .sheet[open] { animation: up .28s ease-out; }
+  .sheet::backdrop { background: rgba(11,31,74,.45); }
+  @keyframes up { from { transform: translateY(100%); } to { transform: none; } }
+  .sheet__grip { width: 44px; height: 5px; border-radius: 999px; background: var(--color-line); margin: 0 auto 12px; }
+  .sheet__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .sheet__head b { font-size: 22px; }
+  .sheet__close { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--color-bg-paper); font-size: 18px; cursor: pointer; color: var(--color-navy); }
+  @media (min-width: 861px) { .sheet { margin: auto; border-radius: var(--radius-card); } }
+</style>

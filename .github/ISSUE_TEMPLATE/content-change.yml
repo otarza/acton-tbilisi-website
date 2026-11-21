@@ -1,0 +1,22 @@
+name: Content change / ცვლილება საიტზე
+description: Ask for a text, price, date, photo or FAQ change
+labels: [content]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: რა უნდა შეიცვალოს? / What should change?
+      description: Paste the old text and the new text, or describe the change. An AI agent can pick this issue up.
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: რომელ გვერდზე? / Which page?
+      placeholder: "მაგ.: მთავარი, ფასის ბლოკი"
+  - type: checkboxes
+    id: confirmed
+    attributes:
+      label: Confirmation
+      options:
+        - label: ეს ინფორმაცია დადასტურებულია სკოლის მიერ / This is confirmed by the school

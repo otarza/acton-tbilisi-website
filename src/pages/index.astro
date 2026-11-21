@@ -1,0 +1,37 @@
+---
+/**
+ * HOMEPAGE. Section order follows the S5 design. Copy lives in src/content/pages/ka/home.yaml;
+ * each section is a component in src/components/home/. To reorder or remove a section, edit this list.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import HomeHero from '@/components/home/HomeHero.astro';
+import Marquee from '@/components/home/Marquee.astro';
+import Honest from '@/components/home/Honest.astro';
+import StudioFinder from '@/components/home/StudioFinder.astro';
+import DaySection from '@/components/home/DaySection.astro';
+import ProgressSection from '@/components/home/ProgressSection.astro';
+import FitCheck from '@/components/home/FitCheck.astro';
+import Videos from '@/components/home/Videos.astro';
+import Testimonials from '@/components/home/Testimonials.astro';
+import Trust from '@/components/home/Trust.astro';
+import Price from '@/components/home/Price.astro';
+import Join from '@/components/home/Join.astro';
+import FaqPreview from '@/components/home/FaqPreview.astro';
+import { getPage } from '@/lib/content';
+const { seo } = await getPage('homePage');
+---
+<BaseLayout title={seo.title} description={seo.description}>
+  <HomeHero slot="hero" />
+  <Marquee />
+  <Honest />
+  <StudioFinder />
+  <DaySection />
+  <ProgressSection />
+  <FitCheck />
+  <Videos />
+  <Testimonials />
+  <Trust />
+  <Price />
+  <Join />
+  <FaqPreview />
+</BaseLayout>

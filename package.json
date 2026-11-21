@@ -1,0 +1,34 @@
+{
+  "name": "acton-tbilisi-website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Website of Acton Academy Tbilisi (Saburtalo). Astro + Markdown content, Cloudflare Pages, Google Sheets forms.",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "dev:full": "astro build && wrangler pages dev dist",
+    "check": "astro check && node scripts/check-content.mjs",
+    "check:content": "node scripts/check-content.mjs",
+    "placeholders": "node scripts/check-content.mjs --placeholders",
+    "new:post": "node scripts/new.mjs post",
+    "new:question": "node scripts/new.mjs question",
+    "new:faq": "node scripts/new.mjs faq"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.6",
+    "@fontsource/noto-sans-georgian": "^5.3.0",
+    "@fontsource/noto-serif-georgian": "^5.3.0",
+    "astro": "^7.4.13"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.166.0",
+    "yaml": "^2.9.1"
+  }
+}

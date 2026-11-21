@@ -1,0 +1,20 @@
+---
+/**
+ * Label + big serif heading. `accent` is shown in blue after `title`; `after` follows the accent.
+ * Set `level={1}` for the page's main heading.
+ */
+import SectionLabel from './SectionLabel.astro';
+interface Props { num?: string; label?: string; title: string; accent?: string; after?: string; level?: 1 | 2; onDark?: boolean; placeholder?: boolean; id?: string }
+const { num, label, title, accent, after, level = 2, onDark = false, placeholder = false, id } = Astro.props;
+const Tag = level === 1 ? 'h1' : 'h2';
+---
+<div class="heading" data-placeholder={placeholder || undefined}>
+  {label && <SectionLabel num={num} text={label} onDark={onDark} />}
+  <Tag id={id} class:list={['display', level === 1 ? 'h1' : 'h2']}>
+    {title}{accent && <>{' '}<span class="accent">{accent}</span></>}{after && <>{' '}{after}</>}
+  </Tag>
+</div>
+<style>
+  .heading .h1 { margin-top: 12px; }
+  .heading :is(h1, h2) { overflow-wrap: normal; }
+</style>

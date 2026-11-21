@@ -1,0 +1,41 @@
+---
+import { getPage, getSettings } from '@/lib/content';
+import Button from '@/components/ui/Button.astro';
+import Photo from '@/components/ui/Photo.astro';
+import Countdown from '@/components/shared/Countdown.astro';
+const { hero } = await getPage('homePage');
+const s = await getSettings();
+---
+<section class="wrap hero" data-placeholder={hero.placeholder || undefined}>
+  <div class="hero__text stack">
+    <p class="hero__kicker">{hero.kicker}</p>
+    <h1 class="display h1">{hero.title} <span class="accent">{hero.accent}</span></h1>
+    <p class="lead">{hero.lead}</p>
+    <div class="row" style="--row-gap: 20px; align-items: center">
+      <Button href="#join" size="lg">{hero.cta}</Button>
+      <a href="#price" class="strong-navy">{hero.secondaryCta}</a>
+    </div>
+  </div>
+  <figure class="hero__fig">
+    <div class="hero__img"><Photo id={hero.photo} loading="eager" sizes="(max-width: 860px) 100vw, 480px" /></div>
+    <span class="hero__badge" data-placeholder={s.nextExhibition.placeholder || undefined}>
+      <svg width="22" height="21" viewBox="0 0 36 34" aria-hidden="true"><path d="M18 0 L22 12 L36 12 L25 20 L29 34 L18 26 L7 34 L11 20 L0 12 L14 12 Z" fill="#FFD84D"></path></svg>
+      შემდეგი გამოფენა: <Countdown date={s.nextExhibition.date} />
+    </span>
+  </figure>
+</section>
+<style>
+  .hero { padding-top: 48px; padding-bottom: 88px; display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-end; }
+  .hero__text { flex: 1 1 600px; min-width: 0; }
+  .hero__text :global(.h1) { font-size: clamp(36px, 4.6vw, 66px); overflow-wrap: normal; }
+  .hero__kicker { font-weight: 800; font-size: var(--text-lg); color: var(--color-navy); max-width: 640px; }
+  .hero__fig { flex: 1 1 360px; margin: 0; position: relative; }
+  .hero__img { height: 460px; border-radius: var(--radius-card); overflow: hidden; }
+  .hero__badge { position: absolute; left: -22px; bottom: 28px; background: var(--color-white); color: var(--color-navy); font-weight: 800; font-size: var(--text-sm); padding: 12px 16px; border-radius: var(--radius-card); box-shadow: var(--shadow-pop); display: flex; align-items: center; gap: 10px; }
+  @media (max-width: 860px) {
+    .hero { padding-top: 12px; padding-bottom: 36px; gap: 24px; }
+    .hero__kicker { font-size: 16px; }
+    .hero__img { height: 300px; }
+    .hero__badge { left: 12px; bottom: 12px; }
+  }
+</style>

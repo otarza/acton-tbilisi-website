@@ -1,0 +1,67 @@
+---
+/** "How old is your child?" → shows the matching studio. Studios: src/content/studios/<lang>/*.md */
+import { render } from 'astro:content';
+import { getLocalized, getPage } from '@/lib/content';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Photo from '@/components/ui/Photo.astro';
+import { t } from '@/i18n/ui';
+const { studios: h } = await getPage('homePage');
+const studios = (await getLocalized('studios')).sort((a, b) => a.data.order - b.data.order);
+const rendered = await Promise.all(studios.map(async (s) => ({ ...s, Content: (await render(s)).Content })));
+const minAge = Math.min(...studios.map((s) => s.data.ageMin));
+const maxAge = Math.max(...studios.map((s) => s.data.ageMax));
+const ages = Array.from({ length: maxAge - minAge + 1 }, (_, i) => minAge + i);
+const DEFAULT = 9;
+const ui = t();
+---
+<section id="studios" class="bg-paper sec">
+  <div class="wrap stack" style="--stack-gap: 32px" data-studio-finder>
+    <SectionHeading num="02" label={h.label} title={h.title} accent={h.accent} />
+    <div class="row ages" style="--row-gap: 10px" role="group" aria-label={ui.childAge}>
+      {ages.map((n) => <button type="button" class="age" aria-pressed={n === DEFAULT ? 'true' : 'false'} data-age={n}>{n}</button>)}
+    </div>
+    {rendered.map((s) => {
+      const on = DEFAULT >= s.data.ageMin && DEFAULT <= s.data.ageMax;
+      return (
+        <article class="card studio pop" data-min={s.data.ageMin} data-max={s.data.ageMax} hidden={!on} data-placeholder={s.data.placeholder || undefined}>
+          <div class="studio__img"><Photo id={s.data.photo} sizes="(max-width: 860px) 100vw, 360px" /></div>
+          <div class="studio__body stack" style="--stack-gap: 12px">
+            <span class={`tag tag--${s.data.color}`}>{s.data.ageMin}–{s.data.ageMax} წელი</span>
+            <h3 class="display studio__name">{s.data.name}</h3>
+            <div><s.Content /></div>
+            <ul class="grid-auto studio__points" style="--min: 160px; --grid-gap: 10px">
+              {s.data.points.map((p) => <li>{p}</li>)}
+            </ul>
+          </div>
+        </article>
+      );
+    })}
+  </div>
+</section>
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-studio-finder]')) {
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-age]');
+    const cards = root.querySelectorAll<HTMLElement>('[data-min]');
+    buttons.forEach((b) => b.addEventListener('click', () => {
+      const age = Number(b.dataset.age);
+      buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      cards.forEach((c) => { c.hidden = !(age >= Number(c.dataset.min) && age <= Number(c.dataset.max)); });
+    }));
+  }
+</script>
+<style>
+  .age { width: 56px; height: 56px; border-radius: 50%; border: 1.5px solid var(--color-navy); background: var(--color-white); color: var(--color-navy); font-weight: 800; font-size: 19px; cursor: pointer; }
+  .age[aria-pressed="true"] { background: var(--color-navy); color: var(--color-white); }
+  .studio { display: flex; flex-wrap: wrap; gap: 32px; align-items: stretch; }
+  .studio[hidden] { display: none; }
+  .studio__img { flex: 1 1 260px; border-radius: var(--radius-card); overflow: hidden; min-height: 240px; }
+  .studio__body { flex: 2 1 400px; }
+  .studio__name { font-size: 34px; }
+  .studio__points { list-style: none; margin: 0; padding: 0; }
+  .studio__points li { background: var(--color-bg-ice); border-radius: 14px; padding: 12px 14px; font-size: var(--text-sm); font-weight: 700; color: var(--color-navy); }
+  @media (max-width: 860px) {
+    .ages { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+    .age { width: 48px; height: 48px; flex: none; font-size: 17px; }
+    .studio__name { font-size: 26px; }
+  }
+</style>

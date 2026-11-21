@@ -1,0 +1,20 @@
+---
+/** Hero for inner pages (About, FAQ, Blog): label + h1 + lead, optional right-hand slot. */
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+interface Props { label: string; title: string; accent?: string; after?: string; lead?: string; placeholder?: boolean }
+const { label, title, accent, after, lead, placeholder } = Astro.props;
+---
+<section class="wrap ph">
+  <div class="stack ph__text" style="--stack-gap: 20px">
+    <SectionHeading label={label} num="✦" title={title} accent={accent} after={after} level={1} />
+    {lead && <p class="lead">{lead}</p>}
+  </div>
+  {Astro.slots.has('default') && <div class="ph__side" data-placeholder={placeholder || undefined}><slot /></div>}
+</section>
+<style>
+  .ph { padding-top: 40px; padding-bottom: 80px; display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-end; }
+  .ph__text { flex: 1 1 600px; min-width: 0; }
+  .ph__text :global(.h1) { font-size: clamp(34px, 4.6vw, 64px); }
+  .ph__side { flex: 1 1 380px; }
+  @media (max-width: 860px) { .ph { padding-top: 12px; padding-bottom: 40px; gap: 24px; } }
+</style>

@@ -1,0 +1,79 @@
+---
+/**
+ * "Book a meeting" form. Posts to /api/lead (functions/api/lead.ts), which stores the row
+ * in Google Sheets. We ask only for what we need: parent name, phone, child's age (no child name).
+ */
+import { getSettings } from '@/lib/content';
+import { t } from '@/i18n/ui';
+import Button from '@/components/ui/Button.astro';
+interface Props { title?: string; note?: string; source: string; compact?: boolean }
+const { title, note, source, compact = false } = Astro.props;
+const s = await getSettings();
+const f = t().form;
+const uid = `lf-${source}`;
+---
+<form class:list={['lead', { 'lead--compact': compact }]} data-lead-form data-booking-url={s.bookingUrl} novalidate>
+  {title && <b class="display lead__title">{title}</b>}
+  <input type="hidden" name="source" value={source} />
+  <div class="lead__hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+  <label for={`${uid}-name`}>{f.parentName}</label>
+  <input id={`${uid}-name`} name="name" type="text" autocomplete="name" required maxlength="80" />
+  <label for={`${uid}-phone`}>{f.phone}</label>
+  <input id={`${uid}-phone`} name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="30" placeholder="5XX XX XX XX" />
+  <label for={`${uid}-age`}>{f.childAge}</label>
+  <select id={`${uid}-age`} name="childAge">
+    <option value="">—</option>
+    {[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((n) => <option value={n}>{n}</option>)}
+  </select>
+  {!compact && <>
+    <label for={`${uid}-time`}>{f.preferredTime}</label>
+    <input id={`${uid}-time`} name="preferredTime" type="text" maxlength="80" />
+  </>}
+  <label class="lead__consent"><input type="checkbox" name="consent" required /> <span>{f.consent}</span></label>
+  <Button type="submit" data-label={f.submit} data-sending={f.sending}>{f.submit}</Button>
+  <p class="lead__status" role="status" aria-live="polite"></p>
+  {note && <span class="xs muted">{note}</span>}
+  <div class="small lead__alt">
+    <a href={s.phoneHref}>{s.phone}</a> · <a href={s.messengerUrl} rel="noopener">Messenger</a> · <a href={s.whatsappUrl} rel="noopener">WhatsApp</a>
+  </div>
+  <template data-msg="success">{f.success}</template>
+  <template data-msg="calendly">{f.successCalendly}</template>
+  <template data-msg="error">{f.error}</template>
+  <template data-msg="required">{f.required}</template>
+</form>
+<script>
+  for (const form of document.querySelectorAll<HTMLFormElement>('[data-lead-form]')) {
+    const status = form.querySelector<HTMLElement>('.lead__status')!;
+    const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const msg = (k: string) => form.querySelector<HTMLTemplateElement>(`template[data-msg="${k}"]`)!.innerHTML;
+    const started = Date.now();
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
+      if (!data.name?.trim() || !data.phone?.trim() || !data.consent) { status.textContent = msg('required'); return; }
+      btn.disabled = true; btn.textContent = btn.dataset.sending!;
+      try {
+        const res = await fetch('/api/lead', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...data, elapsedMs: Date.now() - started, page: location.pathname }) });
+        if (!res.ok) throw new Error(String(res.status));
+        form.reset();
+        status.innerHTML = `${msg('success')} <a href="${form.dataset.bookingUrl}" target="_blank" rel="noopener">${msg('calendly')}</a>`;
+      } catch {
+        status.textContent = msg('error');
+      } finally {
+        btn.disabled = false; btn.textContent = btn.dataset.label!;
+      }
+    });
+  }
+</script>
+<style>
+  .lead { background: var(--color-white); border-radius: var(--radius-card); padding: 28px; display: flex; flex-direction: column; gap: 6px; color: var(--color-ink); }
+  .lead--compact { padding: 0; }
+  .lead__title { font-size: 22px; margin-bottom: 8px; }
+  .lead label { font-size: 14px; font-weight: 700; color: var(--color-navy); margin-top: 8px; }
+  .lead input[type="text"], .lead input[type="tel"], .lead select { min-height: var(--tap); border: 1px solid var(--color-line-strong); border-radius: var(--radius-card); padding: 0 14px; font-family: inherit; font-size: 16px; background: var(--color-white); color: var(--color-navy); }
+  .lead__consent { display: flex; gap: 10px; align-items: flex-start; font-weight: 500 !important; font-size: 14px !important; margin: 10px 0 8px !important; }
+  .lead__consent input { width: 20px; height: 20px; margin-top: 2px; flex: none; }
+  .lead__status { font-weight: 700; color: var(--color-navy); min-height: 1em; }
+  .lead__hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .lead__alt a { font-weight: 800; }
+</style>

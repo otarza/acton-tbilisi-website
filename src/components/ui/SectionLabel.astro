@@ -1,0 +1,16 @@
+---
+/** Small numbered label above a section heading: (01) ᲡᲐᲜᲐᲛ ᲠᲐᲛᲔᲡ ᲬᲐᲘᲙᲘᲗᲮᲐᲕᲗ */
+import Caps from './Caps.astro';
+interface Props { num?: string; text: string; onDark?: boolean }
+const { num, text, onDark = false } = Astro.props;
+---
+<span class:list={['label', { 'label--dark': onDark }]}>
+  {num && <b aria-hidden="true">{num}</b>}
+  <Caps text={text} />
+</span>
+<style>
+  .label { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 14px; letter-spacing: .04em; color: var(--color-blue); }
+  .label b { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--color-blue); font-size: 13px; letter-spacing: 0; }
+  .label--dark { color: var(--color-blue-soft); }
+  .label--dark b { border-color: var(--color-blue-soft); color: var(--color-blue-soft); }
+</style>

@@ -1,0 +1,27 @@
+---
+import { render } from 'astro:content';
+import { getLocalized, getPage } from '@/lib/content';
+import SectionLabel from '@/components/ui/SectionLabel.astro';
+import Button from '@/components/ui/Button.astro';
+import Assistant from '@/components/shared/Assistant.astro';
+import { t } from '@/i18n/ui';
+const { faqPreview } = await getPage('homePage');
+const all = await getLocalized('faq');
+const shownEntries = all.filter((f) => f.data.showOnHome).sort((a, b) => a.data.order - b.data.order);
+const shown = await Promise.all(shownEntries.map(async (f) => ({ ...f, Content: (await render(f)).Content })));
+const ui = t();
+---
+<section class="wrap faqp">
+  <div style="flex: 1 1 520px">
+    <SectionLabel num="?" text={faqPreview.label} />
+    <div class="acc" style="margin-top: 16px">
+      {shown.map((f) => <details data-placeholder={f.data.placeholder || undefined}><summary>{f.data.question}</summary><div><f.Content /></div></details>)}
+    </div>
+    <Button href="/faq" variant="soft" class="faqp__all">{ui.faq.allQuestions(all.length)}</Button>
+  </div>
+  <div style="flex: 1 1 400px; min-width: 0"><Assistant /></div>
+</section>
+<style>
+  .faqp { padding-bottom: var(--section-y); display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start; }
+  .faqp :global(.faqp__all) { margin-top: 20px; }
+</style>

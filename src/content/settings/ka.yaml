@@ -1,0 +1,53 @@
+# Site-wide settings in Georgian. Used by the header, footer, announcement bar and forms.
+# Fields marked "placeholder" are not confirmed yet. Run `npm run placeholders` to list them.
+schoolName: ექტონის აკადემია
+schoolNameShort: ექტონის აკადემია · საბურთალო
+logoSubtitle: საბურთალო · ამერიკული სკოლა   # OPEN DECISION: "Acton Academy" vs "American School" naming (docs/OPEN-QUESTIONS.md)
+phone: +995 500 503 605
+phoneHref: tel:+995500503605
+email: info@americanschool.ge
+address: საბურთალო, ვაჟა-ფშაველას გამზ. [№]
+addressPlaceholder: true
+responseTime: ვპასუხობთ 1 საათში
+bookingUrl: https://calendly.com/admin-americanschool/30min
+messengerUrl: https://m.me/AmericanSchoolTbilisi
+whatsappUrl: https://wa.me/995500503605
+facebookUrl: https://www.facebook.com/AmericanSchoolTbilisi
+instagramUrl: https://www.instagram.com/american.school.tbilisi/
+
+announcement:
+  enabled: true
+  text: ღია კარის დღე · შაბათი, 5 დეკემბერი, 11:00
+  linkText: ადგილის დაჯავშნა →
+  href: /#join
+  placeholder: true
+
+nextExhibition:
+  date: 2026-12-12
+  title: ქალაქი, რომელიც ჩვენ ავაშენეთ
+  placeholder: true
+
+nav:
+  - label: "ჩვენ შესახებ"
+    href: "/about"
+  - label: "ერთი დღე"
+    href: "/#day"
+  - label: "ქვიზი"
+    href: "/#fit"
+  - label: "ფასი"
+    href: "/#price"
+  - label: "კითხვები"
+    href: "/faq"
+  - label: "ბლოგი"
+    href: "/blog"
+
+footer:
+  headline: შენი თავგადასავალი
+  headlineAccent: იწყება აქ.
+  about:
+    - ამერიკული სკოლა, 2025 წლიდან
+    - IALDS-ის აკრედიტებული
+
+seo:
+  title: ექტონის აკადემია · საბურთალო
+  description: მოსწავლეზე ორიენტირებული სკოლა 5–14 წლის ბავშვებისთვის თბილისში. ქართული და ინგლისური, IALDS-ის აკრედიტაცია.

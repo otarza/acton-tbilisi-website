@@ -1,0 +1,3 @@
+# Copy to .dev.vars for local testing with `npm run dev:full`. Never commit .dev.vars.
+SHEETS_WEBHOOK_URL=https://script.google.com/macros/s/XXXXXXXX/exec
+SHEETS_WEBHOOK_SECRET=change-me-long-random-string
