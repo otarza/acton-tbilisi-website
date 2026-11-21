@@ -47,6 +47,7 @@ for (const f of existsSync(PHOTOS_DIR) ? readdirSync(PHOTOS_DIR) : []) {
 
 /* ---- All content files ---- */
 const numbers = new Map();
+const TOPICS = ['method', 'life', 'quests', 'clubs', 'parents', 'acton']; // keep in sync with ARTICLE_TOPICS in src/content.config.ts
 for (const file of walk(CONTENT)) {
   if (!/\.(md|ya?ml)$/.test(file) || file.endsWith('photos.yaml')) continue;
   const { data, text } = readData(file);
@@ -68,6 +69,17 @@ for (const file of walk(CONTENT)) {
     const key = `${m[1]}:${data.number}`;
     if (numbers.has(key)) errors.push(`${rel(file)}: question number ${data.number} is also used by ${numbers.get(key)}`);
     numbers.set(key, rel(file));
+  }
+
+  // articles: author must be a team file, topics from the fixed list
+  const am = rel(file).match(/^src\/content\/articles\/(\w+)\//);
+  if (am) {
+    if (!data.author || !existsSync(join(CONTENT, 'team', am[1], `${data.author}.md`))) {
+      errors.push(`${rel(file)}: author "${data.author}" is not a file in src/content/team/${am[1]}/ (write the file name without .md, e.g. salome-davituliani)`);
+    }
+    for (const tp of data.topics ?? []) if (!TOPICS.includes(tp)) errors.push(`${rel(file)}: topic "${tp}" is not one of: ${TOPICS.join(', ')}`);
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*\.md$/.test(file.split('/').pop())) errors.push(`${rel(file)}: file name must be latin lowercase with dashes (it becomes the URL)`);
+    if (data.titleAccent && !String(data.title).includes(data.titleAccent)) errors.push(`${rel(file)}: titleAccent "${data.titleAccent}" must be a part of the title`);
   }
 
   // testimonials need approval before they leave placeholder state

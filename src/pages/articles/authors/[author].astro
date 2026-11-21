@@ -1,0 +1,144 @@
+---
+/**
+ * AUTHOR PAGE: /articles/authors/<team file name>. Built for every team member who wrote at least one article.
+ * Bio, role, facts and photo come from src/content/team/ka/<author>.md, so they are edited in one place.
+ */
+import { render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ArticleCard from '@/components/articles/ArticleCard.astro';
+import AuthorAvatar from '@/components/articles/AuthorAvatar.astro';
+import { getPage } from '@/lib/content';
+import { getArticles, cardData, getAuthor, getTopics, authorColor, authorUrl, readMinutes } from '@/lib/articles';
+import { genitiveFirstName } from '@/lib/georgian';
+import { t } from '@/i18n/ui';
+
+export async function getStaticPaths() {
+  const all = await getArticles();
+  const slugs = [...new Set(all.map((a) => a.data.author))];
+  return slugs.map((author) => ({ params: { author }, props: { author, all } }));
+}
+const { author: slug, all } = Astro.props as { author: string; all: Awaited<ReturnType<typeof getArticles>> };
+const ui = t().articles;
+const p = await getPage('articlesPage');
+const person = await getAuthor(slug);
+const { Content: Bio } = await render(person);
+const color = await authorColor(slug);
+const mine = all.filter((a) => a.data.author === slug);
+const cards = await Promise.all(mine.map((a) => cardData(a)));
+const minutes = mine.reduce((s, a) => s + readMinutes(a), 0);
+const topics = (await getTopics()).map((tp) => ({ ...tp, count: cards.filter((c) => c.topics.some((x) => x.key === tp.key)).length })).filter((tp) => tp.count > 0);
+const otherSlugs = [...new Set(all.map((a) => a.data.author))].filter((s) => s !== slug);
+const others = await Promise.all(otherSlugs.map(async (s) => {
+  const o = await getAuthor(s);
+  return { slug: s, name: o.data.name, role: o.data.role.split(' · ')[0], photo: o.data.photo, color: await authorColor(s), count: all.filter((a) => a.data.author === s).length };
+}));
+const gen = genitiveFirstName(person.data.name);
+---
+<BaseLayout title={`${person.data.name} · ${p.hero.label} · ექტონის აკადემია`} description={`${gen} ${ui.byAuthor}: ${mine.map((a) => a.data.title).slice(0, 3).join(' · ')}`}>
+  <div slot="hero" class="wrap auh" data-placeholder={person.data.placeholder || undefined}>
+    <nav aria-label={ui.breadcrumb} class="auh__crumb"><a href="/articles">{p.hero.label}</a> <span aria-hidden="true">/</span> {ui.authors} <span aria-hidden="true">/</span> {person.data.name}</nav>
+    <div class="auh__top">
+      <AuthorAvatar name={person.data.name} color={color} photo={person.data.photo} size={220} ring />
+      <div class="stack auh__txt" style="--stack-gap: 14px">
+        <span class="tag tag--navy auh__role">{person.data.role}</span>
+        <h1 class="display auh__h">{person.data.name}</h1>
+        <div class="auh__bio"><Bio /></div>
+        {person.data.facts.length > 0 && <div class="row" style="--row-gap: 8px">{person.data.facts.map((f) => <span class="auh__fact">{f}</span>)}</div>}
+      </div>
+    </div>
+    <div class="auh__stats">
+      <div><b class="display">{mine.length}</b><span>{ui.articlesWord}</span></div>
+      <div><b class="display">{minutes}</b><span>{ui.minutesTotal}</span></div>
+      {person.data.since && <div><b class="display auh__since">{person.data.since}</b><span>{ui.atSchool}</span></div>}
+    </div>
+  </div>
+
+  <section class="wrap sec stack" style="--stack-gap: 28px" data-author-list>
+    <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
+      <h2 class="display al__h">{gen} <span class="hl">{ui.byAuthor}</span></h2>
+      <div class="seg" role="group" aria-label={ui.sort}>
+        <button type="button" aria-pressed="true" data-sort="new">{ui.sortNew}</button>
+        <button type="button" aria-pressed="false" data-sort="old">{ui.sortOld}</button>
+      </div>
+    </div>
+    {topics.length > 1 && (
+      <div class="row" style="--row-gap: 10px; align-items: center" role="group" aria-label={ui.writesAbout}>
+        <b class="strong-navy" style="font-size: 15px; margin-right: 6px">{ui.writesAbout}</b>
+        <button type="button" class="fchip" aria-pressed="true" data-topic="">{ui.all} <small>{cards.length}</small></button>
+        {topics.map((tp) => <button type="button" class="fchip" aria-pressed="false" data-topic={tp.key}>{tp.label} <small>{tp.count}</small></button>)}
+      </div>
+    )}
+    <div class="agrid" data-grid>{cards.map((c) => <ArticleCard a={c} showAuthor={false} />)}</div>
+  </section>
+
+  {others.length > 0 && (
+    <section class="bg-sky">
+      <div class="wrap stack oth" style="--stack-gap: 24px">
+        <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 16px">
+          <h2 class="display oth__h">{ui.otherAuthors} <span class="hl">{ui.otherAuthorsAccent}</span></h2>
+          <a href="/about#team" class="strong-navy">{ui.wholeTeam}</a>
+        </div>
+        <div class="oth__grid">
+          {others.map((o) => (
+            <a href={authorUrl(o.slug)} class="oth__a">
+              <AuthorAvatar name={o.name} color={o.color} photo={o.photo} size={56} />
+              <span><b>{o.name}</b><br /><span class="meta">{o.role} · {o.count} {ui.articlesWord}</span></span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-author-list]')) {
+    const grid = root.querySelector('[data-grid]')!;
+    const cards = [...grid.querySelectorAll<HTMLElement>('[data-article]')];
+    const state = { topic: '', sort: 'new' };
+    const render = () => {
+      const list = cards.filter((c) => !state.topic || c.dataset.topics!.split(' ').includes(state.topic))
+        .sort((a, b) => (state.sort === 'old' ? 1 : -1) * a.dataset.date!.localeCompare(b.dataset.date!));
+      cards.forEach((c) => { c.hidden = !list.includes(c); });
+      list.forEach((c) => grid.appendChild(c));
+      root.querySelectorAll<HTMLButtonElement>('[data-topic]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.topic === state.topic)));
+      root.querySelectorAll<HTMLButtonElement>('[data-sort]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.sort === state.sort)));
+    };
+    root.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button');
+      if (!b) return;
+      if (b.dataset.topic !== undefined) state.topic = b.dataset.topic;
+      if (b.dataset.sort !== undefined) state.sort = b.dataset.sort;
+      render();
+    });
+  }
+</script>
+
+<style>
+  .auh { padding-top: 24px; padding-bottom: 72px; display: flex; flex-direction: column; gap: 24px; }
+  .auh__crumb { font-size: 15px; font-weight: 800; color: var(--color-navy); }
+  .auh__top { display: flex; flex-wrap: wrap; gap: 40px; align-items: center; }
+  .auh__txt { flex: 1 1 520px; container-type: inline-size; }
+  .auh__role { align-self: flex-start; font-size: 14px; padding: 5px 14px; }
+  .auh__h { font-size: min(clamp(44px, 5.4vw, 76px), 9.4cqi); line-height: 1.04; overflow-wrap: normal; }
+  .auh__bio { color: var(--color-navy); font-size: 20px; max-width: 720px; }
+  .auh__fact { background: var(--color-white); color: var(--color-navy); font-weight: 800; font-size: 14px; padding: 6px 14px; border-radius: var(--radius-pill); }
+  .auh__stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; max-width: 900px; }
+  .auh__stats > div { background: var(--color-white); border-radius: 22px; padding: 18px 22px; display: flex; flex-direction: column; color: var(--color-navy); font-weight: 700; font-size: 15px; }
+  .auh__stats b { font-size: 40px; line-height: 1.1; }
+  .auh__stats .auh__since { font-size: 22px; padding-top: 6px; }
+  .al__h { font-size: clamp(30px, 3.4vw, 44px); line-height: 1.1; }
+  .agrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 24px; }
+  .oth { padding-top: 72px; padding-bottom: 88px; }
+  .oth__h { font-size: clamp(28px, 3vw, 40px); line-height: 1.1; }
+  .oth__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 16px; }
+  .oth__a { display: flex; align-items: center; gap: 14px; background: var(--color-white); border: 2px solid var(--color-line); border-radius: 22px; padding: 18px; color: var(--color-navy); text-decoration: none; line-height: 1.35; }
+  .oth__a:hover { border-color: var(--color-navy); }
+  .oth__a b { font-size: 17px; }
+  @media (max-width: 860px) {
+    .auh__top { gap: 20px; }
+    .auh__top :global(.aav) { --s: 96px !important; }
+    .auh__bio { font-size: 17px; }
+    .oth { padding-top: 48px; padding-bottom: 56px; }
+  }
+</style>

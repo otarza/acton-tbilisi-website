@@ -35,6 +35,12 @@
   --color-track: #E3ECF6;       /* progress bar track */
   --color-qmark: rgba(11, 31, 74, .10); /* giant "?" shapes on cyan */
 
+  /* Avatar circles (initials of team members / article authors). Navy text on all of them. */
+  --av-1: #7AFDFF;
+  --av-2: #FFD84D;
+  --av-3: #5BB8F5;
+  --av-4: #F07C7E;
+
   /* Signals (tags, badges, status) */
   --color-yellow: #FFD84D;
   --color-green: #1E9E5A;

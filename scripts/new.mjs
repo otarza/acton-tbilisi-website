@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Create a new content file from a template.
- *   npm run new:post -- "slug-in-latin" "სათაური"
+ *   npm run new:article -- "slug-in-latin" "სათაური" author-file-name
  *   npm run new:question -- "კითხვის ტექსტი?"
  *   npm run new:faq -- "slug-in-latin" "კითხვა?" learning
  */
@@ -21,24 +21,30 @@ function write(path, body) {
   console.log(`Created ${path.replace(ROOT, '')}`);
 }
 
-if (kind === 'post') {
-  const [slug, title = 'სათაური'] = rest;
-  if (!slugOk(slug)) { console.error('Usage: npm run new:post -- my-post-slug "სათაური"  (slug: latin lowercase, dashes)'); process.exit(1); }
-  write(join(ROOT, `src/content/posts/${lang}/${slug}.md`), `---
+if (kind === 'article') {
+  const [slug, title = 'სათაური', author = ''] = rest;
+  if (!slugOk(slug)) { console.error('Usage: npm run new:article -- my-article-slug "სათაური" salome-davituliani  (slug: latin lowercase, dashes; author: file name in src/content/team/ka/)'); process.exit(1); }
+  const team = readdirSync(join(ROOT, `src/content/team/${lang}`)).map((f) => f.replace(/\.md$/, ''));
+  if (author && !team.includes(author)) { console.error(`Unknown author "${author}". Choose one of: ${team.join(', ')}`); process.exit(1); }
+  write(join(ROOT, `src/content/articles/${lang}/${slug}.md`), `---
 title: ${q(title)}
-description: "ერთი-ორი წინადადება: რაზეა ეს ჩანაწერი (ჩანს სიაში და Google-ში)."
+# titleAccent: "სიტყვები სათაურიდან"   # optional: these words of the title get the highlight bar
+description: "ერთი-ორი წინადადება: რაზეა ეს სტატია (ჩანს სიაში და Google-ში)."
 date: ${today}
-cover: market-stall   # photo id from src/content/photos.yaml (optional)
-tags: []
-author: "სკოლის გუნდი"
+author: ${author || 'salome-davituliani'}   # file name in src/content/team/${lang}/ (${team.join(', ')})
+topics: [method]      # 1-3 of: method, life, quests, clubs, parents, acton
+cover: market-stall   # photo id from src/content/photos.yaml
+# coverCaption: "ფოტოს წარწერა"
+summary:              # "short version" box, 1-4 points (optional, delete if not needed)
+  - "პირველი მთავარი აზრი."
 draft: true           # set to false to publish
 ---
 
 პირველი აბზაცი.
 
-## ქვესათაური
+## პირველი ნაწილი
 
-ტექსტი…
+ტექსტი… (each "## " heading becomes an entry in the table of contents)
 `);
 } else if (kind === 'question') {
   const [question = 'კითხვა?'] = rest;
@@ -71,6 +77,6 @@ keywords: []          # words parents might type, helps the assistant find this 
 პასუხი…
 `);
 } else {
-  console.error('Usage: node scripts/new.mjs post|question|faq ...');
+  console.error('Usage: node scripts/new.mjs article|question|faq ...');
   process.exit(1);
 }

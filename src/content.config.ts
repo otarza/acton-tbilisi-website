@@ -173,6 +173,22 @@ const faqPage = defineCollection({
   }),
 });
 
+/** The fixed article topic list. Labels and colours: src/content/pages/ka/articles.yaml → topics. Add a topic in both places. */
+export const ARTICLE_TOPICS = ['method', 'life', 'quests', 'clubs', 'parents', 'acton'] as const;
+const articlesPage = defineCollection({
+  loader: glob({ pattern: '**/articles.yaml', base: './src/content/pages' }),
+  schema: z.object({
+    seo: z.object({ title: z.string(), description: z.string() }),
+    hero: z.object({ label: z.string(), title: z.string(), accent: z.string(), after: z.string().optional(), lead: z.string() }),
+    /** Label + tag colour for every topic in ARTICLE_TOPICS. */
+    topics: z.record(z.enum(ARTICLE_TOPICS), z.object({ label: z.string(), color: z.enum(['blue', 'teal', 'gold', 'red', 'green', 'navy']) })),
+    list: z.object({ title: z.string(), accent: z.string(), cadence: z.string() }),
+    newsletter: z.object({ enabled: z.boolean(), title: z.string(), accent: z.string(), text: z.string(), success: z.string(), placeholder }),
+    cta: z.object({ title: z.string(), accent: z.string(), text: z.string(), button: z.string(), secondary: z.string() }),
+    home: sectionHeading.extend({ intro: z.string() }),
+  }),
+});
+
 /* ---------- Repeating content (one Markdown file per item) ---------- */
 const studios = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/studios' }),
@@ -230,11 +246,14 @@ const team = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/team' }),
   schema: z.object({
     name: z.string(),
-    group: z.enum(['founder', 'guide']),
+    /** founder / guide = shown on the About page team block. contributor = only an article author (a parent, an investor…). */
+    group: z.enum(['founder', 'guide', 'contributor']),
     role: z.string(),
     isParent: z.boolean().default(false),
     facts: z.array(z.string()).default([]),
     photo: photoId.optional(),
+    /** Short text for the author page, e.g. "2025 წლიდან". */
+    since: z.string().optional(),
     order: z.number().default(100),
     placeholder,
   }),
@@ -252,15 +271,24 @@ const testimonials = defineCollection({
   }),
 });
 
-const posts = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/posts' }),
+/* ---------- Articles (სტატიები) ---------- */
+const articles = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/articles' }),
   schema: z.object({
     title: z.string(),
+    /** Optional: the words of the title to show on the highlight bar (must appear in `title`). */
+    titleAccent: z.string().optional(),
     description: z.string(),
     date: z.coerce.date(),
-    cover: photoId.optional(),
-    tags: z.array(z.string()).default([]),
-    author: z.string().optional(),
+    /** File name of a team member in src/content/team/<lang>/ (without .md), e.g. "salome-davituliani". */
+    author: z.string(),
+    topics: z.array(z.enum(ARTICLE_TOPICS)).min(1).max(3),
+    cover: photoId,
+    coverCaption: z.string().optional(),
+    /** "Short version, if you have 30 seconds": 1–4 bullet points shown above the text. */
+    summary: z.array(z.string()).max(4).default([]),
+    /** Minutes to read. Leave empty: it is counted from the text. */
+    readMinutes: z.number().int().positive().optional(),
     draft: z.boolean().default(false),
     placeholder,
   }),
@@ -280,4 +308,4 @@ const photos = defineCollection({
   }),
 });
 
-export const collections = { settings, homePage, aboutPage, faqPage, studios, faq, questions, team, testimonials, posts, photos };
+export const collections = { settings, homePage, aboutPage, faqPage, studios, faq, questions, team, testimonials, articles, articlesPage, photos };

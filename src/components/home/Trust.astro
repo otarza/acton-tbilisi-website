@@ -5,7 +5,7 @@ const { trust } = await getPage('homePage');
 ---
 <section class="bg-sky sec">
   <div class="wrap stack" style="--stack-gap: 32px">
-    <SectionHeading num="08" label={trust.label} title={trust.title} accent={trust.accent} />
+    <SectionHeading num="09" label={trust.label} title={trust.title} accent={trust.accent} />
     <div class="grid-auto" style="--min: 300px" data-placeholder={trust.placeholder || undefined}>
       {trust.cards.map((c) => (
         <a href={c.href} class="card trust">

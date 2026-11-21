@@ -15,6 +15,7 @@ Use the CSS variables, never raw hex in components.
 | Brand | `--color-navy` #0B1F4A (primary), `--color-navy-2` (hover), `--color-cyan` #00C0FF (hero/CTA bands, lines), `--color-hl` #7AFDFF (highlight bars, accents on navy), `--color-blue` #2F6DCB (labels, links, progress, join box), `--color-blue-dark` (links), `--color-trail` (dashed trails) |
 | Text | `--color-ink` body, `--color-muted` captions, `--color-on-dark` body on navy |
 | Surfaces | `--color-bg-sky` #EEF6FD alternate sections and soft cards, `--color-bg-ice` callouts, `--color-line`, `--color-line-dashed`, `--color-track`, `--color-qmark` |
+| Avatars | `--av-1..4` initials circles (navy text) |
 | Signals | yellow, green, red (+ `-bright`), teal (+ `-bright`), gold + `--tag-*-bg/fg` pairs |
 | Type | one family: `--font-sans` Noto Sans Georgian; display weight `--weight-display` 900; `--text-h1-home`, `--text-h1`, `--text-h2` fluid |
 | Shape | radius sm 14 / control 16 / card 26 / big 28 / box 36 / pill 999; `--tap` 48px; `--section-y` 96px (56px mobile); `--wrap` 1200px |
@@ -38,7 +39,8 @@ Fonts are self-hosted via `@fontsource` (Georgian + Latin subsets only), no Goog
 Layout `.wrap .sec .stack .row .grid-auto` (tune with `--stack-gap`, `--row-gap`, `--min`, `--grid-gap`);
 backgrounds `.bg-cyan .bg-sky .bg-navy` (+ `.qmark-band`, `.qmark`); type `.display .h1 .h2 .h3 .hl .lead .muted .small .xs .accent .strong-navy`;
 `.card` + `--sky --outline --float --dashed --glass` (glass = on navy); `.bar` progress; `.av` avatar; `.tag` + colour; `.badge` dashed circle;
-`.choice` (pill toggle using `aria-pressed`/`aria-selected`), `.chip` (big answer pill), `.opt` (quiz answer);
+`.choice` (pill toggle using `aria-pressed`/`aria-selected`), `.chip` (big answer pill), `.opt` (quiz answer),
+`.fchip` (filter chip with a count), `.seg` (segmented sort control), `.meta` (small grey date/author line);
 `.acc` accordion around `<details>`; `.prose` for Markdown.
 
 ## Components
@@ -47,8 +49,9 @@ backgrounds `.bg-cyan .bg-sky .bg-navy` (+ `.qmark-band`, `.qmark`); type `.disp
 | `ui/` | `Button` (variant primary/light/ghost/soft/hl, size sm/md/lg), `SectionHeading` (label + h1/h2 + highlighted accent), `SectionLabel` (navy number circle), `Caps`, `Photo` (by register id, responsive), `Logo` (placeholder shield, white on cyan; swap SVG for real logo) |
 | `layout/` | `AnnouncementBar`, `Header` (desktop nav + mobile menu), `Footer`, `MobileActionBar` (book / Messenger / call + bottom-sheet form) |
 | `shared/` | `LeadForm`, `WeeklyQuestion` (voting), `Assistant`, `Countdown`, `PageHero` (cyan band hero), `CtaBand` (cyan band), `PostCard` |
-| `home/` | One component per homepage section, numbered 01–10 like the design |
+| `home/` | One component per homepage section, numbered 01–11 (08 = `LatestArticles`) |
 | `about/` | `TeamExplorer`, `ConsentDemo` |
+| `articles/` | `ArticleCard` (variants grid / featured / row / related), `AuthorAvatar` (photo or initial), `ShareButtons`, `Newsletter` |
 
 Interactive components use a small inline `<script>`; each finds its root by a `data-*` attribute.
 

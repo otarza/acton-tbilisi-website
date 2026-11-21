@@ -17,9 +17,9 @@ export async function getSettings(lang: Lang = defaultLang) {
   return entry.data;
 }
 
-type PageKey = 'homePage' | 'aboutPage' | 'faqPage';
+type PageKey = 'homePage' | 'aboutPage' | 'faqPage' | 'articlesPage';
 export async function getPage<C extends PageKey>(collection: C, lang: Lang = defaultLang): Promise<CollectionEntry<C>['data']> {
-  const name = { homePage: 'home', aboutPage: 'about', faqPage: 'faq' }[collection];
+  const name = { homePage: 'home', aboutPage: 'about', faqPage: 'faq', articlesPage: 'articles' }[collection];
   const entry = (await getEntry(collection as PageKey, `${lang}/${name}`)) as CollectionEntry<C> | undefined;
   if (!entry) throw new Error(`Missing src/content/pages/${lang}/${name}.yaml`);
   return entry.data;

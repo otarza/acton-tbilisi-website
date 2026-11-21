@@ -10,7 +10,8 @@
  *  4. Deploy → New deployment → type "Web app" → Execute as: Me → Who has access: Anyone → Deploy.
  *  5. Copy the Web app URL into Cloudflare as SHEETS_WEBHOOK_URL.
  *
- * Tabs "Leads" and "Votes" are created automatically on first use.
+ * Tabs "Leads", "Votes", "Subscribers" and "Article feedback" are created automatically on first use.
+ * After changing this file: Deploy → Manage deployments → edit → Version: New version → Deploy (the URL stays the same).
  */
 
 function doPost(e) {
@@ -25,6 +26,8 @@ function doPost(e) {
     if (data.type === 'lead') return out(addLead(data, props));
     if (data.type === 'vote') return out(addVote(data));
     if (data.type === 'tally') return out(tally(data));
+    if (data.type === 'subscribe') return out(addSubscriber(data));
+    if (data.type === 'feedback') return out(addFeedback(data));
     return out({ ok: false, error: 'unknown-type' });
   } finally {
     lock.releaseLock();
@@ -59,6 +62,22 @@ function tally(d) {
     }
   }
   return { ok: true, counts: counts };
+}
+
+function addSubscriber(d) {
+  var sh = tab('Subscribers', ['Received', 'Email', 'Page', 'Status']);
+  var last = sh.getLastRow();
+  if (last > 1) {
+    var emails = sh.getRange(2, 2, last - 1, 1).getValues();
+    for (var i = 0; i < emails.length; i++) if (String(emails[i][0]).toLowerCase() === String(d.email).toLowerCase()) return { ok: true, duplicate: true };
+  }
+  sh.appendRow([new Date(), d.email, d.page, 'subscribed']);
+  return { ok: true };
+}
+
+function addFeedback(d) {
+  tab('Article feedback', ['Received', 'Article', 'Helpful']).appendRow([new Date(), d.article, d.helpful]);
+  return { ok: true };
 }
 
 function tab(name, header) {

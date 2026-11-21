@@ -1,6 +1,6 @@
 ---
 /**
- * HOMEPAGE. Section order follows the S5 design. Copy lives in src/content/pages/ka/home.yaml;
+ * HOMEPAGE. Section order follows the S4 design (articles section 08 added 2026-11-21). Copy lives in src/content/pages/ka/home.yaml;
  * each section is a component in src/components/home/. To reorder or remove a section, edit this list.
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -17,6 +17,7 @@ import Trust from '@/components/home/Trust.astro';
 import Price from '@/components/home/Price.astro';
 import Join from '@/components/home/Join.astro';
 import FaqPreview from '@/components/home/FaqPreview.astro';
+import LatestArticles from '@/components/home/LatestArticles.astro';
 import { getPage } from '@/lib/content';
 const { seo } = await getPage('homePage');
 ---
@@ -30,6 +31,7 @@ const { seo } = await getPage('homePage');
   <FitCheck />
   <Videos />
   <Testimonials />
+  <LatestArticles />
   <Trust />
   <Price />
   <Join />

@@ -1,10 +1,15 @@
-# Backend: forms and votes
+# Backend: forms, votes, newsletter
 
 ```
-browser ──POST /api/lead──▶ Cloudflare Pages Function ──HTTPS──▶ Google Apps Script web app ──▶ Google Sheet
-        ──POST /api/vote──▶   (functions/api/*.ts)                 (google/apps-script/Code.gs)     tabs "Leads", "Votes"
-        ──GET  /api/votes─▶   cached 5 min at the edge                                               (+ optional email)
+browser ──POST /api/lead──────▶ Cloudflare Pages Function ──HTTPS──▶ Google Apps Script web app ──▶ Google Sheet
+        ──POST /api/vote──────▶   (functions/api/*.ts)                 (google/apps-script/Code.gs)     tabs "Leads", "Votes",
+        ──GET  /api/votes─────▶   cached 5 min at the edge                                               "Subscribers",
+        ──POST /api/subscribe─▶   weekly email sign-up (articles page)                                   "Article feedback"
+        ──POST /api/feedback──▶   "was this article helpful?" yes/no                                     (+ optional email)
 ```
+
+Sending the weekly email itself is not automated: export the "Subscribers" tab into the school's mail tool
+(or Gmail) each Friday. Remove a row (or set Status = unsubscribed) when someone asks to unsubscribe.
 
 ## Why this setup
 You asked for "GC free tier" for form data. We use **Google Sheets + Apps Script**, which is free with any Google

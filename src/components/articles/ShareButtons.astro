@@ -1,0 +1,36 @@
+---
+/** Share this page: Facebook, WhatsApp, copy link. No tracking scripts, plain links. */
+import { t } from '@/i18n/ui';
+interface Props { url: string; title: string; class?: string }
+const { url, title, class: cls } = Astro.props;
+const ui = t().articles;
+const fb = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+const wa = `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`;
+---
+<div class:list={['shr', cls]} data-share>
+  <b class="shr__t">{ui.share}</b>
+  <div class="shr__row">
+    <a class="shr__b" href={fb} target="_blank" rel="noopener" aria-label={ui.shareFacebook}><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 8V6.5c0-.8.5-1 1-1h2V2h-3c-3 0-4 2-4 4.3V8H7.5v3.5H10V22h4V11.5h2.8l.5-3.5H14z"></path></svg></a>
+    <a class="shr__b" href={wa} target="_blank" rel="noopener" aria-label={ui.shareWhatsapp}><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.7 4.3 3.8 1.6.7 2.2.7 3 .6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.6-.3z"></path></svg></a>
+    <button type="button" class="shr__b" aria-label={ui.copyLink} data-copy={url}><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path></svg></button>
+  </div>
+  <span class="shr__ok" aria-live="polite" data-copied></span>
+</div>
+<script>
+  import { t } from '@/i18n/ui';
+  for (const b of document.querySelectorAll<HTMLButtonElement>('[data-share] [data-copy]')) {
+    b.addEventListener('click', async () => {
+      const out = b.closest('[data-share]')!.querySelector<HTMLElement>('[data-copied]')!;
+      try { await navigator.clipboard.writeText(b.dataset.copy!); out.textContent = t().articles.copied; } catch { out.textContent = b.dataset.copy!; }
+      setTimeout(() => { out.textContent = ''; }, 2500);
+    });
+  }
+</script>
+<style>
+  .shr { display: flex; flex-direction: column; gap: 10px; }
+  .shr__t { color: var(--color-navy); font-size: 14px; }
+  .shr__row { display: flex; gap: 8px; }
+  .shr__b { width: var(--tap); height: var(--tap); border-radius: 50%; border: 2px solid var(--color-navy); background: var(--color-white); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-navy); }
+  .shr__b:hover { background: var(--color-navy); color: var(--color-white); }
+  .shr__ok { font-size: 14px; color: var(--tag-green-fg); font-weight: 800; min-height: 1.2em; }
+</style>

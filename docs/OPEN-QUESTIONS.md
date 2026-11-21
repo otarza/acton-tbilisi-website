@@ -15,7 +15,7 @@ unconfirmed. `npm run placeholders` shows the files; this list explains what to 
 | 8 | Open-day and next exhibition dates | `settings/ka.yaml` announcement, nextExhibition |
 | 9 | Team: names, roles, bios approved by each person; founders/investors list public? | `team/ka/*.md`, `about.yaml` investors |
 | 10 | Parent quotes: real wording + each parent's approval | `testimonials/ka/*.md` (`approved: true`) |
-| 11 | Photo consent for the 6 current photos (taken from Facebook) | `photos.yaml` |
+| 11 | ~~Photo consent for the 6 current photos~~ Answered 2026-11-21: the enrolment contract covers public photo use | `photos.yaml` |
 | 12 | Story timeline dates | `about.yaml` story |
 | 13 | Safety claims (card entry, first aid, background checks…) | `about.yaml` safety |
 | 14 | Data retention + privacy text, contact email for data requests | `about.yaml` privacy |
@@ -24,3 +24,6 @@ unconfirmed. `npm run placeholders` shows the files; this list explains what to 
 | 17 | Weekly question archive: real questions/conclusions, or start fresh from №1 | `questions/ka/` |
 | 18 | Real logo file (SVG) | `src/components/ui/Logo.astro`, `public/favicon.svg` |
 | 19 | Production domain | `astro.config.mjs`, `public/robots.txt` |
+| 20 | Articles: all 8 sample articles (titles, texts, dates) are from the design. Replace with real ones or delete | `articles/ka/` |
+| 21 | Which team members write articles, and their author bios (currently `placeholder: true`) | `team/ka/` |
+| 22 | Will the school really send a weekly email? If not, set `newsletter.enabled: false` | `pages/ka/articles.yaml` |
