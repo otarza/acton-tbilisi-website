@@ -1,0 +1,36 @@
+---
+import { getSettings } from '@/lib/content';
+import { t } from '@/i18n/ui';
+const s = await getSettings();
+const ui = t();
+---
+<footer class="ftr bg-navy">
+  <div class="wrap ftr__inner">
+    <p class="display ftr__headline">{s.footer.headline} <span class="hl">{s.footer.headlineAccent}</span></p>
+    <div class="grid-auto ftr__cols" style="--min: 220px; --grid-gap: 24px">
+      <div><b>{s.schoolNameShort}</b>{s.footer.about.map((l) => <><br />{l}</>)}</div>
+      <div>
+        <b>{ui.contact}</b><br />
+        <a href={s.phoneHref}>{s.phone}</a><br />
+        <a href={`mailto:${s.email}`}>{s.email}</a><br />
+        <span data-placeholder={s.addressPlaceholder || undefined}>{s.address}</span>
+      </div>
+      <div><b>{ui.pages}</b><br />{s.nav.map((n, i) => <>{i > 0 && ' · '}<a href={n.href}>{n.label}</a></>)}</div>
+      <div>
+        <b>{ui.social}</b><br />
+        <a href={s.facebookUrl} rel="noopener">Facebook</a> · <a href={s.instagramUrl} rel="noopener">Instagram</a><br />
+        <a href="/about#privacy">{ui.privacyLink}</a>
+      </div>
+    </div>
+    <p class="xs ftr__legal">© {`${new Date().getFullYear()} ${s.schoolNameShort}`}</p>
+  </div>
+</footer>
+<style>
+  .ftr__inner { padding-top: 64px; padding-bottom: 40px; display: flex; flex-direction: column; gap: 40px; }
+  .ftr__headline { font-size: clamp(36px, 6vw, 88px); line-height: 1; color: var(--color-white); }
+  .ftr__cols { font-size: var(--text-sm); }
+  .ftr b { color: var(--color-white); }
+  .ftr a { color: var(--color-hl); }
+  .ftr__legal { color: var(--color-on-dark); opacity: .8; }
+  @media (max-width: 860px) { .ftr__inner { padding-bottom: 112px; } }
+</style>

@@ -1,0 +1,30 @@
+---
+import { getPage } from '@/lib/content';
+import SectionLabel from '@/components/ui/SectionLabel.astro';
+import LeadForm from '@/components/shared/LeadForm.astro';
+const { join } = await getPage('homePage');
+---
+<section id="join" class="join-wrap">
+  <div class="join">
+    <div class="stack" style="flex: 1 1 460px; --stack-gap: 26px">
+      <SectionLabel num="10" text={join.label} onDark />
+      <h2 class="display join__h">{join.title} <span class="hl">{join.accent}</span></h2>
+      <ol class="join__steps">
+        {join.steps.map((s, i) => <li><b>{String(i + 1).padStart(2, '0')} · {s.title}</b> {s.text}</li>)}
+      </ol>
+    </div>
+    <div style="flex: 1 1 360px; min-width: 0"><LeadForm title={join.formTitle} note={join.formNote} source="home-join" /></div>
+  </div>
+</section>
+<style>
+  .join-wrap { padding: 0 var(--gutter) var(--section-y); }
+  .join { max-width: var(--wrap); margin: 0 auto; background: var(--color-blue); border-radius: var(--radius-box); padding: 64px 48px; display: flex; flex-wrap: wrap; gap: 40px; }
+  .join__h { margin: 0; font-size: clamp(40px, 5.6vw, 76px); line-height: 1.08; color: var(--color-white); }
+  .join__steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; color: var(--color-white); }
+  .join__steps b { color: var(--color-white); text-decoration: underline; text-decoration-color: var(--color-hl); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+  @media (max-width: 860px) { .join { padding: 32px 20px; } .join__h { font-size: 36px; } }
+</style>
+<style>
+  /* Contrast: cyan-highlight text on --color-blue is ~4.2:1, so small text in the join box is white. */
+  .join :global(.label--dark) { color: var(--color-white); }
+</style>

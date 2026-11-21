@@ -1,0 +1,17 @@
+---
+import { getPage } from '@/lib/content';
+import { toMtavruli } from '@/lib/georgian';
+const { marquee } = await getPage('homePage');
+const items = marquee.map(toMtavruli);
+---
+<div class="mq" aria-label={marquee.join(', ')} role="img">
+  <div class="mq__track" aria-hidden="true">
+    {[0, 1].map(() => items.map((m) => <><span>{m}</span><span class="mq__star">✦</span></>))}
+  </div>
+</div>
+<style>
+  .mq { background: var(--color-navy); padding: 18px 0; overflow: hidden; }
+  .mq__track { display: flex; gap: 48px; width: max-content; animation: mq 70s linear infinite; font-weight: 800; font-size: 20px; color: var(--color-white); }
+  .mq__star { color: var(--color-hl); }
+  @keyframes mq { to { transform: translateX(-50%); } }
+</style>

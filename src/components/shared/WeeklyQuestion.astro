@@ -1,0 +1,92 @@
+---
+/**
+ * The current "question of the week" with voting. The current question is the one with the
+ * highest `number` in src/content/questions/<lang>/. Votes go to /api/vote; live tallies come
+ * from /api/votes. If the backend is not configured, the `results` from the file are shown.
+ */
+import { getLocalized } from '@/lib/content';
+import { t } from '@/i18n/ui';
+const ui = t();
+const all = (await getLocalized('questions')).sort((a, b) => b.data.number - a.data.number);
+const q = all[0];
+const prevCount = all.length - 1;
+const d = q?.data;
+---
+{d && (
+  <div class="card card--float wq stack" style="--stack-gap: 18px" data-weekly-question data-number={d.number} data-fallback={JSON.stringify(d.results ?? [])} data-placeholder={d.placeholder || undefined}>
+    <span class="tag tag--navy">{ui.weeklyQuestion(d.number)}</span>
+    <h3 class="display wq__q">{d.question}</h3>
+    <div class="row" style="--row-gap: 10px" role="group" aria-label={ui.yourAnswer}>
+      {d.options.map((o, i) => <button type="button" class="choice" aria-pressed="false" data-option={i}>{o}</button>)}
+    </div>
+    <div class="wq__results stack pop" style="--stack-gap: 12px" hidden>
+      {d.options.map((o, i) => (
+        <div data-result={i}>
+          <div class="bar-row"><span data-label>{o}</span><b class="strong-navy" data-pct>—</b></div>
+          <div class="bar"><span style="width: 0%"></span></div>
+        </div>
+      ))}
+      {d.conclusion && (
+        <div class="wq__concl">
+          <b class="small accent">{ui.kidsConcluded}</b>
+          <p>„{d.conclusion}“ {d.studios && <span class="muted small">· {d.studios}</span>}</p>
+        </div>
+      )}
+    </div>
+    {prevCount > 0 && <a href="/faq#archive" class="strong-navy">{ui.previousQuestions(prevCount)}</a>}
+    <template data-suffix>{ui.yourAnswerSuffix}</template>
+  </div>
+)}
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-weekly-question]')) {
+    const n = root.dataset.number!;
+    const key = `wq-${n}`;
+    const fallback: number[] = JSON.parse(root.dataset.fallback || '[]');
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-option]');
+    const results = root.querySelector<HTMLElement>('.wq__results')!;
+    const suffix = root.querySelector<HTMLTemplateElement>('template[data-suffix]')!.innerHTML;
+
+    const show = (choice: number, pcts: number[]) => {
+      buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === choice)));
+      root.querySelectorAll<HTMLElement>('[data-result]').forEach((row, i) => {
+        const label = row.querySelector<HTMLElement>('[data-label]')!;
+        label.textContent = buttons[i].textContent + (i === choice ? suffix : '');
+        label.style.fontWeight = i === choice ? '800' : '';
+        row.querySelector<HTMLElement>('[data-pct]')!.textContent = pcts[i] != null ? `${pcts[i]}%` : '—';
+        requestAnimationFrame(() => { row.querySelector<HTMLElement>('.bar > span')!.style.width = `${pcts[i] ?? 0}%`; });
+      });
+      results.hidden = false;
+    };
+
+    const tally = async (): Promise<number[]> => {
+      try {
+        const res = await fetch(`/api/votes?q=${n}`);
+        if (!res.ok) throw 0;
+        const { counts } = (await res.json()) as { counts: number[] };
+        const total = counts.reduce((a, b) => a + b, 0);
+        if (!total) throw 0;
+        return counts.map((c) => Math.round((c / total) * 100));
+      } catch { return fallback; }
+    };
+
+    let saved: string | null = null;
+    try { saved = localStorage.getItem(key); } catch {}
+    if (saved !== null) tally().then((p) => show(Number(saved), p));
+
+    buttons.forEach((b, i) => b.addEventListener('click', async () => {
+      const first = saved === null;
+      try { localStorage.setItem(key, String(i)); } catch {}
+      saved = String(i);
+      if (first) {
+        await fetch('/api/vote', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ question: Number(n), option: i }) }).catch(() => {});
+      }
+      show(i, await tally());
+    }));
+  }
+</script>
+<style>
+  .wq__q { font-size: clamp(26px, 2.9vw, 38px); line-height: 1.1; }
+  .wq__results[hidden] { display: none; }
+  .wq__concl { background: var(--color-bg-ice); border-radius: var(--radius-card); padding: 18px; color: var(--color-navy); }
+  .wq__concl p { margin-top: 6px; }
+</style>

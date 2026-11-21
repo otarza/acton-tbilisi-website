@@ -1,0 +1,76 @@
+---
+/** Videos load only when clicked (privacy + speed). Add a YouTube id in home.yaml → videos.items[].youtubeId */
+import { getPage } from '@/lib/content';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Photo from '@/components/ui/Photo.astro';
+import { t } from '@/i18n/ui';
+const { videos: v } = await getPage('homePage');
+const ui = t();
+const [main, ...rest] = v.items;
+---
+<section class="bg-navy sec">
+  <div class="wrap stack" style="--stack-gap: 32px">
+    <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
+      <SectionHeading num="06" label={v.label} title={v.title} accent={v.accent} onDark />
+      <span class="small">{v.note}</span>
+    </div>
+    <div class="row" style="--row-gap: 20px" data-placeholder={v.placeholder || undefined}>
+      {main && (
+        <button type="button" class="vid vid--main" data-video={main.youtubeId} aria-label={`${ui.playVideo}: ${main.title}`}>
+          <Photo id={main.photo} alt="" sizes="(max-width: 860px) 100vw, 760px" />
+          <span class="vid__ov"><span class="vid__play"><svg width="26" height="30" viewBox="0 0 24 28" aria-hidden="true"><path d="M2 2 L22 14 L2 26 Z" fill="#0B1F4A"></path></svg></span></span>
+          <span class="vid__cap"><span class="vid__title">{main.title}</span>{main.subtitle && <span class="small">{main.subtitle}</span>}</span>
+          <span class="vid__dur">{main.duration}</span>
+        </button>
+      )}
+      <div class="stack" style="flex: 1 1 300px; --stack-gap: 14px">
+        {rest.map((it) => (
+          <button type="button" class="vid vid--small" data-video={it.youtubeId} aria-label={`${ui.playVideo}: ${it.title}`}>
+            <span class="vid__thumb"><Photo id={it.photo} alt="" sizes="200px" widths={[400]} /><span class="vid__dur">{it.duration}</span></span>
+            <span class="vid__stitle">{it.title}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+    <template data-soon>{ui.videoSoon}</template>
+  </div>
+</section>
+<script>
+  for (const b of document.querySelectorAll<HTMLButtonElement>('[data-video]')) {
+    b.addEventListener('click', () => {
+      const id = b.dataset.video;
+      if (!id) {
+        const msg = document.querySelector<HTMLTemplateElement>('template[data-soon]')!.innerHTML;
+        b.setAttribute('aria-label', msg);
+        b.dataset.soon = msg;
+        return;
+      }
+      const f = document.createElement('iframe');
+      f.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&cc_load_policy=1&hl=ka`;
+      f.allow = 'autoplay; encrypted-media; picture-in-picture'; f.allowFullscreen = true; f.title = b.getAttribute('aria-label') || '';
+      f.className = 'vid__frame';
+      const box = document.createElement('div');
+      box.className = `${b.className} vid--playing`;
+      box.append(f);
+      b.replaceWith(box);
+    });
+  }
+</script>
+<style>
+  .vid { position: relative; border-radius: 8px; overflow: hidden; cursor: pointer; border: 0; padding: 0; font: inherit; text-align: left; color: var(--color-white); }
+  .vid--main, :global(.vid--playing.vid--main) { flex: 2 1 520px; height: 460px; }
+  .vid--main :global(img) { position: absolute; inset: 0; }
+  .vid__ov { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(11,31,74,.28); }
+  .vid__play { width: 76px; height: 76px; border-radius: 50%; background: var(--color-white); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+  .vid__cap { position: absolute; left: 24px; bottom: 22px; right: 90px; display: flex; flex-direction: column; }
+  .vid__title { font-weight: 800; font-size: 26px; line-height: 1.2; }
+  .vid__dur { position: absolute; right: 14px; bottom: 14px; background: rgba(11,31,74,.85); font-size: var(--text-xs); font-weight: 800; padding: 4px 10px; border-radius: 999px; color: var(--color-white); }
+  .vid--small { height: 140px; display: flex; align-items: stretch; background: var(--color-navy-2); }
+  .vid__thumb { flex: 0 0 45%; position: relative; }
+  .vid__stitle { flex: 1; padding: 14px; font-weight: 800; font-size: 16px; }
+  .vid[data-soon]::after { content: attr(data-soon); position: absolute; left: 12px; top: 12px; background: var(--color-yellow); color: var(--color-navy); font-size: var(--text-xs); font-weight: 800; padding: 4px 10px; border-radius: 999px; }
+  :global(.vid__frame) { width: 100%; height: 100%; border: 0; }
+  :global(.vid--playing) { border-radius: 8px; overflow: hidden; }
+  :global(.vid--playing.vid--small) { height: 200px; }
+  @media (max-width: 860px) { .vid--main { height: 280px; } .vid__title { font-size: 20px; } }
+</style>

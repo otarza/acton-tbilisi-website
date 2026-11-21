@@ -1,0 +1,94 @@
+---
+/**
+ * Founders and guides come from src/content/team/<lang>/*.md (body = bio).
+ * Investors are a simple list in pages/<lang>/about.yaml → team.investors.
+ */
+import { render } from 'astro:content';
+import { getLocalized, getPage } from '@/lib/content';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { t } from '@/i18n/ui';
+const { team } = await getPage('aboutPage');
+const ui = t().team;
+const members = (await getLocalized('team')).sort((a, b) => a.data.order - b.data.order);
+const withBio = await Promise.all(members.map(async (m) => ({ ...m, Content: (await render(m)).Content })));
+const groups = [
+  { key: 'founder', ...team.groups.founder, people: withBio.filter((m) => m.data.group === 'founder') },
+  { key: 'guide', ...team.groups.guide, people: withBio.filter((m) => m.data.group === 'guide') },
+] as const;
+const colors = ['#E6EEF8', '#D6ECFB', '#FFF3C4', '#DDF7F8', '#FBE2E2'];
+---
+<section id="team" class="bg-sky sec">
+  <div class="wrap stack" style="--stack-gap: 28px" data-team>
+    <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
+      <SectionHeading num="02" label={team.label} title={team.title} accent={team.accent} />
+      <div class="row" style="--row-gap: 8px" role="tablist">
+        {groups.map((g, i) => <button type="button" class="choice" role="tab" aria-selected={i === 1 ? 'true' : 'false'} data-tab={g.key}>{g.label}</button>)}
+        <button type="button" class="choice" role="tab" aria-selected="false" data-tab="investor">{team.groups.investor.label} ({team.investors.length})</button>
+      </div>
+    </div>
+
+    {groups.map((g, gi) => (
+      <div class="stack" style="--stack-gap: 20px" data-panel={g.key} hidden={gi !== 1}>
+        <p class="team__intro">{g.intro}</p>
+        <div class="team__grid">
+          <div class="team__people">
+            {g.people.map((p, i) => (
+              <button type="button" class="person" aria-pressed={i === 0 ? 'true' : 'false'} data-person={`${g.key}-${i}`}>
+                <span class="av" style={`background:${colors[i % colors.length]}`}>{p.data.name.charAt(0)}</span>
+                <b>{p.data.name}</b>
+                <span class="xs">{p.data.isParent ? `${ui[g.key]} · ${ui.parent}` : ui[g.key]}</span>
+              </button>
+            ))}
+          </div>
+          <div>
+            {g.people.map((p, i) => (
+              <article class="card bio pop" data-bio={`${g.key}-${i}`} hidden={i !== 0} data-placeholder={p.data.placeholder || undefined}>
+                <div class="row" style="--row-gap: 14px; align-items: center"><span class="av av--lg">{p.data.name.charAt(0)}</span><div><h3 class="display h3">{p.data.name}</h3><span class="small muted">{p.data.role}</span></div></div>
+                <div class="bio__text"><p.Content /></div>
+                {p.data.facts.length > 0 && <div class="row" style="--row-gap: 8px">{p.data.facts.map((f) => <span class="tag tag--green">{f}</span>)}</div>}
+                {p.data.placeholder && <span class="xs muted">{team.bioNote}</span>}
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    ))}
+
+    <div class="stack" style="--stack-gap: 20px" data-panel="investor" hidden>
+      <p class="team__intro">{team.groups.investor.intro}</p>
+      <ul class="investors">
+        {team.investors.map((p, i) => (
+          <li><span class="av" style={`background:${colors[i % colors.length]}`}>{p.name.charAt(0)}</span><span><b>{p.name}</b><br /><span class="xs">{p.isParent ? `${ui.investor} · ${ui.parent}` : ui.investor}</span></span></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-team]')) {
+    const tabs = root.querySelectorAll<HTMLElement>('[data-tab]');
+    tabs.forEach((tab) => tab.addEventListener('click', () => {
+      tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+      root.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => (p.hidden = p.dataset.panel !== tab.dataset.tab));
+    }));
+    root.querySelectorAll<HTMLElement>('[data-person]').forEach((btn) => btn.addEventListener('click', () => {
+      const panel = btn.closest('[data-panel]')!;
+      panel.querySelectorAll('[data-person]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      panel.querySelectorAll<HTMLElement>('[data-bio]').forEach((b) => (b.hidden = b.dataset.bio !== btn.dataset.person));
+    }));
+  }
+</script>
+<style>
+  .team__intro { max-width: 760px; }
+  .team__grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .team__people { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .person { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 18px 10px; border-radius: var(--radius-card); cursor: pointer; color: var(--color-navy); background: var(--color-white); border: 2px solid transparent; }
+  .person[aria-pressed="true"] { border-color: var(--color-navy); }
+  .bio { display: flex; flex-direction: column; gap: 16px; border: 2px solid var(--color-navy); }
+  .bio[hidden], [data-panel][hidden] { display: none; }
+  .av--lg { width: 72px; height: 72px; font-size: 26px; background: var(--color-cyan); }
+  .bio :global(.tag) { background: var(--color-bg-sky); color: var(--color-navy); padding: 6px 12px; }
+  .investors { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+  .investors li { display: flex; align-items: center; gap: 12px; background: var(--color-white); border-radius: var(--radius-control); padding: 12px 14px; color: var(--color-navy); }
+  @media (max-width: 860px) { .team__grid { grid-template-columns: 1fr; } .team__people { grid-template-columns: repeat(2, 1fr); } }
+</style>

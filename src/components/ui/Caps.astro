@@ -1,0 +1,7 @@
+---
+/** Renders Georgian text in Mtavruli capitals (never use CSS uppercase on Georgian). */
+import { toMtavruli } from '@/lib/georgian';
+interface Props { text: string; class?: string }
+const { text, class: cls } = Astro.props;
+---
+<span class={cls}>{toMtavruli(text)}</span>

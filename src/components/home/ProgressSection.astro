@@ -1,0 +1,48 @@
+---
+import { getPage, getSettings } from '@/lib/content';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Countdown from '@/components/shared/Countdown.astro';
+import { t } from '@/i18n/ui';
+const { progress: p } = await getPage('homePage');
+const s = await getSettings();
+const ui = t();
+const barColor = { blue: 'var(--color-blue)', teal: 'var(--color-teal-bright)', red: 'var(--color-red-bright)' };
+const badgeColor = { blue: 'var(--color-blue)', teal: 'var(--color-teal)', red: 'var(--color-red)', gold: 'var(--color-gold)' };
+---
+<section class="bg-navy sec">
+  <div class="wrap stack" style="--stack-gap: 40px">
+    <SectionHeading num="04" label={p.label} title={p.title} accent={p.accent} after={p.titleAfter} onDark />
+    <div class="row" data-placeholder={p.placeholder || undefined}>
+      <div class="card stack" style="flex: 2 1 520px; --stack-gap: 18px; color: var(--color-ink)">
+        <div class="row" style="justify-content: space-between; align-items: center; --row-gap: 10px">
+          <span class="row" style="--row-gap: 12px; align-items: center"><span class="av">{p.sample.name.charAt(0)}</span><span><b class="strong-navy">{p.sample.name}</b><br /><span class="small muted">{p.sample.meta}</span></span></span>
+          <span class="tag tag--blue">{ui.portfolioSample}</span>
+        </div>
+        <div class="stack" style="--stack-gap: 10px">
+          {p.sample.bars.map((b) => (
+            <div><div class="bar-row"><span>{b.label}</span><b class="strong-navy">{b.value}</b></div><div class="bar"><span style={`width: ${b.percent}%; background: ${barColor[b.color]}`}></span></div></div>
+          ))}
+        </div>
+        <div class="goal"><b class="strong-navy">{ui.goalThisWeek}</b> {p.sample.goal}</div>
+      </div>
+      <div class="stack" style="flex: 1 1 300px; --stack-gap: 20px">
+        <div class="card badges">
+          {p.badges.map((b) => <span class="badge" style={`color: ${badgeColor[b.color]}`}>{b.label}</span>)}
+        </div>
+        <div class="card exhib" data-placeholder={s.nextExhibition.placeholder || undefined}>
+          <b class="strong-navy">{ui.nextExhibition}</b>
+          <div class="display exhib__days"><Countdown date={s.nextExhibition.date} suffix="plain" /></div>
+          <span class="exhib__text">„{s.nextExhibition.title}“. {p.exhibitionText}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  .goal { background: var(--color-bg-ice); border-radius: var(--radius-card); padding: 16px; font-size: 16px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .badge { width: 104px; height: 104px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 800; font-size: 12px; line-height: 1.2; border: 1.5px solid currentColor; padding: 8px; overflow-wrap: anywhere; hyphens: auto; }
+  .exhib { background: var(--color-yellow); color: var(--color-navy); }
+  .exhib__days { font-size: 48px; line-height: 1.1; }
+  .exhib__text { font-weight: 700; }
+</style>

@@ -1,0 +1,78 @@
+---
+/**
+ * Every page uses this layout:
+ *   <BaseLayout title=… description=…>
+ *     <Fragment slot="hero">…page hero on the cyan band (with the big "?"), under the header…</Fragment>
+ *     …sections…
+ *   </BaseLayout>
+ */
+import '@/styles/global.css';
+import AnnouncementBar from '@/components/layout/AnnouncementBar.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import MobileActionBar from '@/components/layout/MobileActionBar.astro';
+import { getSettings, getPhoto } from '@/lib/content';
+import { getImage } from 'astro:assets';
+import { t } from '@/i18n/ui';
+
+interface Props { title?: string; description?: string; ogPhoto?: string; noindex?: boolean; type?: 'website' | 'article'; /** homepage uses the larger "?" shape */ bigQmark?: boolean }
+const s = await getSettings();
+const { title = s.seo.title, description = s.seo.description, ogPhoto = 'studio-girl', noindex = false, type = 'website', bigQmark = false } = Astro.props;
+const ui = t();
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const og = await getImage({ src: (await getPhoto(ogPhoto)).src, width: 1200, format: 'jpg' });
+const ogUrl = new URL(og.src, Astro.site);
+
+// Dashed "ნიმუში" outlines around placeholder content: on in dev and on Cloudflare preview
+// deployments (any branch except main), off on the live site.
+const branch = process.env.CF_PAGES_BRANCH;
+const showPlaceholders = process.env.SHOW_PLACEHOLDERS === 'true' || (branch ? branch !== 'main' : import.meta.env.DEV);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'School',
+  name: s.schoolNameShort,
+  telephone: s.phone,
+  email: s.email,
+  url: Astro.site?.toString(),
+  sameAs: [s.facebookUrl, s.instagramUrl],
+  address: { '@type': 'PostalAddress', addressLocality: 'Tbilisi', addressCountry: 'GE' },
+};
+---
+<!doctype html>
+<html lang="ka">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#00C0FF" />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta property="og:type" content={type} />
+    <meta property="og:locale" content="ka_GE" />
+    <meta property="og:site_name" content={s.schoolNameShort} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body class:list={{ 'show-placeholders': showPlaceholders }}>
+    <a class="skip-link" href="#main">{ui.skipToContent}</a>
+    <AnnouncementBar />
+    <div class:list={['top bg-cyan qmark-band']}>
+      <span class:list={['qmark', { 'qmark--big': bigQmark }]} aria-hidden="true">?</span>
+      <Header />
+      <slot name="hero" />
+    </div>
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <MobileActionBar />
+  </body>
+</html>

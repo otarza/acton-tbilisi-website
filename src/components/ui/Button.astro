@@ -1,0 +1,25 @@
+---
+/**
+ * variant: primary (navy) | light (white on navy sections) | ghost (outlined) | soft (sky blue) | hl (cyan highlight, for navy sections)
+ * size: md | lg | sm
+ */
+interface Props { href?: string; variant?: 'primary' | 'light' | 'ghost' | 'soft' | 'hl'; size?: 'sm' | 'md' | 'lg'; type?: 'button' | 'submit'; class?: string; [key: string]: unknown }
+const { href, variant = 'primary', size = 'md', type = 'button', class: cls, ...rest } = Astro.props;
+const classes = ['btn', `btn--${variant}`, `btn--${size}`, cls];
+---
+{href
+  ? <a href={href} class:list={classes} {...rest}><slot /></a>
+  : <button type={type} class:list={classes} {...rest}><slot /></button>}
+<style is:global>
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 26px; border-radius: var(--radius-pill); font-weight: 900; font-size: 16px; text-decoration: none; border: 0; cursor: pointer; font-family: inherit; text-align: center; line-height: 1.2; }
+  .btn--sm { min-height: 44px; padding: 0 18px; font-size: 15px; }
+  .btn--lg { min-height: 60px; padding: 0 34px; font-size: 18px; }
+  .btn--primary { background: var(--color-navy); color: var(--color-white); }
+  .btn--primary:hover { background: var(--color-navy-2); color: var(--color-white); }
+  .btn--light { background: var(--color-white); color: var(--color-navy); }
+  .btn--ghost { background: var(--color-white); color: var(--color-navy); border: 2px solid var(--color-line-strong); }
+  .btn--soft { background: var(--color-bg-sky); color: var(--color-navy); }
+  .btn--hl { background: var(--color-hl); color: var(--color-navy); }
+  .btn--hl:hover { background: var(--color-white); color: var(--color-navy); }
+  .btn[disabled] { opacity: .6; cursor: progress; }
+</style>

@@ -1,0 +1,13 @@
+---
+/** Shows a photo from the register (src/content/photos.yaml) by id. Alt text comes from the register. */
+import { Image } from 'astro:assets';
+import { getPhoto } from '@/lib/content';
+interface Props { id: string; class?: string; widths?: number[]; sizes?: string; loading?: 'lazy' | 'eager'; alt?: string }
+const { id, class: cls, widths = [400, 800, 1200], sizes = '(max-width: 860px) 100vw, 50vw', loading = 'lazy', alt } = Astro.props;
+const photo = await getPhoto(id);
+const usable = widths.filter((w) => w <= photo.src.width);
+---
+<Image src={photo.src} alt={alt ?? photo.alt} class:list={['photo', cls]} widths={usable.length ? usable : [photo.src.width]} sizes={sizes} loading={loading} />
+<style>
+  .photo { width: 100%; height: 100%; object-fit: cover; }
+</style>

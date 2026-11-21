@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Photo from '@/components/ui/Photo.astro';
+import { slugOf } from '@/lib/content';
+import { formatDateKa } from '@/lib/georgian';
+import { t } from '@/i18n/ui';
+interface Props { post: CollectionEntry<'posts'> }
+const { post } = Astro.props;
+const ui = t().blog;
+const href = `/blog/${slugOf(post.id)}`;
+---
+<article class="card card--outline pc" data-placeholder={post.data.placeholder || undefined}>
+  {post.data.cover && <a href={href} class="pc__img" tabindex="-1" aria-hidden="true"><Photo id={post.data.cover} alt="" sizes="(max-width: 860px) 100vw, 400px" /></a>}
+  <div class="stack" style="--stack-gap: 10px">
+    <span class="xs muted">{formatDateKa(post.data.date)}{post.data.draft && ' · DRAFT'}</span>
+    <h2 class="display h3"><a href={href}>{post.data.title}</a></h2>
+    <p class="small">{post.data.description}</p>
+    <a href={href} class="strong-navy small" aria-hidden="true" tabindex="-1">{ui.readMore}</a>
+  </div>
+</article>
+<style>
+  .pc { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+  .pc > .stack { padding: 22px 24px 26px; }
+  .pc__img { display: block; height: 220px; }
+  .pc h2 a { color: var(--color-navy); text-decoration: none; }
+  .pc h2 a:hover { text-decoration: underline; }
+</style>

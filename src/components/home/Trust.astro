@@ -1,0 +1,29 @@
+---
+import { getPage } from '@/lib/content';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+const { trust } = await getPage('homePage');
+---
+<section class="bg-sky sec">
+  <div class="wrap stack" style="--stack-gap: 32px">
+    <SectionHeading num="08" label={trust.label} title={trust.title} accent={trust.accent} />
+    <div class="grid-auto" style="--min: 300px" data-placeholder={trust.placeholder || undefined}>
+      {trust.cards.map((c) => (
+        <a href={c.href} class="card trust">
+          {c.kind === 'accreditation' && <span class="display trust__big">{c.big}</span>}
+          {c.kind === 'team' && <span class="trust__avs" aria-hidden="true"><span class="av">გ</span><span class="av" style="background:#5BB8F5">გ</span><span class="av" style="background:#F07C7E">ს</span><span class="av" style="background:#FFD84D">მ</span></span>}
+          {c.kind === 'safety' && <svg width="40" height="48" viewBox="0 0 40 48" aria-hidden="true"><path d="M3 6 Q20 -1 37 6 V22 Q37 38 20 46 Q3 38 3 22 Z" fill="#1E9E5A"></path><path d="M12 24 L18 30 L29 17" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>}
+          <b class="strong-navy">{c.title}</b>
+          <span class="small">{c.text}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+<style>
+  .trust { text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 10px; transition: transform .15s; }
+  .trust:hover { transform: translateY(-2px); color: inherit; }
+  .trust__big { font-size: 44px; color: var(--color-blue); line-height: 1.1; }
+  .trust__avs { display: flex; }
+  .trust__avs .av { border: 3px solid var(--color-white); }
+  .trust__avs .av + .av { margin-left: -12px; }
+</style>

@@ -1,0 +1,40 @@
+# PHOTO REGISTER — every photo used on the site must be listed here.
+# Files live in src/assets/photos/. Components refer to photos by `id`.
+#
+# consent:
+#   signed      = written parental consent is on file for every identifiable child (Georgian law №3144)
+#   pending     = consent not yet confirmed → `npm run check` warns, production must not ship these
+#   none-needed = no identifiable children (backs of heads, hands, objects, adults who agreed)
+#
+# Source of the current photos: cropped from the school's public Facebook posts (2026-11).
+# They are already public there, but the school must still confirm consent for website use.
+- id: studio-girl
+  file: studio-girl.jpg
+  alt: გოგონა ვარდისფერი სათვალით სტუდიაში, ხელში კვერცხი უჭირავს
+  consent: pending
+  source: Facebook, 2026
+- id: market-stall
+  file: market-stall.jpg
+  alt: ბავშვები და მშობლები შაბათის ბაზრობაზე, მაგიდაზე ნამცხვრები და სასმელები
+  consent: pending
+  source: Facebook, 2026
+- id: ant-quest
+  file: ant-quest.jpg
+  alt: ბავშვები მრგვალ მაგიდასთან ჭიანჭველების ფერმას აკვირდებიან მეგზურთან ერთად
+  consent: pending
+  source: Facebook, 2026
+- id: market-parents
+  file: market-parents.jpg
+  alt: მშობლები და ბავშვები ბაზრობაზე ბავშვების ნაწარმს ათვალიერებენ
+  consent: pending
+  source: Facebook, 2026
+- id: teen-seller
+  file: teen-seller.jpg
+  alt: მოზარდი თავის დახლთან ბაზრობაზე ყიდის
+  consent: pending
+  source: Facebook, 2026
+- id: exhibition-talk
+  file: exhibition-talk.jpg
+  alt: გოგონა ლურჯ ქურთუკში გამოფენაზე საჯაროდ საუბრობს
+  consent: pending
+  source: Facebook, 2026

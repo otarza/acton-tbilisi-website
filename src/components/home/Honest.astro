@@ -1,0 +1,25 @@
+---
+import { getPage } from '@/lib/content';
+import SectionLabel from '@/components/ui/SectionLabel.astro';
+const { honest } = await getPage('homePage');
+---
+<section class="wrap sec stack" style="--stack-gap: 40px" aria-label={honest.label}>
+  <div class="row" style="--row-gap: 48px">
+    <div style="flex: 0 1 320px"><SectionLabel num="01" text={honest.label} /></div>
+    <figure class="stack honest__q" style="--stack-gap: 16px">
+      <blockquote class="display">{honest.quote}</blockquote>
+      <figcaption class="strong-navy">{honest.quoteAuthor}</figcaption>
+    </figure>
+  </div>
+  <ol class="grid-auto honest__values">
+    {honest.values.map((v, i) => (
+      <li class="card card--sky"><span class="display honest__n">{i + 1}</span><h3 class="display h3">{v}</h3></li>
+    ))}
+  </ol>
+</section>
+<style>
+  .honest__q { flex: 1 1 520px; margin: 0; }
+  .honest__q blockquote { margin: 0; font-size: clamp(24px, 2.8vw, 36px); line-height: 1.35; }
+  .honest__values { list-style: none; margin: 0; padding: 0; }
+  .honest__n { display: block; font-size: 48px; color: var(--color-blue); line-height: 1; margin-bottom: 10px; }
+</style>

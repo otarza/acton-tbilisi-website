@@ -1,0 +1,22 @@
+---
+import { getSettings } from '@/lib/content';
+const s = await getSettings();
+const a = s.announcement;
+---
+<div class="ann">
+  <div class="wrap ann__inner">
+    {a?.enabled && (
+      <span data-placeholder={a.placeholder || undefined}>
+        <b class="ann__hl">{a.text}</b> · <a href={a.href}>{a.linkText}</a>
+      </span>
+    )}
+    <span class="ann__contact">{s.responseTime} · <a href={s.phoneHref}>{s.phone}</a></span>
+  </div>
+</div>
+<style>
+  .ann { background: var(--color-navy); color: var(--color-white); font-size: var(--text-sm); }
+  .ann__inner { padding-top: 10px; padding-bottom: 10px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; }
+  .ann__hl { color: var(--color-hl); }
+  .ann a { color: var(--color-white); font-weight: 800; }
+  @media (max-width: 860px) { .ann { font-size: var(--text-xs); } .ann__contact { display: none; } }
+</style>

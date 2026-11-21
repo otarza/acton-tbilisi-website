@@ -1,0 +1,101 @@
+---
+/** "Not for everyone" lists + the 4-question fit quiz (parents / kids). Copy: pages/<lang>/home.yaml → fit */
+import { getPage } from '@/lib/content';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Button from '@/components/ui/Button.astro';
+import { t } from '@/i18n/ui';
+const { fit } = await getPage('homePage');
+const ui = t();
+const quizData = { audiences: fit.quiz.audiences, labels: fit.quiz.verdictLabels };
+---
+<section id="fit" class="sec bg-sky">
+  <div class="wrap stack" style="--stack-gap: 40px">
+    <SectionHeading num="05" label={fit.label} title={fit.title} accent={fit.accent} />
+    <div class="grid-auto" style="--min: 320px">
+      <div class="card"><h3 class="fit__h">{ui.youWillLike}</h3><ul class="fit__list">{fit.forYou.map((x) => <li>{x}</li>)}</ul></div>
+      <div class="card card--dashed"><h3 class="fit__h">{ui.otherSchool}</h3><ul class="fit__list">{fit.notForYou.map((x) => <li>{x}</li>)}</ul></div>
+    </div>
+    <div class="card card--float quiz" data-quiz={JSON.stringify(quizData)}>
+      <div class="stack quiz__intro" style="--stack-gap: 14px">
+        <b class="accent">{ui.quizMeta}</b>
+        <h3 class="display quiz__title">{fit.quiz.title}</h3>
+        <p class="small">{fit.quiz.intro}</p>
+        <div class="row" style="--row-gap: 10px" role="group" aria-label={ui.whoFills}>
+          {fit.quiz.audiences.map((a, i) => <button type="button" class="choice" aria-pressed={i === 0 ? 'true' : 'false'} data-audience={i}>{a.label}</button>)}
+        </div>
+      </div>
+      <div class="stack quiz__body" style="--stack-gap: 14px" aria-live="polite">
+        <div class="quiz__dots" data-dots></div>
+        <span class="small muted" data-step></span>
+        <b class="display quiz__q pop" data-question></b>
+        <div class="stack" style="--stack-gap: 10px" data-options></div>
+        <div class="stack pop" style="--stack-gap: 14px" data-result hidden>
+          <span class="quiz__verdict" data-verdict></span>
+          <p class="strong-navy" style="font-weight: 500" data-verdict-text></p>
+          <div class="row" style="--row-gap: 12px"><Button href="#join">{ui.bookMeeting}</Button><Button variant="ghost" data-restart>{ui.restart}</Button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  type Audience = { label: string; questions: { q: string; options: string[] }[]; verdicts: { yes: string; maybe: string; no: string } };
+  type Data = { audiences: Audience[]; labels: { yes: string[]; maybe: string[]; no: string[] } };
+  for (const root of document.querySelectorAll<HTMLElement>('[data-quiz]')) {
+    const data: Data = JSON.parse(root.dataset.quiz!);
+    let aud = 0, step = 0, score = 0;
+    const $ = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+    const render = () => {
+      const qs = data.audiences[aud].questions;
+      const done = step >= qs.length;
+      $('[data-dots]').innerHTML = qs.map((_, i) => `<span class="${i < step ? 'on' : ''}"></span>`).join('');
+      $('[data-step]').hidden = done; $('[data-question]').hidden = done; $('[data-options]').hidden = done;
+      $('[data-result]').hidden = !done;
+      if (!done) {
+        $('[data-step]').textContent = `${step + 1} / ${qs.length}`;
+        $('[data-question]').textContent = qs[step].q;
+        const opts = $('[data-options]');
+        opts.innerHTML = '';
+        qs[step].options.forEach((o, i) => {
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'quiz__opt'; b.textContent = o;
+          b.addEventListener('click', () => { score += 2 - i; step++; render(); });
+          opts.append(b);
+        });
+      } else {
+        const k = score >= 6 ? 'yes' : score >= 3 ? 'maybe' : 'no';
+        const v = $('[data-verdict]');
+        v.textContent = data.labels[k][aud] ?? data.labels[k][0];
+        v.dataset.kind = k;
+        $('[data-verdict-text]').textContent = data.audiences[aud].verdicts[k];
+      }
+    };
+    root.querySelectorAll<HTMLButtonElement>('[data-audience]').forEach((b) => b.addEventListener('click', () => {
+      aud = Number(b.dataset.audience); step = 0; score = 0;
+      root.querySelectorAll('[data-audience]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      render();
+    }));
+    $('[data-restart]').addEventListener('click', () => { step = 0; score = 0; render(); });
+    render();
+  }
+</script>
+<style>
+  .fit__h { font-size: 21px; color: var(--color-navy); margin-bottom: 12px; }
+  .fit__list { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; }
+  .quiz { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+  .quiz__intro { flex: 1 1 300px; }
+  .quiz__title { font-size: 32px; line-height: 1.15; }
+  .quiz__body { flex: 1 1 480px; min-height: 320px; }
+  .quiz__q { font-size: 22px; line-height: 1.3; }
+  .quiz__dots { display: flex; gap: 6px; }
+  .quiz__dots :global(span) { flex: 1; height: 6px; border-radius: 999px; background: var(--color-track); }
+  .quiz__dots :global(span.on) { background: var(--color-blue); }
+  .quiz :global(.quiz__opt) { min-height: 56px; text-align: left; padding: 10px 20px; border-radius: var(--radius-control); border: 1.5px solid var(--color-line); background: var(--color-white); color: var(--color-navy); font: inherit; font-size: 17px; font-weight: 600; cursor: pointer; }
+  .quiz :global(.quiz__opt:hover) { border-color: var(--color-blue); background: var(--color-bg-ice); }
+  .quiz__verdict { align-self: flex-start; font-weight: 800; padding: 8px 16px; border-radius: 999px; }
+  .quiz__verdict[data-kind="yes"] { background: var(--color-green); color: var(--color-white); }
+  .quiz__verdict[data-kind="maybe"] { background: var(--color-yellow); color: var(--color-navy); }
+  .quiz__verdict[data-kind="no"] { background: var(--color-track); color: var(--color-navy); }
+  [hidden] { display: none !important; }
+  @media (max-width: 860px) { .quiz__title { font-size: 26px; } .quiz__body { min-height: 0; } }
+</style>
