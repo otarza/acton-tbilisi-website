@@ -71,3 +71,12 @@
   consent: signed
   source: "School photos, clubs, 2026"
   note: covered by the enrolment contract photo clause
+# Article "ექტონის აკადემიის ქსელის ისტორია" cover. Provided by Vakho 2026-11-24 (file Jeff_and_Laura.webp).
+# Published by Acton Academy itself on its "Our story" page (actonacademy.org/actons-story/); the children shown are now grown.
+# Not enrolled children, so not "signed": decided by Vakho that no extra consent is needed.
+- id: jeff-and-laura
+  file: jeff-and-laura.webp
+  alt: "ოჯახი მწვანე მდელოზე, მთებისა და ნაძვების ფონზე: ორი ზრდასრული და სამი ბავშვი, ორ ბიჭს ჩაფხუტი ახურავს"
+  consent: none-needed
+  source: "actonacademy.org/actons-story/ (Acton Academy), provided by Vakho 2026-11-24"
+  note: "published by Acton Academy on its own story page; persons shown are the founders and their now-adult children; photo credit given in the article caption"
