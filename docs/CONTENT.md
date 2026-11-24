@@ -29,7 +29,9 @@ to hide), `nextExhibition` (`date`, `title` → countdowns on the homepage), `na
 `seo`, `hero`, `marquee`, `honest` (01 quote + 3 values), `studios` (02 heading), `day` (03 schedule),
 `progress` (04 portfolio sample, badges), `fit` (05 "for you / not for you" + quiz with 2 audiences × 4
 questions × exactly 3 options, best answer first), `videos` (06; add `youtubeId` to make a video play),
-`testimonials` (07 heading), `trust` (08 cards), `price` (09), `join` (10 steps + form text), `faqPreview`.
+`testimonials` (07 heading), `trust` (08 cards), `price` (09), `join` (10 steps + form text), `faqPreview`,
+`clubs` (after-school clubs section, shown right after `day`: `kicker`, `title`/`accent`/`titleAfter`, `lead`,
+`facts`, exactly 3 `photos`, interest-chip label, CTA text; the tiles themselves come from `clubs/ka/`).
 
 ### `pages/ka/about.yaml`
 `hero` (+ `stats`), `story.items`, `team` (group names/intros, `investors` list with `isParent`),
@@ -39,10 +41,39 @@ questions × exactly 3 options, best answer first), `videos` (06; add `youtubeId
 ### `pages/ka/faq.yaml`
 `hero`, `categories` (id → Georgian name), `archive` (`title` may contain `{n}`, `topics` id → name), `cta`.
 
+### `pages/ka/clubs.yaml` — clubs page + every single club page
+`seo`; `facts` (shared by all clubs: `ages`, `agesText`, `ageMin`/`ageMax` (form age list), `frequency`, `time`,
+`price` (a number, GEL per club per month: the sign-up form multiplies it), `currency`, `perMonth`, `phone`/`phoneHref`,
+`audience`); `categories` (interest id → name; ids: create | tech | think | move); `days` (5 weekdays, Monday first,
+`short` + `full`); `hero` (+ `facts`, 3 `photos`, `cta`); `steps` (how it works); `list` (filter, view and card labels;
+`{n}` = number of clubs); `join` (sign-up form text; `{n}`, `{clubs}`); `faq` (`title`/`accent` + `pending`: questions
+the school has not answered yet, shown with `placeholder: true`. Confirmed club answers live in `faq/ka/` with
+`category: clubs`, so the assistant can answer them too); `club` (single club page: section titles, the sample
+`timeline`, `groupSize`, facts card labels, related clubs).
+
+### `clubs/ka/<slug>.md` — one after-school club per file (URL `/clubs/<slug>`)
+```yaml
+name: "რობოტიკა"
+order: 2                     # position everywhere (homepage tiles, list, switcher)
+category: tech               # create | tech | think | move (labels in pages/ka/clubs.yaml → categories)
+tagline: "ააწყე, დააპროგრამე, აამოძრავე"
+icon: "M6 9h12v10H6z …"      # SVG path data, 24×24, stroked line icon
+colors: { bg: "#E9FDFE", fg: "#00707A" }   # light tile + dark icon/text; check-content requires 4.5:1 contrast
+photo: clubs-gamelab         # optional photo id; without it the card shows the coloured icon tile ("ფოტო მალე")
+days: [0, 2]                 # weekdays it meets: 0 = Monday … 4 = Friday (drives the day filter + weekly schedule)
+activities:                  # "რას აკეთებენ ბავშვები" cards
+  - { title: "აწყობა", text: "…" }
+gains: ["ლოგიკური ფიქრი", "…"]   # "რას წაიღებს ბავშვი" pills
+guide: { name: "…", bio: "…" }   # optional; without it a placeholder guide card is shown
+placeholder: true
+```
+Body (Markdown) = the description (its first paragraph is used on the list card). The sign-up form on `/clubs#join`
+posts to `/api/lead` with `type: "club"` (see BACKEND.md); `/clubs?club=<slug>#join` pre-selects a club.
+
 ### `faq/ka/<slug>.md` — one question per file
 ```yaml
 question: "რა ღირს სწავლა?"
-category: price          # learning | status | daily | price | enrollment
+category: price          # learning | status | daily | price | enrollment | clubs
 order: 1
 showOnHome: true         # optional: show in the homepage FAQ block
 chip: "რამდენი ღირს?"     # optional: quick button in the assistant

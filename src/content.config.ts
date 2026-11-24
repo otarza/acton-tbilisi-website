@@ -135,6 +135,22 @@ const homePage = defineCollection({
       formNote: z.string(),
     }),
     faqPreview: z.object({ label: z.string(), allLink: z.string() }),
+    /** Homepage clubs section (after "day"). Club names, taglines and icons come from the clubs collection. */
+    clubs: z.object({
+      kicker: z.string(),
+      title: z.string(),
+      accent: z.string(),
+      titleAfter: z.string().optional(),
+      lead: z.string(),
+      facts: z.array(z.object({ big: z.string(), text: z.string() })),
+      photos: z.array(photoId).length(3),
+      interestLabel: z.string(),
+      allLabel: z.string(),
+      ctaTitle: z.string(),
+      ctaText: z.string(),
+      ctaAll: z.string(),
+      placeholder,
+    }),
   }),
 });
 
@@ -189,6 +205,105 @@ const articlesPage = defineCollection({
   }),
 });
 
+/** Club interest groups. Labels: src/content/pages/ka/clubs.yaml → categories. */
+export const CLUB_CATEGORIES = ['create', 'tech', 'think', 'move'] as const;
+const clubsPage = defineCollection({
+  loader: glob({ pattern: '**/clubs.yaml', base: './src/content/pages' }),
+  schema: z.object({
+    seo: z.object({ title: z.string(), description: z.string() }),
+    /** Facts shared by every club. `price` is a number (GEL per club per month), used for the live total. */
+    facts: z.object({
+      ages: z.string(),
+      agesText: z.string(),
+      ageMin: z.number().int(),
+      ageMax: z.number().int(),
+      frequency: z.string(),
+      time: z.string(),
+      price: z.number(),
+      currency: z.string(),
+      perMonth: z.string(),
+      phone: z.string(),
+      phoneHref: z.string(),
+      audience: z.string(),
+    }),
+    categories: z.record(z.enum(CLUB_CATEGORIES), z.string()),
+    /** Weekday names, Monday first. Club `days` are indexes into this list (0 = Monday). */
+    days: z.array(z.object({ short: z.string(), full: z.string() })).length(5),
+    hero: z.object({
+      kicker: z.string(),
+      title: z.string(),
+      accent: z.string(),
+      lead: z.string(),
+      facts: z.array(z.object({ big: z.string(), text: z.string() })),
+      photos: z.array(photoId).length(3),
+      cta: z.string(),
+    }),
+    steps: z.array(z.object({ title: z.string(), text: z.string() })),
+    list: z.object({
+      title: z.string(),
+      accent: z.string(),
+      viewCards: z.string(),
+      viewWeek: z.string(),
+      interest: z.string(),
+      day: z.string(),
+      all: z.string(),
+      anyDay: z.string(),
+      daysPlaceholderNote: z.string(),
+      weekNote: z.string(),
+      total: z.string(),
+      found: z.string(),
+      clear: z.string(),
+      noResultsTitle: z.string(),
+      noResultsText: z.string(),
+      noResultsButton: z.string(),
+      photoSoon: z.string(),
+      add: z.string(),
+      added: z.string(),
+      details: z.string(),
+    }),
+    join: z.object({
+      title: z.string(),
+      accent: z.string(),
+      text: z.string(),
+      chosen: z.string(),
+      chooseHint: z.string(),
+      whichClubs: z.string(),
+      school: z.string(),
+      schoolOurs: z.string(),
+      schoolOther: z.string(),
+      agePlaceholder: z.string(),
+      ageSuffix: z.string(),
+      note: z.string(),
+      success: z.string(),
+      successChoice: z.string(),
+      successNone: z.string(),
+      again: z.string(),
+      required: z.string(),
+    }),
+    faq: z.object({
+      title: z.string(),
+      accent: z.string(),
+      /** Questions the school still has to answer. Confirmed answers live in src/content/faq/ka/ (category: clubs). */
+      pending: z.array(z.object({ q: z.string(), a: z.string(), placeholder })).default([]),
+    }),
+    club: z.object({
+      switcher: z.string(),
+      breadcrumb: z.string(),
+      signUp: z.string(),
+      photoSoon: z.string(),
+      activities: z.object({ title: z.string(), accent: z.string(), after: z.string().optional() }),
+      timeline: z.object({ title: z.string(), accent: z.string(), placeholder, items: z.array(z.object({ time: z.string(), title: z.string(), text: z.string() })) }),
+      gains: z.object({ title: z.string(), accent: z.string(), after: z.string().optional() }),
+      guide: z.object({ label: z.string(), emptyName: z.string(), emptyBio: z.string() }),
+      factsTitle: z.string(),
+      factLabels: z.object({ ages: z.string(), frequency: z.string(), time: z.string(), days: z.string(), group: z.string(), audience: z.string(), price: z.string() }),
+      groupSize: z.object({ value: z.string(), placeholder }),
+      question: z.string(),
+      related: z.object({ title: z.string(), accent: z.string(), after: z.string().optional(), all: z.string(), see: z.string() }),
+    }),
+  }),
+});
+
 /* ---------- Repeating content (one Markdown file per item) ---------- */
 const studios = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/studios' }),
@@ -204,7 +319,30 @@ const studios = defineCollection({
   }),
 });
 
-export const FAQ_CATEGORIES = ['learning', 'status', 'daily', 'price', 'enrollment'] as const;
+/* ---------- After-school clubs (კლუბები): one file per club, body = description ---------- */
+const clubs = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/clubs' }),
+  schema: z.object({
+    name: z.string(),
+    order: z.number().default(100),
+    category: z.enum(CLUB_CATEGORIES),
+    tagline: z.string(),
+    /** SVG path data (24×24 viewBox, stroked) for the club icon. */
+    icon: z.string(),
+    /** Light tile background + dark icon/text colour. Pick a pair with at least 4.5:1 contrast. */
+    colors: z.object({ bg: z.string().regex(/^#[0-9A-Fa-f]{6}$/), fg: z.string().regex(/^#[0-9A-Fa-f]{6}$/) }),
+    /** Cover photo id from photos.yaml. Without one the page shows the coloured icon tile ("ფოტო მალე"). */
+    photo: photoId.optional(),
+    /** Weekdays the club meets: 0 = Monday … 4 = Friday. */
+    days: z.array(z.number().int().min(0).max(4)).min(1).max(5),
+    activities: z.array(z.object({ title: z.string(), text: z.string() })).default([]),
+    gains: z.array(z.string()).default([]),
+    guide: z.object({ name: z.string(), bio: z.string(), photo: photoId.optional() }).optional(),
+    placeholder,
+  }),
+});
+
+export const FAQ_CATEGORIES = ['learning', 'status', 'daily', 'price', 'enrollment', 'clubs'] as const;
 const faq = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/faq' }),
   schema: z.object({
@@ -308,4 +446,4 @@ const photos = defineCollection({
   }),
 });
 
-export const collections = { settings, homePage, aboutPage, faqPage, studios, faq, questions, team, testimonials, articles, articlesPage, photos };
+export const collections = { settings, homePage, aboutPage, faqPage, clubsPage, clubs, studios, faq, questions, team, testimonials, articles, articlesPage, photos };

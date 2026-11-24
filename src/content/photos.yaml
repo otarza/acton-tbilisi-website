@@ -46,3 +46,28 @@
   consent: signed
   source: Facebook, 2026
   note: covered by the enrolment contract photo clause
+# Club photos (after-school clubs, enrolled children). Added 2026-11-24 from the Clubs design canvas.
+- id: clubs-art-group
+  file: clubs-art-group.jpg
+  alt: "ბავშვები ხელოვნების კლუბში, ცისარტყელას ნახატის წინ"
+  consent: signed
+  source: "School photos, clubs, 2026"
+  note: covered by the enrolment contract photo clause
+- id: clubs-gamelab
+  file: clubs-gamelab.jpg
+  alt: "ბავშვები მაგიდასთან მეხსიერების თამაშს თამაშობენ"
+  consent: signed
+  source: "School photos, clubs, 2026"
+  note: covered by the enrolment contract photo clause
+- id: clubs-craft
+  file: clubs-craft.jpg
+  alt: "ორი ბიჭი ფერად ქაღალდს ჭრის"
+  consent: signed
+  source: "School photos, clubs, 2026"
+  note: covered by the enrolment contract photo clause
+- id: clubs-science
+  file: clubs-science.jpg
+  alt: "ორი ბავშვი კლუბში ექსპერიმენტზე მუშაობს"
+  consent: signed
+  source: "School photos, clubs, 2026"
+  note: covered by the enrolment contract photo clause

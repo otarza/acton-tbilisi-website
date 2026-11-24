@@ -47,6 +47,12 @@ for (const f of existsSync(PHOTOS_DIR) ? readdirSync(PHOTOS_DIR) : []) {
 
 /* ---- All content files ---- */
 const numbers = new Map();
+const CLUB_CATEGORIES = ['create', 'tech', 'think', 'move']; // keep in sync with CLUB_CATEGORIES in src/content.config.ts
+const lum = (hex) => {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + 0.05) / (y + 0.05); };
 const TOPICS = ['method', 'life', 'quests', 'clubs', 'parents', 'acton']; // keep in sync with ARTICLE_TOPICS in src/content.config.ts
 for (const file of walk(CONTENT)) {
   if (!/\.(md|ya?ml)$/.test(file) || file.endsWith('photos.yaml')) continue;
@@ -80,6 +86,16 @@ for (const file of walk(CONTENT)) {
     for (const tp of data.topics ?? []) if (!TOPICS.includes(tp)) errors.push(`${rel(file)}: topic "${tp}" is not one of: ${TOPICS.join(', ')}`);
     if (!/^[a-z0-9]+(-[a-z0-9]+)*\.md$/.test(file.split('/').pop())) errors.push(`${rel(file)}: file name must be latin lowercase with dashes (it becomes the URL)`);
     if (data.titleAccent && !String(data.title).includes(data.titleAccent)) errors.push(`${rel(file)}: titleAccent "${data.titleAccent}" must be a part of the title`);
+  }
+
+  // clubs: category from the fixed list, weekdays 0–4, URL-safe file name, readable colour pair
+  const cm = rel(file).match(/^src\/content\/clubs\/(\w+)\//);
+  if (cm) {
+    if (!CLUB_CATEGORIES.includes(data.category)) errors.push(`${rel(file)}: category "${data.category}" is not one of: ${CLUB_CATEGORIES.join(', ')}`);
+    for (const d of data.days ?? []) if (!Number.isInteger(d) || d < 0 || d > 4) errors.push(`${rel(file)}: days must be numbers 0–4 (0 = Monday … 4 = Friday), got "${d}"`);
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*\.md$/.test(file.split('/').pop())) errors.push(`${rel(file)}: file name must be latin lowercase with dashes (it becomes the URL /clubs/<name>)`);
+    const { bg, fg } = data.colors ?? {};
+    if (bg && fg && contrast(bg, fg) < 4.5) errors.push(`${rel(file)}: colours ${fg} on ${bg} are hard to read (contrast ${contrast(bg, fg).toFixed(1)}:1, need 4.5:1)`);
   }
 
   // testimonials need approval before they leave placeholder state

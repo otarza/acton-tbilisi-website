@@ -2,7 +2,7 @@
 
 ```
 browser ──POST /api/lead──────▶ Cloudflare Pages Function ──HTTPS──▶ Google Apps Script web app ──▶ Google Sheet
-        ──POST /api/vote──────▶   (functions/api/*.ts)                 (google/apps-script/Code.gs)     tabs "Leads", "Votes",
+        ──POST /api/vote──────▶   (functions/api/*.ts)                 (google/apps-script/Code.gs)     tabs "Leads", "Club signups", "Votes",
         ──GET  /api/votes─────▶   cached 5 min at the edge                                               "Subscribers",
         ──POST /api/subscribe─▶   weekly email sign-up (articles page)                                   "Article feedback"
         ──POST /api/feedback──▶   "was this article helpful?" yes/no                                     (+ optional email)
@@ -26,7 +26,10 @@ Firestore or a CRM).
 
 ## What is collected (privacy)
 Lead form: parent name, phone, child's age, optional preferred time, which form, which page. **No child name.**
-A consent checkbox is required. Votes: question number + option index only, no personal data.
+A consent checkbox is required.
+Club sign-up (`/clubs#join`, same `/api/lead` endpoint with `type: "club"`): chosen clubs, parent name, phone,
+child's age (5–17), our school / other school. **No child name.** Consent checkbox required. Rows go to the
+"Club signups" tab (created automatically). Votes: question number + option index only, no personal data.
 The privacy text on `/about#privacy` describes this; keep it in sync if you add fields.
 
 ## Setup (once, ~10 minutes)
@@ -42,6 +45,10 @@ The privacy text on `/about#privacy` describes this; keep it in sync if you add 
    - `SHEETS_WEBHOOK_URL` = the Web app URL
    - `SHEETS_WEBHOOK_SECRET` = the same SECRET (type: Secret)
 6. Redeploy (or push any commit). Submit the form on the site; a row appears in the "Leads" tab.
+
+> **Club sign-ups (added 2026-11-24) need a Code.gs redeploy.** Until the new `Code.gs` is pasted into Apps Script
+> and deployed as a new version, the old script answers `unknown-type` for `type: "club"` and the form shows its
+> error message (with the phone number).
 
 When you change `Code.gs`, use **Deploy → Manage deployments → Edit → New version** so the URL stays the same.
 

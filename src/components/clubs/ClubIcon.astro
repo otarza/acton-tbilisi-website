@@ -1,0 +1,6 @@
+---
+/** A club's line icon (24×24 path data from the club file). Colour = currentColor. Decorative. */
+interface Props { d: string; size?: number; stroke?: number; class?: string }
+const { d, size = 28, stroke = 2, class: cls } = Astro.props;
+---
+<svg class={cls} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width={stroke} stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d={d} /></svg>

@@ -1,0 +1,265 @@
+---
+/**
+ * CLUBS PAGE: /clubs — after-school clubs (კლუბები).
+ * Clubs: src/content/clubs/ka/*.md · Copy + shared facts: src/content/pages/ka/clubs.yaml
+ * Confirmed answers: src/content/faq/ka/ (category: clubs) · Sign-up form: src/components/clubs/ClubSignup.astro
+ * JS is progressive: without it every club card, the form and the FAQ still work as plain HTML.
+ */
+import { render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Photo from '@/components/ui/Photo.astro';
+import Button from '@/components/ui/Button.astro';
+import ClubIcon from '@/components/clubs/ClubIcon.astro';
+import Fact from '@/components/clubs/Fact.astro';
+import ClubSignup from '@/components/clubs/ClubSignup.astro';
+import { getLocalized, getPage, slugOf } from '@/lib/content';
+import { getClubs, clubUrl, clubSlug, clubVars, fill } from '@/lib/clubs';
+import { CLUB_CATEGORIES } from '@/content.config';
+import { t } from '@/i18n/ui';
+
+const p = await getPage('clubsPage');
+const ui = t().clubs;
+const clubs = await getClubs();
+const cats = CLUB_CATEGORIES.filter((k) => clubs.some((c) => c.data.category === k));
+const firstParagraph = (md = '') => md.split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean)[0] ?? '';
+const faqs = await Promise.all(
+  (await getLocalized('faq')).filter((f) => f.data.category === 'clubs').sort((a, b) => a.data.order - b.data.order)
+    .map(async (f) => ({ ...f, slug: slugOf(f.id), Content: (await render(f)).Content })),
+);
+const price = `${p.facts.price} ${p.facts.currency} ${p.facts.perMonth}`;
+---
+<BaseLayout title={p.seo.title} description={p.seo.description} ogPhoto={p.hero.photos[0]}>
+  <section slot="hero" class="wrap row chero" style="--row-gap: 48px">
+    <div class="stack chero__text" style="--stack-gap: 18px">
+      <SectionHeading level={1} num={p.facts.time.split('–')[0]} label={p.hero.kicker} title={p.hero.title} accent={p.hero.accent} />
+      <p class="lead">{p.hero.lead}</p>
+      <div class="grid-auto" style="--min: 140px; --grid-gap: 12px">
+        {p.hero.facts.map((f) => <Fact big={f.big} text={f.text} />)}
+      </div>
+      <div class="row" style="--row-gap: 12px"><Button href="#join">{p.hero.cta}</Button><Button href={p.facts.phoneHref} variant="light">{p.facts.phone}</Button></div>
+    </div>
+    <div class="chero__photos">
+      {p.hero.photos.map((id, i) => <div class:list={['cphoto', { 'cphoto--wide': i === 0 }]}><Photo id={id} widths={[400, 800]} sizes="(max-width: 860px) 100vw, 480px" loading={i === 0 ? 'eager' : 'lazy'} /></div>)}
+    </div>
+  </section>
+
+  <section class="wrap csteps" aria-label={p.hero.cta}>
+    <ol class="grid-auto" style="--min: 240px; --grid-gap: 16px" role="list">
+      {p.steps.map((s, i) => <li class="cstep"><span class="display cstep__n">{i + 1}</span><b>{s.title}</b><span>{s.text}</span></li>)}
+    </ol>
+  </section>
+
+  <section id="all" class="wrap sec stack" style="--stack-gap: 28px" data-clubs-list>
+    <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
+      <SectionHeading title={p.list.title} accent={p.list.accent} />
+      <div class="seg" role="group" aria-label={ui.view} data-js-only hidden>
+        <button type="button" aria-pressed="true" data-view="grid">{p.list.viewCards}</button>
+        <button type="button" aria-pressed="false" data-view="week">{p.list.viewWeek}</button>
+      </div>
+    </div>
+
+    <div class="cfilters stack" style="--stack-gap: 18px" role="group" aria-label={ui.filters} data-js-only hidden>
+      <div class="row" style="--row-gap: 10px; align-items: center">
+        <b class="cfilters__label">{p.list.interest}</b>
+        <button type="button" class="fchip" aria-pressed="true" data-filter-cat="">{p.list.all} <small>{clubs.length}</small></button>
+        {cats.map((k) => <button type="button" class="fchip" aria-pressed="false" data-filter-cat={k}>{p.categories[k]} <small>{clubs.filter((c) => c.data.category === k).length}</small></button>)}
+      </div>
+      <div class="row" style="--row-gap: 10px; align-items: center" data-placeholder={clubs.some((c) => c.data.placeholder) || undefined}>
+        <b class="cfilters__label">{p.list.day}</b>
+        <button type="button" class="fchip" aria-pressed="true" data-filter-day="">{p.list.anyDay}</button>
+        {p.days.map((d, i) => <button type="button" class="fchip" aria-pressed="false" data-filter-day={i} aria-label={d.full}>{d.short}</button>)}
+      </div>
+    </div>
+
+    <div class="row" style="justify-content: space-between; align-items: center; --row-gap: 16px">
+      <span class="strong-navy" role="status" aria-live="polite" data-count data-all={fill(p.list.total, { n: clubs.length })} data-found={p.list.found}>{fill(p.list.total, { n: clubs.length })}</span>
+      <button type="button" class="linkbtn" data-clear hidden>{p.list.clear}</button>
+    </div>
+
+    <ul class="cgrid" role="list" data-view-panel="grid">
+      {clubs.map((club) => {
+        const c = club.data;
+        const slug = clubSlug(club);
+        return (
+          <li class="ccard" style={clubVars(club)} data-club={slug} data-cat={c.category} data-days={c.days.join(',')}>
+            <div class:list={['ccard__cover', { 'ccard__cover--icon': !c.photo }]}>
+              {c.photo ? <Photo id={c.photo} widths={[400, 800]} sizes="(max-width: 860px) 100vw, 380px" /> : <div class="ccard__soon"><ClubIcon d={c.icon} size={72} stroke={1.6} /><span>{p.list.photoSoon}</span></div>}
+              <span class="tag ccard__cat">{p.categories[c.category]}</span>
+            </div>
+            <div class="ccard__body stack" style="--stack-gap: 12px">
+              <div class="ccard__head"><span class="cico"><ClubIcon d={c.icon} size={26} /></span><h3 class="display h3 ccard__name"><a href={clubUrl(club)}>{c.name}</a></h3></div>
+              <p class="ccard__desc" data-placeholder={c.placeholder || undefined}>{firstParagraph(club.body)}</p>
+              <div class="ccard__days">
+                {p.days.map((d, i) => <span class:list={['cday', { 'is-on': c.days.includes(i) }]} title={d.full}>{d.short}</span>)}
+                <span class="meta">{p.facts.time}</span>
+              </div>
+              <div class="meta">{p.facts.agesText} · <b>{price}</b></div>
+              <div class="ccard__actions">
+                <button type="button" class="cpick" aria-pressed="false" data-pick={slug} data-add={p.list.add} data-added={p.list.added} data-js-only hidden>{p.list.add}</button>
+                <a class="ccard__more" href={clubUrl(club)}>{p.list.details}</a>
+              </div>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+
+    <div class="cweek pop" data-view-panel="week" hidden data-placeholder={clubs.some((c) => c.data.placeholder) || undefined}>
+      <div class="cweek__scroll">
+        <div class="cweek__grid">
+          {p.days.map((d, i) => (
+            <div class="cweek__day" data-day={i}>
+              <div class="cweek__head"><b>{d.full}</b><span>{p.facts.time}</span></div>
+              <div class="cweek__list">
+                {clubs.filter((club) => club.data.days.includes(i)).map((club) => (
+                  <button type="button" class="cweek__club" style={clubVars(club)} aria-pressed="false" data-pick={clubSlug(club)} data-cat={club.data.category}>
+                    <ClubIcon d={club.data.icon} size={20} stroke={2.2} />{club.data.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <p class="cweek__note">{p.list.weekNote}</p>
+    </div>
+
+    <div class="cempty pop" data-empty hidden>
+      <span class="display cempty__q" aria-hidden="true">?</span>
+      <b class="display h3">{p.list.noResultsTitle}</b>
+      <p>{p.list.noResultsText}</p>
+      <Button data-clear>{p.list.noResultsButton}</Button>
+    </div>
+  </section>
+
+  <ClubSignup page={p} clubs={clubs} />
+
+  <section class="wrap sec stack cfaq" style="--stack-gap: 16px">
+    <SectionHeading title={p.faq.title} accent={p.faq.accent} />
+    <div class="acc">
+      {faqs.map((f, i) => <details id={f.slug} open={i === 0} data-placeholder={f.data.placeholder || undefined}><summary>{f.data.question}</summary><div><f.Content /></div></details>)}
+      {p.faq.pending.map((f) => <details data-placeholder={f.placeholder || undefined}><summary>{f.q}</summary><p>{f.a}</p></details>)}
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-clubs-list]')) {
+    root.querySelectorAll<HTMLElement>('[data-js-only]').forEach((el) => (el.hidden = false));
+    const cards = [...root.querySelectorAll<HTMLElement>('.ccard')];
+    const weekBtns = [...root.querySelectorAll<HTMLElement>('.cweek__club')];
+    const count = root.querySelector<HTMLElement>('[data-count]')!;
+    const clearLink = root.querySelector<HTMLButtonElement>('.linkbtn[data-clear]')!;
+    const empty = root.querySelector<HTMLElement>('[data-empty]')!;
+    const panels = { grid: root.querySelector<HTMLElement>('[data-view-panel="grid"]')!, week: root.querySelector<HTMLElement>('[data-view-panel="week"]')! };
+    const state = { cat: '', day: '', view: 'grid' as 'grid' | 'week' };
+
+    const press = (sel: string, attr: string, val: string) => root.querySelectorAll<HTMLElement>(sel).forEach((b) => b.setAttribute('aria-pressed', String(b.getAttribute(attr) === val)));
+    const update = () => {
+      const match = (cat: string, days: string) => (!state.cat || cat === state.cat) && (state.day === '' || days.split(',').includes(state.day));
+      let n = 0;
+      for (const c of cards) { const ok = match(c.dataset.cat!, c.dataset.days!); c.hidden = !ok; if (ok) n++; }
+      for (const b of weekBtns) b.hidden = !!state.cat && b.dataset.cat !== state.cat;
+      root.querySelectorAll<HTMLElement>('.cweek__day').forEach((d) => d.classList.toggle('is-on', d.dataset.day === state.day));
+      const filtered = !!state.cat || state.day !== '';
+      count.textContent = filtered ? count.dataset.found!.replace('{n}', String(n)) : count.dataset.all!;
+      clearLink.hidden = !filtered;
+      empty.hidden = n > 0;
+      panels.grid.hidden = n === 0 || state.view !== 'grid';
+      panels.week.hidden = n === 0 || state.view !== 'week';
+      press('[data-filter-cat]', 'data-filter-cat', state.cat);
+      press('[data-filter-day]', 'data-filter-day', state.day);
+      press('[data-view]', 'data-view', state.view);
+    };
+    root.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLElement>('button');
+      if (!b) return;
+      if (b.dataset.filterCat !== undefined) state.cat = b.dataset.filterCat;
+      else if (b.dataset.filterDay !== undefined) state.day = b.dataset.filterDay;
+      else if (b.dataset.view) state.view = b.dataset.view as 'grid' | 'week';
+      else if (b.hasAttribute('data-clear')) { state.cat = ''; state.day = ''; }
+      else return;
+      update();
+    });
+    update();
+  }
+</script>
+
+<style>
+  .chero { padding-top: 40px; padding-bottom: 80px; align-items: center; }
+  .chero__text { flex: 1 1 520px; container-type: inline-size; }
+  .chero__text :global(.h1) { font-size: min(var(--text-h1-home), 10cqi); line-height: var(--leading-tight); }
+  .chero__photos { flex: 1 1 400px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 190px 190px; gap: 14px; }
+  .cphoto { border-radius: 22px; overflow: hidden; border: 4px solid var(--color-white); box-shadow: 0 14px 34px rgba(11, 31, 74, .18); }
+  .cphoto--wide { grid-column: span 2; }
+  .cphoto--wide :global(img) { object-position: center 30%; }
+
+  .csteps { padding-top: 64px; }
+  .csteps ol { list-style: none; margin: 0; padding: 0; }
+  .cstep { background: var(--color-bg-sky); border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 6px; font-size: 16px; }
+  .cstep__n { font-size: 40px; line-height: 1; color: var(--color-blue); }
+  .cstep b { color: var(--color-navy); font-size: 19px; }
+
+  .cfilters { background: var(--color-bg-sky); border-radius: var(--radius-card); padding: 24px 28px; }
+  .cfilters__label { color: var(--color-navy); font-size: var(--text-sm); min-width: 120px; }
+  .linkbtn { background: none; border: 0; font: inherit; font-weight: 800; color: var(--color-blue-dark); cursor: pointer; min-height: var(--tap); text-decoration: underline; padding: 0; }
+
+  .cgrid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: 24px; }
+  .ccard { display: flex; flex-direction: column; background: var(--color-white); border: 1px solid var(--color-line); border-radius: var(--radius-card); overflow: hidden; transition: transform .15s, box-shadow .15s; }
+  .ccard[hidden] { display: none; }
+  .ccard:hover { transform: translateY(-3px); box-shadow: var(--shadow-float); }
+  .ccard.is-chosen { border: 3px solid var(--color-navy); }
+  .ccard__cover { height: 200px; position: relative; }
+  .ccard__cover :global(img) { object-position: center 30%; }
+  .ccard__cover--icon { background: var(--club-bg); color: var(--club-fg); }
+  .ccard__soon { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: var(--text-xs); font-weight: 800; }
+  .ccard__cat { position: absolute; left: 14px; top: 14px; background: var(--color-white); color: var(--color-navy); }
+  .ccard__body { padding: 24px; flex: 1; }
+  .ccard__head { display: flex; align-items: center; gap: 12px; }
+  .cico { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex: none; background: var(--club-bg); color: var(--club-fg); }
+  .ccard__name { margin: 0; font-size: 24px; line-height: 1.2; }
+  .ccard__name a { color: inherit; text-decoration: none; }
+  .ccard__name a:hover { text-decoration: underline; }
+  .ccard__desc { margin: 0; font-size: 16px; line-height: 1.55; }
+  .ccard__days { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .ccard__days .meta { margin-left: 4px; }
+  .cday { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; height: 30px; padding: 0 8px; border-radius: 10px; font-size: var(--text-xs); font-weight: 800; background: var(--color-bg-ice); color: var(--color-muted); }
+  .cday.is-on { background: var(--color-navy); color: var(--color-white); }
+  .ccard__actions { margin-top: auto; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; padding-top: 6px; }
+  .cpick { min-height: var(--tap); padding: 0 16px; border-radius: var(--radius-pill); border: 2px solid var(--color-navy); background: var(--color-white); color: var(--color-navy); font: inherit; font-weight: 800; font-size: var(--text-sm); cursor: pointer; }
+  .cpick[aria-pressed="true"] { background: var(--color-hl); }
+  .ccard__more { min-height: var(--tap); display: inline-flex; align-items: center; padding: 0 6px; font-size: var(--text-sm); font-weight: 800; color: var(--color-navy); text-decoration: none; }
+
+  .cweek { border-radius: var(--radius-card); border: 1px solid var(--color-line); overflow: hidden; }
+  .cweek__scroll { overflow-x: auto; }
+  .cweek__grid { display: grid; grid-template-columns: repeat(5, minmax(180px, 1fr)); min-width: 900px; }
+  .cweek__day { border-right: 1px solid var(--color-line); display: flex; flex-direction: column; }
+  .cweek__day:last-child { border-right: 0; }
+  .cweek__head { background: var(--color-bg-sky); color: var(--color-navy); padding: 14px 18px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .cweek__head span { font-size: var(--text-xs); font-weight: 700; }
+  .cweek__day.is-on .cweek__head { background: var(--color-navy); color: var(--color-white); }
+  .cweek__list { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .cweek__club { display: flex; align-items: center; gap: 10px; min-height: 52px; border-radius: var(--radius-sm); padding: 6px 12px; font: inherit; font-weight: 800; font-size: var(--text-sm); text-align: left; cursor: pointer; background: var(--club-bg); color: var(--club-fg); border: 2px solid transparent; }
+  .cweek__club[hidden] { display: none; }
+  .cweek__club[aria-pressed="true"] { background: var(--color-navy); color: var(--color-white); border-color: var(--color-navy); }
+  .cweek__note { margin: 0; padding: 14px 18px; background: var(--color-bg-ice); font-size: var(--text-sm); }
+
+  .cempty { border: 3px dashed var(--color-trail); border-radius: var(--radius-card); padding: 56px 32px; text-align: center; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .cempty[hidden] { display: none; }
+  .cempty p { margin: 0; max-width: 520px; }
+  .cempty__q { font-size: 72px; line-height: 1; color: var(--color-cyan); }
+
+  .cfaq { max-width: 900px; }
+  #all :global(.h2) { font-size: clamp(30px, 3.4vw, 44px); margin-top: 0; }
+  .cfaq :global(.h2) { font-size: clamp(28px, 3vw, 40px); }
+
+  @media (max-width: 860px) {
+    .chero { padding-top: 12px; padding-bottom: 40px; gap: 24px; }
+    .chero__photos { grid-template-rows: 170px 130px; gap: 10px; }
+    .csteps { padding-top: 40px; }
+    .cfilters { padding: 18px; }
+    .cfilters__label { min-width: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) { .ccard { transition: none; } .ccard:hover { transform: none; } }
+</style>

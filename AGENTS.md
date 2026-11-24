@@ -57,12 +57,15 @@ src/content/                 ← ALL CONTENT (see docs/CONTENT.md for every fiel
   testimonials/ka/*.md       parent quotes (body = quote)
   articles/ka/*.md           articles / სტატიები (file name = URL /articles/<name>)
   pages/ka/articles.yaml     articles page copy, the 6 topic labels + colours, newsletter, homepage section 08
+  clubs/ka/*.md              after-school clubs / კლუბები (file name = URL /clubs/<name>; body = description)
+  pages/ka/clubs.yaml        clubs page copy + shared club facts (ages, time, price, phone), interest groups, weekdays
   photos.yaml                photo register: id, file, alt, consent
 src/assets/photos/           photo files (referenced by id, never by path)
 src/content.config.ts        the content schema (field names + types). Change docs/CONTENT.md with it.
-src/pages/                   routes: index, about, faq, articles/ (list, [slug], authors/[author]), design-system, 404
-src/components/              home/, about/, articles/, shared/, layout/, ui/ (see docs/DESIGN-SYSTEM.md)
+src/pages/                   routes: index, about, faq, clubs/ (list, [slug]), articles/ (list, [slug], authors/[author]), design-system, 404
+src/components/              home/, about/, articles/, clubs/, shared/, layout/, ui/ (see docs/DESIGN-SYSTEM.md)
 src/lib/articles.ts          article helpers: reading time, author lookup, related articles
+src/lib/clubs.ts             club helpers: sorted list, URLs, colour vars, related clubs
 src/styles/tokens.css        design tokens (colours, type, spacing)
 src/i18n/ui.ts               interface strings
 functions/api/               Cloudflare Pages Functions: lead, vote, votes, subscribe (newsletter), feedback ("was it helpful")
@@ -81,6 +84,9 @@ docs/                        CONTENT, DESIGN-SYSTEM, BACKEND, DEPLOY, ASSISTANT,
   team file with `group: contributor`. Reading time, author card, related articles and the homepage section are automatic.
 - **Add an article topic** → add the key to `ARTICLE_TOPICS` in `src/content.config.ts`, its label + colour to
   `topics` in `pages/ka/articles.yaml`, and the key list in `scripts/check-content.mjs`. Keep the list short.
+- **Add / change a club** → `src/content/clubs/ka/<slug>.md` (see docs/CONTENT.md). Price, time, ages and phone
+  shared by all clubs are in `pages/ka/clubs.yaml → facts`. Club weekdays are `days: [0, 2]` (0 = Monday).
+  Homepage tiles, the list, the weekly schedule, the sign-up form and `/clubs/<slug>` update automatically.
 - **New question of the week** (every Monday) → `npm run new:question -- "კითხვა?"`. On Friday, add
   `conclusion:` (the kids' summary) to that file. The homepage automatically shows the highest number.
 - **Add / edit an FAQ** → `src/content/faq/ka/`. Add `keywords:` so the assistant can find it; `chip:` makes it a
