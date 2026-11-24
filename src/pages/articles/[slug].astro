@@ -32,7 +32,6 @@ const p = await getPage('articlesPage');
 const { Content, headings } = await render(article);
 const toc = headings.filter((h) => h.depth === 2);
 const author = await getAuthor(d.author);
-const { Content: Bio } = await render(author);
 const color = await authorColor(d.author);
 const topics = (await getTopics()).filter((tp) => d.topics.includes(tp.key)).sort((a, b) => d.topics.indexOf(a.key) - d.topics.indexOf(b.key));
 const byAuthor = all.filter((a) => a.data.author === d.author).length;
@@ -111,8 +110,7 @@ const slug = slugOf(article.id);
         <div class="stack" style="--stack-gap: 8px; flex: 1 1 360px">
           <span class="authorcard__l">{ui.authorLabel}</span>
           <b class="display authorcard__n">{author.data.name}</b>
-          <span class="authorcard__r">{author.data.role}{author.data.facts[0] && ` · ${author.data.facts[0]}`}</span>
-          <div class="authorcard__bio"><Bio /></div>
+          <span class="authorcard__r">{author.data.role}</span>
           <a href={authorUrl(d.author)} class="authorcard__more">{ui.allBy(genitiveFirstName(author.data.name), byAuthor)}</a>
         </div>
       </div>
@@ -233,7 +231,6 @@ const slug = slugOf(article.id);
   .authorcard__l { font-size: 13px; font-weight: 800; color: var(--color-blue-dark); }
   .authorcard__n { font-size: 26px; line-height: 1.2; }
   .authorcard__r { font-weight: 700; color: var(--color-navy); font-size: 16px; }
-  .authorcard__bio { font-size: 17px; }
   .authorcard__more { font-weight: 900; color: var(--color-navy); margin-top: 4px; }
 
   .acta { border-radius: var(--radius-big); padding: 48px; display: flex; flex-wrap: wrap; gap: 28px; align-items: center; justify-content: space-between; }
