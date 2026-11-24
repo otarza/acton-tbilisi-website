@@ -27,3 +27,17 @@ unconfirmed. `npm run placeholders` shows the files; this list explains what to 
 | 20 | Articles: all 8 sample articles (titles, texts, dates) are from the design. Replace with real ones or delete | `articles/ka/` |
 | 21 | Which team members write articles, and their author bios (currently `placeholder: true`) | `team/ka/` |
 | 22 | Will the school really send a weekly email? If not, set `newsletter.enabled: false` | `pages/ka/articles.yaml` |
+
+## After-school clubs (added 2026-11-24)
+Confirmed by Otar: the 10 clubs, ages 5–17, children from other schools welcome, twice a week on weekdays,
+16:00–18:00, 150 GEL per club per month, phone 500 50 36 05.
+Still placeholder (`placeholder: true`, shown as ნიმუში on previews):
+- which weekdays each club meets (`days` in `src/content/clubs/ka/*.md`)
+- each club's tagline, description, activities and takeaways (drafted for the design)
+- the typical session timeline (`pages/ka/clubs.yaml → club.timeline`)
+- each club's guide (name + short bio)
+- group size (max children per club)
+- trial visit rule ("can my child come once first?")
+- photos for the 6 clubs without one (robotics, literature, puppet theatre, hiking, AI and coding, table tennis)
+- the Google Apps Script (`google/apps-script/Code.gs`) must be redeployed for club sign-ups to reach the sheet
+

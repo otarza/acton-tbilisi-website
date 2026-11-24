@@ -10,7 +10,7 @@
  *  4. Deploy → New deployment → type "Web app" → Execute as: Me → Who has access: Anyone → Deploy.
  *  5. Copy the Web app URL into Cloudflare as SHEETS_WEBHOOK_URL.
  *
- * Tabs "Leads", "Votes", "Subscribers" and "Article feedback" are created automatically on first use.
+ * Tabs "Leads", "Club signups", "Votes", "Subscribers" and "Article feedback" are created automatically on first use.
  * After changing this file: Deploy → Manage deployments → edit → Version: New version → Deploy (the URL stays the same).
  */
 
@@ -24,6 +24,7 @@ function doPost(e) {
   lock.waitLock(10000);
   try {
     if (data.type === 'lead') return out(addLead(data, props));
+    if (data.type === 'club') return out(addClubSignup(data, props));
     if (data.type === 'vote') return out(addVote(data));
     if (data.type === 'tally') return out(tally(data));
     if (data.type === 'subscribe') return out(addSubscriber(data));
@@ -42,6 +43,19 @@ function addLead(d, props) {
     MailApp.sendEmail(to, 'ახალი მოთხოვნა საიტიდან: ' + d.name,
       'მშობელი: ' + d.name + '\nტელეფონი: ' + d.phone + '\nბავშვის ასაკი: ' + (d.childAge || '—') +
       '\nსასურველი დრო: ' + (d.preferredTime || '—') + '\nფორმა: ' + d.source + '\n\nცხრილი: ' + SpreadsheetApp.getActive().getUrl());
+  }
+  return { ok: true };
+}
+
+function addClubSignup(d, props) {
+  var sh = tab('Club signups', ['Received', 'Parent name', 'Phone', 'Child age', 'School', 'Clubs', 'Club count', 'Page', 'Status', 'Notes']);
+  var school = d.school === 'other' ? 'სხვა სკოლა' : 'ექტონის აკადემია';
+  sh.appendRow([new Date(), d.name, d.phone, d.childAge, school, d.clubs, d.clubCount, d.page, 'new', '']);
+  var to = props.getProperty('NOTIFY_EMAIL');
+  if (to) {
+    MailApp.sendEmail(to, 'კლუბში ჩაწერა საიტიდან: ' + d.name,
+      'მშობელი: ' + d.name + '\nტელეფონი: ' + d.phone + '\nბავშვის ასაკი: ' + (d.childAge || '—') +
+      '\nსკოლა: ' + school + '\nკლუბები: ' + (d.clubs || '— (ზარისას შევარჩევთ)') + '\n\nცხრილი: ' + SpreadsheetApp.getActive().getUrl());
   }
   return { ok: true };
 }

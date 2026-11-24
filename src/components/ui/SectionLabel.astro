@@ -1,10 +1,10 @@
 ---
-/** Small numbered label above a section heading: (01) ᲡᲐᲜᲐᲛ ᲠᲐᲛᲔᲡ ᲬᲐᲘᲙᲘᲗᲮᲐᲕᲗ */
+/** Small numbered label above a section heading: (01) ᲡᲐᲜᲐᲛ ᲠᲐᲛᲔᲡ ᲬᲐᲘᲙᲘᲗᲮᲐᲕᲗ. A longer `num` (e.g. "16:00") becomes a pill. */
 import Caps from './Caps.astro';
 interface Props { num?: string; text: string; onDark?: boolean }
 const { num, text, onDark = false } = Astro.props;
 ---
-<span class:list={['label', { 'label--dark': onDark }]}>
+<span class:list={['label', { 'label--dark': onDark, 'label--wide': (num?.length ?? 0) > 2 }]}>
   {num && <b aria-hidden="true">{num}</b>}
   <Caps text={text} />
 </span>
@@ -12,6 +12,7 @@ const { num, text, onDark = false } = Astro.props;
   .label { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 14px; letter-spacing: .04em; color: var(--color-blue); }
   .label b { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: var(--color-navy); color: var(--color-hl); font-size: 13px; letter-spacing: 0; flex: none; }
   :global(.bg-cyan) .label { color: var(--color-navy); }
+  .label--wide b { width: auto; min-width: 34px; padding: 0 12px; border-radius: var(--radius-pill); }
   .label--dark { color: var(--color-hl); }
   .label--dark b { background: var(--color-hl); color: var(--color-navy); }
 </style>

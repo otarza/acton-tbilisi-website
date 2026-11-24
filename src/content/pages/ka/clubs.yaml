@@ -1,0 +1,145 @@
+# CLUBS PAGE COPY (Georgian): /clubs and every /clubs/<club> page.
+# The clubs themselves live in src/content/clubs/ka/ (one file each). Confirmed club FAQ answers live in
+# src/content/faq/ka/ with `category: clubs` (the assistant answers from those too).
+# Confirmed by Otar (2026-11-24): 10 clubs, ages 5–17, other schools welcome, twice a week on weekdays,
+# 16:00–18:00, 150 GEL per club per month, phone 500 50 36 05.
+seo:
+  title: "კლუბები სკოლის შემდეგ · ექტონის აკადემია საბურთალო"
+  description: "10 სკოლისშემდგომი კლუბი 5–17 წლის ბავშვებისთვის: ბიზნესი, რობოტიკა, ხელოვნება, AI და სხვა. კვირაში 2-ჯერ, 16:00–18:00, 150 ₾ თვეში. სხვა სკოლის ბავშვებიც."
+
+facts:
+  ages: "5–17"
+  agesText: "5–17 წელი"
+  ageMin: 5
+  ageMax: 17
+  frequency: "კვირაში 2-ჯერ"
+  time: "16:00–18:00"
+  price: 150
+  currency: "₾"
+  perMonth: "/ თვე"
+  phone: "500 50 36 05"
+  phoneHref: "tel:+995500503605"
+  audience: "ჩვენი და სხვა სკოლის ბავშვები"
+
+# Interest groups. Keys must match `category` in the club files.
+categories:
+  create: "შექმნა და სცენა"
+  tech: "ტექნოლოგია და თამაშები"
+  think: "აზროვნება და ბიზნესი"
+  move: "მოძრაობა და ბუნება"
+
+days:
+  - { short: "ორშ", full: "ორშაბათი" }
+  - { short: "სამ", full: "სამშაბათი" }
+  - { short: "ოთხ", full: "ოთხშაბათი" }
+  - { short: "ხუთ", full: "ხუთშაბათი" }
+  - { short: "პარ", full: "პარასკევი" }
+
+hero:
+  kicker: "სკოლის შემდეგ · კლუბები"
+  title: "სკოლის შემდეგ:"
+  accent: "10 კლუბი."
+  lead: "ბავშვს ბევრი რამ აინტერესებს. კლუბებში სხვადასხვა საქმეს მოსინჯავს, ბიზნესიდან რობოტიკამდე და თოჯინების თეატრიდან ლაშქრობამდე, და თავად აღმოაჩენს, რა იტაცებს ყველაზე მეტად. მოსვლა შეუძლიათ როგორც ჩვენი, ისე სხვა სკოლების მოსწავლეებს."
+  facts:
+    - { big: "5–17", text: "წლის ბავშვები" }
+    - { big: "2-ჯერ", text: "კვირაში, სამუშაო დღეებში" }
+    - { big: "16:00–18:00", text: "შეხვედრის დრო" }
+    - { big: "150 ₾", text: "თვეში, თითო კლუბი" }
+  photos: [clubs-art-group, clubs-science, clubs-gamelab]
+  cta: "კლუბში ჩაწერა"
+
+steps:
+  - title: "აირჩიეთ კლუბი"
+    text: "ერთი ან რამდენიმე, ბავშვის ინტერესის მიხედვით."
+  - title: "დაგვიკავშირდით"
+    text: "შეავსეთ ფორმა ან დაგვირეკეთ: 500 50 36 05."
+  - title: "პირველი შეხვედრა"
+    text: "ბავშვი გაიცნობს მეგზურს და ჯგუფს, 16:00 საათზე."
+  - title: "150 ₾ თვეში"
+    text: "თითოეულ კლუბზე, კვირაში ორი შეხვედრა."
+
+list:
+  title: "იპოვე"
+  accent: "შენი კლუბი"
+  viewCards: "ბარათები"
+  viewWeek: "კვირის განრიგი"
+  interest: "ინტერესი"
+  day: "თავისუფალი დღე"
+  all: "ყველა"
+  anyDay: "ნებისმიერი"
+  daysPlaceholderNote: "დღეები დასადასტურებელია"
+  weekNote: "რომელ დღეებში იკრიბება თითოეული კლუბი, ჯერ დასადასტურებელია. დააჭირეთ კლუბს, რომ ჩაწერის სიაში დაამატოთ."
+  total: "სულ {n} კლუბი · 5–17 წლის ბავშვებისთვის"
+  found: "ნაპოვნია {n} კლუბი"
+  clear: "ფილტრების გასუფთავება"
+  noResultsTitle: "ამ დღეს ამ მიმართულების კლუბი არ იკრიბება."
+  noResultsText: "სცადეთ სხვა დღე ან ინტერესი. ან დაგვირეკეთ და ერთად მოვძებნოთ შესაფერისი."
+  noResultsButton: "ყველა კლუბის ნახვა"
+  photoSoon: "ფოტო მალე"
+  add: "+ ჩაწერის სიაში"
+  added: "✓ არჩეულია"
+  details: "დეტალურად →"
+
+join:
+  title: "კლუბში"
+  accent: "ჩაწერა"
+  text: "აირჩიეთ კლუბები, დაგვიტოვეთ ნომერი და დაგირეკავთ. ბავშვის სახელს აქ არ ვითხოვთ, მას შეხვედრაზე გავიცნობთ."
+  chosen: "არჩეული: {n} კლუბი"
+  chooseHint: "აირჩიეთ ერთი ან რამდენიმე კლუბი"
+  whichClubs: "რომელი კლუბი?"
+  school: "სად სწავლობს?"
+  schoolOurs: "ექტონის აკადემიაში"
+  schoolOther: "სხვა სკოლაში"
+  agePlaceholder: "აირჩიეთ"
+  ageSuffix: "წლის"
+  note: "ნომერს მხოლოდ ამ განაცხადისთვის გამოვიყენებთ."
+  success: "გმადლობთ! მალე დაგირეკავთ."
+  successChoice: "თქვენი არჩევანი: {clubs}."
+  successNone: "კლუბს ერთად შევარჩევთ ზარისას."
+  again: "კიდევ ერთი განაცხადი"
+  required: "გთხოვთ, შეავსოთ სახელი, ტელეფონი და მონიშნოთ თანხმობა."
+
+faq:
+  title: "ხშირი"
+  accent: "კითხვები"
+  pending:
+    - q: "შეიძლება ჯერ ერთხელ მოვიდეს და ვნახოთ?"
+      a: "[დასადასტურებელია: საცდელი შეხვედრის წესი]"
+      placeholder: true
+
+# Single club page (/clubs/<club>)
+club:
+  switcher: "სხვა კლუბზე გადასვლა"
+  breadcrumb: "კლუბები"
+  signUp: "ჩაწერა ამ კლუბში"
+  photoSoon: "კლუბის ფოტო მალე დაემატება"
+  activities: { title: "რას", accent: "აკეთებენ", after: "ბავშვები" }
+  timeline:
+    title: "ერთი შეხვედრა,"
+    accent: "16:00–18:00"
+    placeholder: true   # typical session plan drafted for the design; school must confirm
+    items:
+      - { time: "16:00", title: "შეკრება", text: "ბავშვები ერთმანეთს ხვდებიან, მცირე შესვენება და ხემსი." }
+      - { time: "16:15", title: "დღის გამოწვევა", text: "მეგზური სვამს კითხვას ან დავალებას. ბავშვები გეგმავენ, როგორ მიუდგნენ." }
+      - { time: "16:30", title: "საქმე", text: "მუშაობა წყვილებში ან გუნდად." }
+      - { time: "17:40", title: "ჩვენება", text: "ყველა აჩვენებს, რა გამოუვიდა და რა ისწავლა." }
+      - { time: "18:00", title: "მშობლები მოდიან", text: "ბავშვი თავად უყვება მშობელს, რა გააკეთა დღეს." }
+  gains: { title: "რას", accent: "წაიღებს", after: "ბავშვი" }
+  guide:
+    label: "კლუბის მეგზური"
+    emptyName: "[მეგზურის სახელი]"
+    emptyBio: "[2–3 წინადადება: ვინ არის, რა გამოცდილება აქვს ამ მიმართულებით და რატომ უყვარს ბავშვებთან მუშაობა.]"
+  factsTitle: "მოკლედ"
+  factLabels:
+    ages: "ასაკი"
+    frequency: "სიხშირე"
+    time: "დრო"
+    days: "დღეები"
+    group: "ჯგუფი"
+    audience: "ვისთვის"
+    price: "ღირებულება"
+  groupSize:
+    value: "[მაქს. ბავშვი]"
+    placeholder: true
+  question: "კითხვა გაქვთ? ყველაფერს გიპასუხებთ."
+  related: { title: "შეიძლება", accent: "ესეც", after: "მოეწონოს", all: "ყველა 10 კლუბი →", see: "ნახვა →" }

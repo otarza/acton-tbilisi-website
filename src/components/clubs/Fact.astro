@@ -1,0 +1,13 @@
+---
+/** White fact tile on the cyan band: big value + small caption. */
+interface Props { big: string; text: string }
+const { big, text } = Astro.props;
+// Keep "2-ჯერ" together: a non-breaking hyphen instead of a line break after "2-".
+const bigText = big.replace(/(\S)-(\S)/g, '$1\u2011$2').replace(/ (\/|₾)/g, '\u00a0$1');
+---
+<div class="fact"><b>{bigText}</b><span>{text}</span></div>
+<style>
+  .fact { background: var(--color-white); border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 2px; }
+  .fact b { font-size: 24px; font-weight: var(--weight-display); color: var(--color-navy); line-height: 1.2; text-wrap: balance; }
+  .fact span { font-size: 14px; color: var(--color-ink); line-height: 1.35; }
+</style>

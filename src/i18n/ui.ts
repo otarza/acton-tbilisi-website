@@ -63,6 +63,7 @@ export const ui = {
     },
     faq: { all: 'ყველა', topics: 'თემები', count: (n: number, c: number) => `${n} პასუხი, ${c} თემა.`, allQuestions: (n: number) => `ყველა კითხვა (${n}) →` },
     archive: { thisWeek: 'ამ კვირას', answerToo: 'უპასუხე შენც →', seeConclusion: 'ნახე დასკვნა +', conclusion: 'ბავშვების დასკვნა', week: 'კვირა' },
+    clubs: { interest: 'ინტერესის მიხედვით', view: 'ხედი', breadcrumb: 'ნავიგაცია', filters: 'ფილტრები' },
     team: { parent: 'მშობელი', founder: 'დამფუძნებელი', guide: 'მეგზური', investor: 'ინვესტორი' },
     articles: {
       all: 'ყველა',
