@@ -278,7 +278,7 @@ join:
   formNote: ვპასუხობთ 1 საათში, 09:00–20:00. ბავშვის სახელს არ ვითხოვთ.
 
 faqPreview:
-  label: ხშირი კითხვები
+  label: "ხშირად დასმული კითხვები"
   allLink: ყველა კითხვა
 
 # After-school clubs section (right after "day"). Clubs come from src/content/clubs/ka/; full page: /clubs.

@@ -342,7 +342,7 @@ const clubs = defineCollection({
   }),
 });
 
-export const FAQ_CATEGORIES = ['learning', 'status', 'daily', 'price', 'enrollment', 'clubs'] as const;
+export const FAQ_CATEGORIES = ['status', 'learning', 'progress', 'daily', 'enrollment', 'clubs'] as const;
 const faq = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/faq' }),
   schema: z.object({

@@ -73,7 +73,7 @@ posts to `/api/lead` with `type: "club"` (see BACKEND.md); `/clubs?club=<slug>#j
 ### `faq/ka/<slug>.md` — one question per file
 ```yaml
 question: "რა ღირს სწავლა?"
-category: price          # learning | status | daily | price | enrollment | clubs
+category: enrollment     # status | learning | progress | daily | enrollment | clubs
 order: 1
 showOnHome: true         # optional: show in the homepage FAQ block
 chip: "რამდენი ღირს?"     # optional: quick button in the assistant

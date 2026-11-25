@@ -38,7 +38,7 @@ nav:
     href: "/#fit"
   - label: "ფასი"
     href: "/#price"
-  - label: "კითხვები"
+  - label: "ხშირად დასმული კითხვები"
     href: "/faq"
   - label: "სტატიები"
     href: "/articles"

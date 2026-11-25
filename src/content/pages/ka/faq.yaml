@@ -1,24 +1,23 @@
 # FAQ PAGE COPY (Georgian). The questions themselves live in src/content/faq/ka/,
 # the weekly-question archive in src/content/questions/ka/.
 seo:
-  title: კითხვები და პასუხები · ექტონის აკადემია საბურთალო
+  title: "ხშირად დასმული კითხვები · ექტონის აკადემია საბურთალო"
   description: კითხვები, რომლებსაც მშობლები ნამდვილად გვისვამენ, და კვირის კითხვების არქივი ბავშვების დასკვნებით.
 
 hero:
-  label: კითხვები
-  title: კითხვები, რომლებსაც მშობლები
-  accent: ნამდვილად
-  after: გვისვამენ.
-  lead: "ვერ იპოვეთ პასუხი? ჰკითხეთ ასისტენტს ან მოგვწერეთ: ვპასუხობთ 1 საათში."
+  label: "კითხვები"
+  title: "ხშირად დასმული"
+  accent: "კითხვები"
+  lead: "ვერ იპოვეთ პასუხი? ჰკითხეთ ასისტენტს ან მოგვწერეთ: მოთხოვნას 1 სამუშაო დღეში ვპასუხობთ."
 
 # Category ids must match the `category` field of FAQ files.
 categories:
-  learning: სწავლა
-  status: სტატუსი და ატესტატი
-  daily: ყოველდღიურობა
-  price: ფასი
-  enrollment: ჩარიცხვა
-  clubs: კლუბები
+  status: "სტატუსი და ატესტატი"
+  learning: "როგორ ვსწავლობთ"
+  progress: "შეფასება, წინსვლა და უსაფრთხოება"
+  daily: "დღის რეჟიმი და ყოველდღიურობა"
+  enrollment: "მიღება და საფასური"
+  clubs: "კლუბები"
 
 archive:
   label: კვირის კითხვების არქივი
@@ -32,6 +31,6 @@ archive:
     people: მე და სხვები
 
 cta:
-  title: საუკეთესო პასუხი სტუმრობაა.
-  accent: მოდით და ნახეთ.
+  title: "დაგრჩათ კითხვები?"
+  accent: "შეხვედრაზე ყველაფერს გიპასუხებთ."
   button: დაჯავშნე შეხვედრა
