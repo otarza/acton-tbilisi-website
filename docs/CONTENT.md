@@ -39,7 +39,10 @@ questions × exactly 3 options, best answer first), `videos` (06; add `youtubeId
 `consentDemo` switches), `cta`.
 
 ### `pages/ka/faq.yaml`
-`hero`, `categories` (id → Georgian name), `archive` (`title` may contain `{n}`, `topics` id → name), `cta`.
+`seo`, `hero`, `categories` (id → Georgian name), `cta`.
+
+### `pages/ka/questions.yaml` — weekly-question archive page (/questions)
+`seo`, `hero` (`title` may contain `{n}` = number of archived questions), `topics` (id → name), `cta`.
 
 ### `pages/ka/clubs.yaml` — clubs page + every single club page
 `seo`; `facts` (shared by all clubs: `ages`, `agesText`, `ageMin`/`ageMax` (form age list), `frequency`, `time`,
@@ -86,7 +89,7 @@ Body (Markdown) = the full answer. URL anchor: `/faq#<slug>`.
 ### `questions/ka/NNN.md` — question of the week
 `number` (unique), `week` (Monday date), `topic` (fairness | science | money | people), `question`,
 `options` (2–4, used for voting while current), `results` (optional fallback %), `conclusion` (kids' summary),
-`studios`. **The highest number is "this week's" question** on the homepage; all others form the archive.
+`studios`. **The highest number is "this week's" question** on the homepage; all others form the archive at `/questions`.
 
 ### `studios/ka/<slug>.md`
 `name`, `ageMin`, `ageMax`, optional `openEnded: true` (no upper limit, shown as "15+"), `photo`, `color` (teal | blue | red | gold), `points` (short facts), `order`. Body = description.

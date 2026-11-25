@@ -49,9 +49,10 @@ src/content/                 ← ALL CONTENT (see docs/CONTENT.md for every fiel
   settings/ka.yaml           phone, email, address, nav, announcement bar, next exhibition date
   pages/ka/home.yaml         every homepage section's text, in page order
   pages/ka/about.yaml        about page text, investors list, safety, privacy
-  pages/ka/faq.yaml          FAQ page text, category + topic names
+  pages/ka/faq.yaml          FAQ page text + category names
   faq/ka/*.md                one file per FAQ question (body = answer)
-  questions/ka/NNN.md        question of the week archive; highest number = current week
+  questions/ka/NNN.md        question of the week archive; highest number = current week (archive page: /questions)
+  pages/ka/questions.yaml    weekly-question archive page copy + topic names
   studios/ka/*.md            age groups (5–7, 8–11, 12–14)
   team/ka/*.md               founders, guides and contributors (body = bio); article authors come from here
   testimonials/ka/*.md       parent quotes (body = quote)
@@ -62,7 +63,7 @@ src/content/                 ← ALL CONTENT (see docs/CONTENT.md for every fiel
   photos.yaml                photo register: id, file, alt, consent
 src/assets/photos/           photo files (referenced by id, never by path)
 src/content.config.ts        the content schema (field names + types). Change docs/CONTENT.md with it.
-src/pages/                   routes: index, about, faq, clubs/ (list, [slug]), articles/ (list, [slug], authors/[author]), design-system, 404
+src/pages/                   routes: index, about, faq, questions, clubs/ (list, [slug]), articles/ (list, [slug], authors/[author]), design-system, 404
 src/components/              home/, about/, articles/, clubs/, shared/, layout/, ui/ (see docs/DESIGN-SYSTEM.md)
 src/lib/articles.ts          article helpers: reading time, author lookup, related articles
 src/lib/clubs.ts             club helpers: sorted list, URLs, colour vars, related clubs

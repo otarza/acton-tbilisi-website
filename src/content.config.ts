@@ -184,7 +184,17 @@ const faqPage = defineCollection({
     seo: z.object({ title: z.string(), description: z.string() }),
     hero: z.object({ label: z.string(), title: z.string(), accent: z.string(), after: z.string().optional(), lead: z.string() }),
     categories: z.record(z.string(), z.string()),
-    archive: sectionHeading.extend({ intro: z.string(), topics: z.record(z.string(), z.string()) }),
+    cta: z.object({ title: z.string(), accent: z.string(), button: z.string() }),
+  }),
+});
+
+/** Weekly-question archive page (/questions). The questions themselves: src/content/questions/<lang>/. */
+const questionsPage = defineCollection({
+  loader: glob({ pattern: '**/questions.yaml', base: './src/content/pages' }),
+  schema: z.object({
+    seo: z.object({ title: z.string(), description: z.string() }),
+    hero: z.object({ label: z.string(), title: z.string(), accent: z.string(), lead: z.string() }),
+    topics: z.record(z.string(), z.string()),
     cta: z.object({ title: z.string(), accent: z.string(), button: z.string() }),
   }),
 });
@@ -448,4 +458,4 @@ const photos = defineCollection({
   }),
 });
 
-export const collections = { settings, homePage, aboutPage, faqPage, clubsPage, clubs, studios, faq, questions, team, testimonials, articles, articlesPage, photos };
+export const collections = { settings, homePage, aboutPage, faqPage, questionsPage, clubsPage, clubs, studios, faq, questions, team, testimonials, articles, articlesPage, photos };

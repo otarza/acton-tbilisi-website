@@ -1,8 +1,8 @@
-# FAQ PAGE COPY (Georgian). The questions themselves live in src/content/faq/ka/,
-# the weekly-question archive in src/content/questions/ka/.
+# FAQ PAGE COPY (Georgian). The questions themselves live in src/content/faq/ka/.
+# The weekly-question archive has its own page: pages/ka/questions.yaml (/questions).
 seo:
   title: "ხშირად დასმული კითხვები · ექტონის აკადემია საბურთალო"
-  description: კითხვები, რომლებსაც მშობლები ნამდვილად გვისვამენ, და კვირის კითხვების არქივი ბავშვების დასკვნებით.
+  description: "ხშირად დასმული კითხვები: სტატუსი და ატესტატი, სწავლება, შეფასება, დღის რეჟიმი, მიღება და საფასური."
 
 hero:
   label: "კითხვები"
@@ -19,16 +19,6 @@ categories:
   enrollment: "მიღება და საფასური"
   clubs: "კლუბები"
 
-archive:
-  label: კვირის კითხვების არქივი
-  title: "{n} კვირა, {n} კითხვა."   # {n} = number of archived questions, filled in automatically
-  accent: ბავშვების დასკვნები.
-  intro: ყოველ ორშაბათს დილის წრეზე ერთ კითხვას ვსვამთ. პარასკევს ბავშვები თავად წერენ, რა დაასკვნეს. აქ ყველაფერი ინახება.
-  topics:
-    fairness: სამართლიანობა
-    science: მეცნიერება
-    money: ფული და ბიზნესი
-    people: მე და სხვები
 
 cta:
   title: "დაგრჩათ კითხვები?"
