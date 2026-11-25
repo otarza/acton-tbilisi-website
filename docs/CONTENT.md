@@ -89,7 +89,7 @@ Body (Markdown) = the full answer. URL anchor: `/faq#<slug>`.
 `studios`. **The highest number is "this week's" question** on the homepage; all others form the archive.
 
 ### `studios/ka/<slug>.md`
-`name`, `ageMin`, `ageMax`, `photo`, `color` (teal | blue | red), `points` (3 short facts), `order`. Body = description.
+`name`, `ageMin`, `ageMax`, optional `openEnded: true` (no upper limit, shown as "15+"), `photo`, `color` (teal | blue | red | gold), `points` (short facts), `order`. Body = description.
 The age buttons on the homepage are generated from the min/max of all studios.
 
 ### `team/ka/<slug>.md`

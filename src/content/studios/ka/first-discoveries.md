@@ -1,5 +1,5 @@
 ---
-name: პირველი აღმოჩენები
+name: "Spark · სკოლამდელების სტუდია"
 ageMin: 5
 ageMax: 7
 photo: studio-girl

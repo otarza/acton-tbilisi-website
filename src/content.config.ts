@@ -311,8 +311,10 @@ const studios = defineCollection({
     name: z.string(),
     ageMin: z.number().int(),
     ageMax: z.number().int(),
+    /** true = no upper age limit: shown as "15+" (ageMax is then the last age button). */
+    openEnded: z.boolean().default(false),
     photo: photoId,
-    color: z.enum(['teal', 'blue', 'red']),
+    color: z.enum(['teal', 'blue', 'red', 'gold']),
     points: z.array(z.string()),
     order: z.number().default(0),
     placeholder,

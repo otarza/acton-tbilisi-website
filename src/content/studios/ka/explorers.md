@@ -1,5 +1,5 @@
 ---
-name: მკვლევრების სამყარო
+name: "Elementary · პატარების სტუდია"
 ageMin: 8
 ageMax: 11
 photo: ant-quest

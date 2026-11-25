@@ -5,12 +5,12 @@ unconfirmed. `npm run placeholders` shows the files; this list explains what to 
 
 | # | Question | Where it is used |
 | --- | --- | --- |
-| 1 | **State authorisation (NCEQE)**: do we have it? How do diplomas/transfer work? | `faq/ka/state-authorisation.md`, `about.yaml` accreditation card, assistant |
+| 1 | ~~**State authorisation (NCEQE)**~~ Answered 2026-11-25 by Vakho: the school is authorised (FAQ + about card) | `faq/ka/state-authorisation.md`, `about.yaml` accreditation card, assistant |
 | 2 | **Naming**: "Acton Academy (ექტონის აკადემია)" vs "American School (ამერიკული სკოლა)"; which name, which domain, which Facebook page? | `settings/ka.yaml` (logoSubtitle, email, social links), footer, testimonial #1 |
 | 3 | Prices: 1000 ₾/month confirmed? Registration fee (300 ₾?), sibling discount (10%?), annual payment discount, what's included | `home.yaml` price, `faq/ka/price*.md`, `extra-costs.md`, `payment.md` |
 | 4 | Price comparison numbers (other schools) — keep, source, or remove? | `home.yaml` price.comparison |
-| 5 | Daily schedule and hours | `home.yaml` day, `faq/ka/hours.md` |
-| 6 | Studio ages, group sizes and ratios | `studios/ka/*.md`, `about.yaml` stats/safety |
+| 5 | Daily schedule (hours confirmed 2026-11-25: 09:00–15:30, FAQ) | `home.yaml` day, `faq/ka/hours.md` |
+| 6 | Studio group sizes, ratios and descriptions (names and ages confirmed 2026-11-25: Spark 5–7, Elementary 8–11, Middle 12–14, LaunchPad 15+ in special cases) | `studios/ka/*.md`, `about.yaml` stats/safety |
 | 7 | Address (street number) | `settings/ka.yaml` |
 | 8 | Open-day and next exhibition dates | `settings/ka.yaml` announcement, nextExhibition |
 | 9 | Team: names, roles, bios approved by each person; founders/investors list public? | `team/ka/*.md`, `about.yaml` investors |
@@ -41,3 +41,9 @@ Still placeholder (`placeholder: true`, shown as ნიმუში on previews)
 - photos for the 6 clubs without one (robotics, literature, puppet theatre, hiking, AI and coding, table tennis)
 - the Google Apps Script (`google/apps-script/Code.gs`) must be redeployed for club sign-ups to reach the sheet
 
+
+## Confirmed by Vakho (2026-11-25)
+- The FAQ (`src/content/faq/ka/`, 20 answers) is the school's own text.
+- Trial period: up to two weeks, free if the child does not stay (replaces "free trial week").
+- Response time: within 1 working day (replaces "within 1 hour").
+- State authorisation: the school is authorised.

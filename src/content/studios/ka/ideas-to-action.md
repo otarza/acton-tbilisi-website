@@ -1,5 +1,5 @@
 ---
-name: იდეებიდან მოქმედებამდე
+name: "Middle · საშუალოების სტუდია"
 ageMin: 12
 ageMax: 14
 photo: teen-seller
