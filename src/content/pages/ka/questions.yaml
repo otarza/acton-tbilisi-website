@@ -1,0 +1,23 @@
+# WEEKLY QUESTION ARCHIVE PAGE (/questions). The questions themselves live in src/content/questions/ka/
+# (highest number = this week's question, shown on the homepage).
+seo:
+  title: "კვირის კითხვები · ექტონის აკადემია საბურთალო"
+  description: "ყოველ ორშაბათს დილის წრეზე ერთ კითხვას ვსვამთ, პარასკევს ბავშვები თავად წერენ დასკვნას. აქ ყველა კითხვა და დასკვნა ინახება."
+
+hero:
+  label: "კვირის კითხვები"
+  title: "{n} კვირა, {n} კითხვა."   # {n} = number of archived questions, filled in automatically
+  accent: "ბავშვების დასკვნები."
+  lead: "ყოველ ორშაბათს დილის წრეზე ერთ კითხვას ვსვამთ. პარასკევს ბავშვები თავად წერენ, რა დაასკვნეს. აქ ყველაფერი ინახება."
+
+# Topic ids must match the `topic` field of question files.
+topics:
+  fairness: "სამართლიანობა"
+  science: "მეცნიერება"
+  money: "ფული და ბიზნესი"
+  people: "მე და სხვები"
+
+cta:
+  title: "გინდათ ნახოთ, როგორ მუშაობს"
+  accent: "ჩვენი სკოლა?"
+  button: "დაჯავშნე შეხვედრა"

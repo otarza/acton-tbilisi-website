@@ -1,37 +1,26 @@
-# FAQ PAGE COPY (Georgian). The questions themselves live in src/content/faq/ka/,
-# the weekly-question archive in src/content/questions/ka/.
+# FAQ PAGE COPY (Georgian). The questions themselves live in src/content/faq/ka/.
+# The weekly-question archive has its own page: pages/ka/questions.yaml (/questions).
 seo:
-  title: კითხვები და პასუხები · ექტონის აკადემია საბურთალო
-  description: კითხვები, რომლებსაც მშობლები ნამდვილად გვისვამენ, და კვირის კითხვების არქივი ბავშვების დასკვნებით.
+  title: "ხშირად დასმული კითხვები · ექტონის აკადემია საბურთალო"
+  description: "ხშირად დასმული კითხვები: სტატუსი და ატესტატი, სწავლება, შეფასება, დღის რეჟიმი, მიღება და საფასური."
 
 hero:
-  label: კითხვები
-  title: კითხვები, რომლებსაც მშობლები
-  accent: ნამდვილად
-  after: გვისვამენ.
-  lead: "ვერ იპოვეთ პასუხი? ჰკითხეთ ასისტენტს ან მოგვწერეთ: ვპასუხობთ 1 საათში."
+  label: "კითხვები"
+  title: "ხშირად დასმული"
+  accent: "კითხვები"
+  lead: "ვერ იპოვეთ პასუხი? ჰკითხეთ ასისტენტს ან მოგვწერეთ: მოთხოვნას 1 სამუშაო დღეში ვპასუხობთ."
 
 # Category ids must match the `category` field of FAQ files.
 categories:
-  learning: სწავლა
-  status: სტატუსი და ატესტატი
-  daily: ყოველდღიურობა
-  price: ფასი
-  enrollment: ჩარიცხვა
-  clubs: კლუბები
+  status: "სტატუსი და ატესტატი"
+  learning: "როგორ ვსწავლობთ"
+  progress: "შეფასება, წინსვლა და უსაფრთხოება"
+  daily: "დღის რეჟიმი და ყოველდღიურობა"
+  enrollment: "მიღება და საფასური"
+  clubs: "კლუბები"
 
-archive:
-  label: კვირის კითხვების არქივი
-  title: "{n} კვირა, {n} კითხვა."   # {n} = number of archived questions, filled in automatically
-  accent: ბავშვების დასკვნები.
-  intro: ყოველ ორშაბათს დილის წრეზე ერთ კითხვას ვსვამთ. პარასკევს ბავშვები თავად წერენ, რა დაასკვნეს. აქ ყველაფერი ინახება.
-  topics:
-    fairness: სამართლიანობა
-    science: მეცნიერება
-    money: ფული და ბიზნესი
-    people: მე და სხვები
 
 cta:
-  title: საუკეთესო პასუხი სტუმრობაა.
-  accent: მოდით და ნახეთ.
+  title: "დაგრჩათ კითხვები?"
+  accent: "შეხვედრაზე ყველაფერს გიპასუხებთ."
   button: დაჯავშნე შეხვედრა

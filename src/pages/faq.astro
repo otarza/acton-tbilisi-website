@@ -1,17 +1,15 @@
 ---
 /**
- * FAQ PAGE + weekly-question archive.
- * Questions: src/content/faq/ka/*.md   ·   Archive: src/content/questions/ka/*.md   ·   Copy: pages/ka/faq.yaml
+ * FAQ PAGE (ხშირად დასმული კითხვები).
+ * Questions: src/content/faq/ka/*.md   ·   Copy: pages/ka/faq.yaml   ·   Weekly-question archive: /questions
  */
 import { render } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/shared/PageHero.astro';
-import SectionHeading from '@/components/ui/SectionHeading.astro';
 import Assistant from '@/components/shared/Assistant.astro';
 import CtaBand from '@/components/shared/CtaBand.astro';
 import { getLocalized, getPage, slugOf } from '@/lib/content';
-import { FAQ_CATEGORIES, QUESTION_TOPICS } from '@/content.config';
-import { formatDateKa } from '@/lib/georgian';
+import { FAQ_CATEGORIES } from '@/content.config';
 import { t } from '@/i18n/ui';
 
 const p = await getPage('faqPage');
@@ -19,11 +17,7 @@ const ui = t();
 const faqEntries = (await getLocalized('faq')).sort((a, b) => FAQ_CATEGORIES.indexOf(a.data.category) - FAQ_CATEGORIES.indexOf(b.data.category) || a.data.order - b.data.order);
 const faqs = await Promise.all(faqEntries.map(async (f) => ({ ...f, slug: slugOf(f.id), Content: (await render(f)).Content })));
 const cats = FAQ_CATEGORIES.filter((c) => faqs.some((f) => f.data.category === c));
-const catTag = { learning: 'tag--blue', status: 'tag--red', daily: 'tag--teal', price: 'tag--gold', enrollment: 'tag--green', clubs: 'tag--blue' } as const;
-
-const questions = (await getLocalized('questions')).sort((a, b) => b.data.number - a.data.number);
-const [current, ...archive] = questions;
-const topicTag = { fairness: 'tag--red', science: 'tag--teal', money: 'tag--gold', people: 'tag--blue' } as const;
+const catTag = { status: 'tag--red', learning: 'tag--blue', progress: 'tag--gold', daily: 'tag--teal', enrollment: 'tag--green', clubs: 'tag--blue' } as const;
 ---
 <BaseLayout title={p.seo.title} description={p.seo.description} ogPhoto="exhibition-talk">
   <PageHero slot="hero" label={p.hero.label} title={p.hero.title} accent={p.hero.accent} after={p.hero.after} lead={`${ui.faq.count(faqs.length, cats.length)} ${p.hero.lead}`} />
@@ -45,39 +39,6 @@ const topicTag = { fairness: 'tag--red', science: 'tag--teal', money: 'tag--gold
     </div>
   </section>
 
-  <section id="archive" class="bg-sky sec">
-    <div class="wrap stack" style="--stack-gap: 28px" data-archive>
-      <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
-        <div class="stack" style="--stack-gap: 12px; flex: 1 1 560px">
-          <SectionHeading num="№" label={p.archive.label} title={p.archive.title.replaceAll("{n}", String(archive.length))} accent={p.archive.accent} />
-          <p style="max-width: 640px">{p.archive.intro}</p>
-        </div>
-        <div class="row" style="--row-gap: 8px" role="group">
-          <button type="button" class="choice" aria-pressed="true" data-topic="all">{ui.faq.all}</button>
-          {QUESTION_TOPICS.map((tp) => <button type="button" class="choice" aria-pressed="false" data-topic={tp}>{p.archive.topics[tp] ?? tp}</button>)}
-        </div>
-      </div>
-      {current && (
-        <a href="/#day" class="current">
-          <span><span class="tag tag--navy">№{current.data.number} · {ui.archive.thisWeek}</span><br /><span class="display current__q">{current.data.question}</span></span>
-          <span class="btn btn--hl">{ui.archive.answerToo}</span>
-        </a>
-      )}
-      <div class="weeks">
-        {archive.map((w) => (
-          <details class="week" data-topic={w.data.topic} id={`q${w.data.number}`} data-placeholder={w.data.placeholder || undefined}>
-            <summary>
-              <span class="row" style="--row-gap: 8px; align-items: center"><b class="accent small">№{w.data.number}</b><span class={`tag ${topicTag[w.data.topic]}`}>{p.archive.topics[w.data.topic]}</span></span>
-              <span class="display week__q">{w.data.question}</span>
-              <span class="small accent week__more">{ui.archive.seeConclusion}</span>
-            </summary>
-            {w.data.conclusion && <div class="week__c"><b class="xs accent">{ui.archive.conclusion}</b><p>„{w.data.conclusion}“</p><span class="xs muted">{w.data.studios} · {formatDateKa(w.data.week)}</span></div>}
-          </details>
-        ))}
-      </div>
-    </div>
-  </section>
-
   <CtaBand title={p.cta.title} accent={p.cta.accent} button={p.cta.button} />
 </BaseLayout>
 <script>
@@ -91,13 +52,6 @@ const topicTag = { fairness: 'tag--red', science: 'tag--teal', money: 'tag--gold
     const open = () => { const el = location.hash && document.getElementById(location.hash.slice(1)); if (el instanceof HTMLDetailsElement) el.open = true; };
     open(); window.addEventListener('hashchange', open);
   }
-  for (const root of document.querySelectorAll<HTMLElement>('[data-archive]')) {
-    const btns = root.querySelectorAll<HTMLElement>('button[data-topic]');
-    btns.forEach((b) => b.addEventListener('click', () => {
-      btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      root.querySelectorAll<HTMLElement>('details[data-topic]').forEach((d) => (d.hidden = b.dataset.topic !== 'all' && d.dataset.topic !== b.dataset.topic));
-    }));
-  }
 </script>
 <style>
   .faq { display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start; }
@@ -108,16 +62,5 @@ const topicTag = { fairness: 'tag--red', science: 'tag--teal', money: 'tag--gold
   .faq__asst { margin-top: 16px; }
   .cat { display: flex; justify-content: space-between; align-items: center; min-height: var(--tap); padding: 0 18px; border-radius: var(--radius-sm); border: 2px solid var(--color-navy); background: var(--color-white); color: var(--color-navy); font-weight: 800; font-size: 16px; cursor: pointer; }
   .cat[aria-pressed="true"] { background: var(--color-navy); color: var(--color-white); }
-  .current { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; background: var(--color-navy); border-radius: var(--radius-card); padding: 28px 32px; text-decoration: none; }
-  .current__q { color: var(--color-white); font-size: clamp(22px, 2.4vw, 30px); line-height: 1.2; }
-  .weeks { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 16px; align-items: start; }
-  .week { background: var(--color-white); border-radius: 22px; padding: 22px; border: 3px solid transparent; }
-  .week[open] { border-color: var(--color-navy); }
-  .week[hidden] { display: none; }
-  .week summary { list-style: none; cursor: pointer; display: flex; flex-direction: column; gap: 10px; }
-  .week summary::-webkit-details-marker { display: none; }
-  .week__q { font-size: 20px; line-height: 1.3; }
-  .week[open] .week__more { display: none; }
-  .week__c { margin-top: 14px; background: var(--color-bg-ice); border-radius: var(--radius-control); padding: 16px; color: var(--color-navy); }
   @media (max-width: 860px) { .faq__side { position: static; flex-basis: 100%; } .faq__asst { display: none; } }
 </style>
