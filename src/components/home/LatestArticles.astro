@@ -11,12 +11,13 @@ const ui = t().articles;
 const latest = await Promise.all((await getArticles()).slice(0, 3).map((a) => cardData(a)));
 const topics = await getTopics();
 const [first, ...side] = latest;
+const { num = '08' } = Astro.props as { num?: string };
 ---
 {first && (
   <section id="articles" class="wrap sec stack" style="--stack-gap: 32px">
     <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
       <div class="stack" style="--stack-gap: 12px">
-        <SectionHeading num="08" label={home.label} title={home.title} accent={home.accent} placeholder={home.placeholder} />
+        <SectionHeading num={num} label={home.label} title={home.title} accent={home.accent} placeholder={home.placeholder} />
         <p style="max-width: 620px">{home.intro}</p>
       </div>
       <Button href="/articles" variant="ghost" class="la__all">{ui.allLink}</Button>

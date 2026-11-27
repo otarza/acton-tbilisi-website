@@ -3,11 +3,12 @@ import { getPage } from '@/lib/content';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 import WeeklyQuestion from '@/components/shared/WeeklyQuestion.astro';
 const { day } = await getPage('homePage');
+const { num = '03' } = Astro.props as { num?: string };
 ---
 <section id="day" class="sec">
   <div class="wrap row" style="--row-gap: 48px; align-items: flex-start">
     <div class="stack" style="flex: 1 1 380px; --stack-gap: 20px">
-      <SectionHeading num="03" label={day.label} title={day.title} accent={day.accent} />
+      <SectionHeading num={num} label={day.label} title={day.title} accent={day.accent} />
       <ol class="sched" data-placeholder={day.placeholder || undefined}>
         {day.schedule.map((s) => <li><b>{s.time} · {s.title}</b> {s.text}</li>)}
       </ol>

@@ -7,10 +7,11 @@ import { t } from '@/i18n/ui';
 const { fit } = await getPage('homePage');
 const ui = t();
 const quizData = { audiences: fit.quiz.audiences, labels: fit.quiz.verdictLabels };
+const { num = '05' } = Astro.props as { num?: string };
 ---
 <section id="fit" class="sec bg-sky">
   <div class="wrap stack" style="--stack-gap: 40px">
-    <SectionHeading num="05" label={fit.label} title={fit.title} accent={fit.accent} />
+    <SectionHeading num={num} label={fit.label} title={fit.title} accent={fit.accent} />
     <div class="grid-auto" style="--min: 320px">
       <div class="card"><h3 class="fit__h">{ui.youWillLike}</h3><ul class="fit__list">{fit.forYou.map((x) => <li>{x}</li>)}</ul></div>
       <div class="card card--dashed"><h3 class="fit__h">{ui.otherSchool}</h3><ul class="fit__list">{fit.notForYou.map((x) => <li>{x}</li>)}</ul></div>

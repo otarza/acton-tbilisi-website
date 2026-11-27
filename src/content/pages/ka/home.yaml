@@ -31,6 +31,7 @@ honest:
   title: ""
   quote: "გულწრფელად: ეს რთული სკოლაა. არა იმიტომ, რომ ბევრ დავალებას ვაძლევთ, არამედ იმიტომ, რომ აქ ბავშვი თავად აგებს პასუხს თავის სწავლაზე."
   quoteAuthor: ოთარ ზაკალაშვილი, დამფუძნებელი მშობელი
+  quoteHidden: true   # hidden by Vakho 2026-11-27: quote not confirmed
   values:
     - ყველა ბავშვი იმსახურებს, იპოვოს თავისი მოწოდება
     - ბავშვი თავად მართავს თავის განათლებას
@@ -45,32 +46,29 @@ day:
   label: ერთი ნამდვილი დღე
   title: დილის წრიდან
   accent: კლუბებამდე
-  placeholder: true   # schedule times not confirmed
+  # Daily schedule confirmed by Vakho 2026-11-27.
   schedule:
     - time: "08:45"
       title: "მისვლა."
-      text: "ბავშვები თავად ამზადებენ სამუშაო ადგილს."
     - time: "09:00"
       title: "დილის წრე."
-      text: "კვირის კითხვა და დღის მიზნები."
     - time: "09:30"
-      title: "ძირითადი უნარები."
+      title: "საბაზისო უნარები."
       text: "მათემატიკა, კითხვა, წერა საკუთარ ტემპში."
     - time: "11:00"
-      title: "ეზო."
-      text: "თამაში და მოძრაობა."
+      title: "ლანჩი."
     - time: "11:30"
-      title: "ქვესტი."
-      text: "ექვსკვირიანი პროექტი ნამდვილ სამყაროზე."
+      title: "თამაში / ეზო."
     - time: "13:00"
-      title: "სადილი"
-      text: "და მშვიდი კითხვა."
-    - time: "14:00"
-      title: "კლუბები."
-      text: "სოკრატე, ლიტერატურა, ბიზნესი, ლაშქრობა."
+      title: "პროექტი."
+    - time: "15:00"
+      title: "შემაჯამებელი წრე."
+    - time: "15:15"
+      title: "დალაგება."
+    - time: "15:30"
+      title: "წასვლა."
     - time: "16:00"
-      title: "დახურვის წრე."
-      text: "რა ვისწავლე დღეს?"
+      title: "კლუბები."
 
 progress:
   label: როგორ ვიცით, რომ სწავლობენ
@@ -78,6 +76,7 @@ progress:
   accent: ნამუშევარი,
   titleAfter: რომელსაც ყოველდღე ხედავთ
   placeholder: true   # illustrative sample, not a real child
+  hidden: true        # hidden by Vakho 2026-11-27 until a real example exists
   sample:
     name: ნიკა, 9 წელი
     meta: მკვლევრების სამყარო · სესია 2 / 6
@@ -186,6 +185,7 @@ videos:
   accent: როგორ სწავლობენ
   note: სუბტიტრებით · იტვირთება დაჭერისას
   placeholder: true   # no real videos yet: add a youtubeId to each item when uploaded
+  hidden: true        # hidden by Vakho 2026-11-27 until videos are uploaded
   items:
     - title: "შაბათის ბაზრობა: 60 წამში"
       subtitle: "ტელეფონით გადაღებული, ნამდვილი დღე"
@@ -214,7 +214,8 @@ trust:
   label: ნდობა
   title: ვინ დგას
   accent: ამ სკოლის უკან
-  placeholder: true   # counts (founders/investors/guides) need confirmation
+  placeholder: true   # IALDS numbers, guide training and safety claims not confirmed
+  hidden: true        # hidden by Vakho 2026-11-27 until the claims are confirmed
   cards:
     - kind: "accreditation"
       big: "IALDS"

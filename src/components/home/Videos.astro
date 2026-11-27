@@ -7,11 +7,12 @@ import { t } from '@/i18n/ui';
 const { videos: v } = await getPage('homePage');
 const ui = t();
 const [main, ...rest] = v.items;
+const { num = '06' } = Astro.props as { num?: string };
 ---
 <section class="bg-navy sec">
   <div class="wrap stack" style="--stack-gap: 32px">
     <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
-      <SectionHeading num="06" label={v.label} title={v.title} accent={v.accent} onDark />
+      <SectionHeading num={num} label={v.label} title={v.title} accent={v.accent} onDark />
       <span class="small">{v.note}</span>
     </div>
     <div class="row" style="--row-gap: 20px" data-placeholder={v.placeholder || undefined}>

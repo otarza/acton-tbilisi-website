@@ -9,11 +9,12 @@ const { testimonials: h } = await getPage('homePage');
 const items = (await getLocalized('testimonials')).filter((x) => x.data.approved).sort((a, b) => a.data.order - b.data.order);
 const rendered = await Promise.all(items.map(async (x) => ({ ...x, Content: (await render(x)).Content })));
 const ui = t();
+const { num = '07' } = Astro.props as { num?: string };
 ---
 {items.length > 0 && (
 <section class="wrap sec stack" style="--stack-gap: 32px" data-testimonials>
   <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
-    <SectionHeading num="07" label={h.label} title={h.title} accent={h.accent} />
+    <SectionHeading num={num} label={h.label} title={h.title} accent={h.accent} />
     <div class="row" style="--row-gap: 10px; align-items: center">
       <span class="strong-navy" data-count>1 / {items.length}</span>
       <button type="button" class="arrow" aria-label={ui.prev} data-prev>←</button>

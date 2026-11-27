@@ -9,9 +9,10 @@ const { price: p } = await getPage('homePage');
 const c = p.calc;
 const ourPerDay = Math.round(c.ourYear / c.ourDays);
 const uid = 'price-calc';
+const { num = '10' } = Astro.props as { num?: string };
 ---
 <section id="price" class="wrap sec stack" style="--stack-gap: 24px">
-  <SectionHeading num="10" label={p.label} title={p.title} accent={p.accent} />
+  <SectionHeading num={num} label={p.label} title={p.title} accent={p.accent} />
   <div class="row" data-placeholder={p.placeholder || undefined}>
     <div class="price">
       <div class="display price__amount">{p.amount}</div>
