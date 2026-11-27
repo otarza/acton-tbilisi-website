@@ -1,9 +1,10 @@
 ---
-/** ABOUT PAGE. Copy: src/content/pages/ka/about.yaml. Team: src/content/team/ka/. */
+/** ABOUT PAGE. Copy: src/content/pages/ka/about.yaml (incl. founders list). Team: src/content/team/ka/. */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/shared/PageHero.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 import TeamExplorer from '@/components/about/TeamExplorer.astro';
+import Founders from '@/components/about/Founders.astro';
 import ConsentDemo from '@/components/about/ConsentDemo.astro';
 import CtaBand from '@/components/shared/CtaBand.astro';
 import { getPage } from '@/lib/content';
@@ -26,8 +27,10 @@ const statusTag = { confirmed: 'tag--green', pending: 'tag--gold', info: 'tag--b
 
   <TeamExplorer />
 
+  <Founders />
+
   <section id="accreditation" class="wrap sec stack" style="--stack-gap: 32px">
-    <SectionHeading num="03" label={p.accreditation.label} title={p.accreditation.title} accent={p.accreditation.accent} />
+    <SectionHeading num="04" label={p.accreditation.label} title={p.accreditation.title} accent={p.accreditation.accent} />
     <div class="grid-auto" style="--min: 300px">
       {p.accreditation.cards.map((c) => (
         <div class:list={['card card--float stack', { 'card--pending': c.status === 'pending' }]} style="--stack-gap: 12px" data-placeholder={c.status === 'pending' || undefined}>
@@ -43,7 +46,7 @@ const statusTag = { confirmed: 'tag--green', pending: 'tag--gold', info: 'tag--b
   <section id="safety" class="bg-navy sec">
     <div class="wrap stack" style="--stack-gap: 32px">
       <div class="stack" style="--stack-gap: 12px">
-        <SectionHeading num="04" label={p.safety.label} title={p.safety.title} accent={p.safety.accent} onDark />
+        <SectionHeading num="05" label={p.safety.label} title={p.safety.title} accent={p.safety.accent} onDark />
         <p style="max-width: 640px">{p.safety.intro}</p>
       </div>
       <ul class="safety" data-placeholder={p.safety.placeholder || undefined}>
@@ -54,7 +57,7 @@ const statusTag = { confirmed: 'tag--green', pending: 'tag--gold', info: 'tag--b
 
   <section id="privacy" class="wrap sec row" style="--row-gap: 48px; align-items: flex-start">
     <div class="stack" style="flex: 1 1 520px; --stack-gap: 20px">
-      <SectionHeading num="05" label={p.privacy.label} title={p.privacy.title} accent={p.privacy.accent} />
+      <SectionHeading num="06" label={p.privacy.label} title={p.privacy.title} accent={p.privacy.accent} />
       <p>{p.privacy.intro}</p>
       <div class="acc">
         {p.privacy.details.map((d) => <details><summary>{d.q}</summary><p>{d.a}</p></details>)}

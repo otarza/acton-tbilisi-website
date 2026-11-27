@@ -1,0 +1,38 @@
+---
+/**
+ * FOUNDERS block on the About page. People only, no shares.
+ * List: pages/<lang>/about.yaml → founders.people (shown in Georgian alphabetical order).
+ * A founder's photo: add it to photos.yaml, then `photo: <id>` on that person; until then the initial is shown.
+ */
+import { getPage } from '@/lib/content';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import AuthorAvatar from '@/components/articles/AuthorAvatar.astro';
+const { founders: f } = await getPage('aboutPage');
+const collator = new Intl.Collator('ka');
+const people = [...f.people].sort((a, b) => collator.compare(a.name, b.name));
+const parents = people.filter((p) => p.isParent).length;
+const intro = f.intro.replace('{n}', String(people.length)).replace('{p}', String(parents));
+const colors = ['var(--tag-blue-bg)', 'var(--tag-teal-bg)', 'var(--tag-gold-bg)', 'var(--tag-green-bg)', 'var(--tag-red-bg)'];
+---
+<section id="founders" class="wrap sec stack" style="--stack-gap: 24px">
+  <SectionHeading num="03" label={f.label} title={f.title} accent={f.accent} />
+  <p class="founders__intro">{intro}</p>
+  <ul class="founders">
+    {people.map((p, i) => (
+      <li class="founder">
+        <AuthorAvatar name={p.name} color={colors[i % colors.length]} photo={p.photo} size={64} />
+        <span class="founder__text">
+          <b>{p.name}</b>
+          {p.inMemory && <span class="xs muted">{f.memoryLabel}</span>}
+          {p.isParent && <span class="tag tag--green">{f.parentLabel}</span>}
+        </span>
+      </li>
+    ))}
+  </ul>
+</section>
+<style>
+  .founders__intro { max-width: 760px; }
+  .founders { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: 12px; }
+  .founder { display: flex; align-items: center; gap: 14px; background: var(--color-white); border: 1px solid var(--color-line); border-radius: var(--radius-card); padding: 14px 16px; color: var(--color-navy); }
+  .founder__text { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
+</style>

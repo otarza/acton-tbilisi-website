@@ -34,7 +34,7 @@ questions × exactly 3 options, best answer first), `videos` (06; add `youtubeId
 `facts`, exactly 3 `photos`, interest-chip label, CTA text; the tiles themselves come from `clubs/ka/`).
 
 ### `pages/ka/about.yaml`
-`hero` (+ `stats`), `story.items`, `team` (group names/intros, `investors` list with `isParent`),
+`hero` (+ `stats`), `story.items`, `team` (group names/intros: `guide`, `admin`), `founders` (heading, `intro` with {n}/{p}, `people`: `name`, `isParent`, `inMemory`, optional `photo`),
 `accreditation.cards` (`status`: confirmed | pending | info), `safety.items`, `privacy` (`details` Q&A,
 `consentDemo` switches), `cta`.
 
@@ -96,10 +96,10 @@ Body (Markdown) = the full answer. URL anchor: `/faq#<slug>`.
 The age buttons on the homepage are generated from the min/max of all studios.
 
 ### `team/ka/<slug>.md`
-`name`, `group` (founder | guide | contributor), `role`, `isParent`, `facts` (badges), `photo` (optional),
+`name`, `group` (guide | admin | contributor), `role`, `isParent`, `facts` (badges), `photo` (optional),
 `since` (optional, e.g. "2025 წლიდან", shown on the author page), `order`. Body = bio.
-Founders and guides appear in the About page team block. `contributor` = someone who only writes articles (a parent,
-an investor). Investors are a simple list in `about.yaml`. The same file feeds the article author card and the
+Guides and administration appear in the About page team block. `contributor` = someone who only writes articles (a parent,
+a founder). Founders are a simple list in `about.yaml → founders` (no shares; add `photo` as photos arrive). The same file feeds the article author card and the
 author page `/articles/authors/<file name>`, so bio and photo are edited in one place.
 
 ### `testimonials/ka/<slug>.md`

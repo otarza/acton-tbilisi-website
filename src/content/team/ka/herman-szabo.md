@@ -1,11 +1,9 @@
 ---
-name: ჰერმან საბო
-group: founder
-role: "დამფუძნებელი"
-order: 4
-facts:
-  - "დამფუძნებელი, 2025"
-placeholder: true  # bio and facts must be confirmed by the person
+name: "ჰერმან საბო"
+group: admin
+role: "დირექტორი"
+isParent: true
+order: 1
 ---
 
-შემოიტანა საერთაშორისო გამოცდილება და კავშირი Acton-ის ქსელთან.
+სკოლის დირექტორი და მშობელი.
