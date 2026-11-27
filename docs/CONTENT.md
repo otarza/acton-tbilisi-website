@@ -104,7 +104,7 @@ author page `/articles/authors/<file name>`, so bio and photo are edited in one 
 
 ### `testimonials/ka/<slug>.md`
 `name`, `role`, `order`, `approved` (the parent approved this exact wording). Body = quote.
-`npm run check` refuses `placeholder: false` without `approved: true`.
+`npm run check` refuses `placeholder: false` without `approved: true`. Only approved quotes are shown on the homepage; with none approved, the section is hidden.
 
 ### `articles/ka/<slug>.md` — articles (სტატიები)
 | Field | Meaning |

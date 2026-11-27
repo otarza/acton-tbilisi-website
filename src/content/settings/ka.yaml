@@ -2,7 +2,7 @@
 # Fields marked "placeholder" are not confirmed yet. Run `npm run placeholders` to list them.
 schoolName: ექტონის აკადემია
 schoolNameShort: ექტონის აკადემია · საბურთალო
-logoSubtitle: საბურთალო · ამერიკული სკოლა   # OPEN DECISION: "Acton Academy" vs "American School" naming (docs/OPEN-QUESTIONS.md)
+logoSubtitle: "საბურთალო"   # the school's name is "ექტონის აკადემია - საბურთალო" (decided by Vakho 2026-11-27)
 phone: +995 500 503 605
 phoneHref: tel:+995500503605
 email: info@americanschool.ge
@@ -47,7 +47,7 @@ footer:
   headline: შენი თავგადასავალი
   headlineAccent: იწყება აქ.
   about:
-    - ამერიკული სკოლა, 2025 წლიდან
+    - "2025 წლიდან"
     - IALDS-ის აკრედიტებული
 
 seo:

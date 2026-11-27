@@ -1,14 +1,16 @@
 ---
-/** Parent quotes: src/content/testimonials/<lang>/*.md (body = quote). */
+/** Parent quotes: src/content/testimonials/<lang>/*.md (body = quote).
+ *  Only quotes with `approved: true` (the parent approved the exact wording) are shown; with none, the section is hidden. */
 import { render } from 'astro:content';
 import { getLocalized, getPage } from '@/lib/content';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 import { t } from '@/i18n/ui';
 const { testimonials: h } = await getPage('homePage');
-const items = (await getLocalized('testimonials')).sort((a, b) => a.data.order - b.data.order);
+const items = (await getLocalized('testimonials')).filter((x) => x.data.approved).sort((a, b) => a.data.order - b.data.order);
 const rendered = await Promise.all(items.map(async (x) => ({ ...x, Content: (await render(x)).Content })));
 const ui = t();
 ---
+{items.length > 0 && (
 <section class="wrap sec stack" style="--stack-gap: 32px" data-testimonials>
   <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
     <SectionHeading num="07" label={h.label} title={h.title} accent={h.accent} />
@@ -38,6 +40,7 @@ const ui = t();
     </div>
   </div>
 </section>
+)}
 <script>
   for (const root of document.querySelectorAll<HTMLElement>('[data-testimonials]')) {
     const quotes = root.querySelectorAll<HTMLElement>('[data-quote]');
