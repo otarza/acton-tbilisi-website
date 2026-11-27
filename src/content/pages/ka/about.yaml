@@ -56,8 +56,8 @@ team:
 # Shown in Georgian alphabetical order. Add `photo: <id from photos.yaml>` as photos arrive.
 founders:
   label: "დამფუძნებლები"
-  title: "ადამიანები, ვინც"
-  accent: "სკოლა დააფუძნა"
+  title: "სკოლის"
+  accent: "დამფუძნებლები"
   intro: "სკოლას {n} დამფუძნებელი ჰყავს. {p} მათგანი სკოლის მშობელია."
   parentLabel: "მშობელი"
   memoryLabel: "ნათელი ხსოვნა"
