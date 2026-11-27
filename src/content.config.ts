@@ -118,15 +118,30 @@ const homePage = defineCollection({
     trust: sectionHeading.extend({
       cards: z.array(z.object({ kind: z.enum(['accreditation', 'team', 'safety']), title: z.string(), big: z.string().optional(), text: z.string(), href: z.string() })),
     }),
+    /** Price section. Per-day numbers are computed from `calc` (yearly fee ÷ school days), not typed in. */
     price: sectionHeading.extend({
       amount: z.string(),
       period: z.string(),
       includes: z.array(z.string()),
-      comparison: z.object({
+      calc: z.object({
         title: z.string(),
-        rows: z.array(z.object({ label: z.string(), value: z.string(), percent: z.number(), ours: z.boolean().default(false) })),
+        intro: z.string(),
+        ourYear: z.number(),          // our yearly tuition, GEL
+        ourDays: z.number(),          // our school days per year
+        perDayLabel: z.string(),      // "{n}" = our price per school day
+        otherFee: z.string(),         // input label: other school's yearly fee
+        otherDays: z.string(),        // input label: other school's school days
+        otherDaysDefault: z.number(),
+        otherDaysHint: z.string(),
+        addonsTitle: z.string(),
+        addons: z.array(z.object({ label: z.string(), yearly: z.number() })),  // added to OUR yearly cost when ticked
+        resultOther: z.string(),
+        resultOurs: z.string(),
+        moreDays: z.string(),         // "{n}" = how many more school days we have
+        empty: z.string(),
         note: z.string(),
       }),
+      honest: z.object({ title: z.string(), items: z.array(z.object({ title: z.string(), text: z.string() })) }),
       extras: z.array(z.object({ label: z.string(), value: z.string() })),
     }),
     join: sectionHeading.extend({
