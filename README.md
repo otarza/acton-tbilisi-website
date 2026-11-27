@@ -7,7 +7,10 @@ Google Sheets via Apps Script for form data · no database, no paid services.
 
 | I want to… | Read |
 | --- | --- |
+| Set up my computer to edit the site (Georgian, partners) | [docs/SETUP.ka.md](docs/SETUP.ka.md) |
 | Edit text with an AI agent or on GitHub (Georgian guide) | [docs/EDITING-GUIDE.ka.md](docs/EDITING-GUIDE.ka.md) |
+| Reviewing contributions, approval rules (owner) | [docs/PARTNER-ACCESS.md](docs/PARTNER-ACCESS.md) |
+| How the AI assistant guides staff (content manager / website builder) | [docs/assistant/PLAYBOOK.md](docs/assistant/PLAYBOOK.md) · [BUILDER.md](docs/assistant/BUILDER.md) |
 | Let an AI agent work on this repo | [AGENTS.md](AGENTS.md) (Claude Code also reads [CLAUDE.md](CLAUDE.md)) |
 | Understand every content file and field | [docs/CONTENT.md](docs/CONTENT.md) |
 | Colours, type, components | [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md) · live at `/design-system` |
@@ -33,7 +36,7 @@ npm run dev:full   # with the Cloudflare form functions, http://localhost:8788
 `/design-system` (internal style guide).
 
 ## How changes flow
-branch → pull request → CI (check + build) + Cloudflare preview URL → review → merge to `main` → live in ~1 min.
+staff chat with their AI agent → it starts a change, previews it, sends a pull request → CI (check + build) + Cloudflare preview URL → review → merge to `main` → live in ~1 min.
 
 > **Note:** most current content is placeholder text from the design phase and is marked `placeholder: true`.
 > Confirm it with the school before launch (see docs/OPEN-QUESTIONS.md).

@@ -8,3 +8,8 @@ dist/
 !.env.example
 .DS_Store
 *.log
+
+# Staff drop folder for new photos (only its README is tracked)
+_new-photos/*
+!_new-photos/README.md
+.claude/settings.local.json

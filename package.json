@@ -8,6 +8,7 @@
     "node": ">=22.12"
   },
   "scripts": {
+    "hello": "node scripts/assistant/hello.mjs",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
