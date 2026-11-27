@@ -48,13 +48,13 @@ Before finishing any task: `npm run check && npm run build`.
 src/content/                 ← ALL CONTENT (see docs/CONTENT.md for every field)
   settings/ka.yaml           phone, email, address, nav, announcement bar, next exhibition date
   pages/ka/home.yaml         every homepage section's text, in page order
-  pages/ka/about.yaml        about page text, investors list, safety, privacy
+  pages/ka/about.yaml        about page text, founders list (people only), safety, privacy
   pages/ka/faq.yaml          FAQ page text + category names
   faq/ka/*.md                one file per FAQ question (body = answer)
   questions/ka/NNN.md        question of the week archive; highest number = current week (archive page: /questions)
   pages/ka/questions.yaml    weekly-question archive page copy + topic names
   studios/ka/*.md            age groups (5–7, 8–11, 12–14)
-  team/ka/*.md               founders, guides and contributors (body = bio); article authors come from here
+  team/ka/*.md               guides, administration and contributors (body = bio); article authors come from here
   testimonials/ka/*.md       parent quotes (body = quote)
   articles/ka/*.md           articles / სტატიები (file name = URL /articles/<name>)
   pages/ka/articles.yaml     articles page copy, the 6 topic labels + colours, newsletter, homepage section 08
@@ -81,7 +81,7 @@ docs/                        CONTENT, DESIGN-SYSTEM, BACKEND, DEPLOY, ASSISTANT,
   If the change confirms a placeholder, remove `placeholder: true` from that block.
 - **Add an article** → `npm run new:article -- my-slug "სათაური" salome-davituliani`, write the body with `##`
   subheadings (they become the table of contents), pick 1–3 `topics` from the fixed list, set `draft: false`.
-  Cover must be a photo id from `photos.yaml`. The author must be a team file; a parent/investor who writes gets a
+  Cover must be a photo id from `photos.yaml`. The author must be a team file; a founder/parent who writes gets a
   team file with `group: contributor`. Reading time, author card, related articles and the homepage section are automatic.
 - **Add an article topic** → add the key to `ARTICLE_TOPICS` in `src/content.config.ts`, its label + colour to
   `topics` in `pages/ka/articles.yaml`, and the key list in `scripts/check-content.mjs`. Keep the list short.

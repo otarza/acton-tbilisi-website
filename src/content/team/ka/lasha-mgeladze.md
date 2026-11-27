@@ -1,11 +1,7 @@
 ---
-name: ლაშა მგელაძე
-group: founder
-role: "დამფუძნებელი"
-order: 5
-facts:
-  - "დამფუძნებელი, 2025"
+name: "ლაშა მგელაძე"
+group: guide
+role: "პატარების სტუდიის მეგზური"
+order: 4
 placeholder: true  # bio and facts must be confirmed by the person
 ---
-
-პასუხობს სივრცეზე, უსაფრთხოებასა და ყოველდღიურ ოპერაციებზე.
