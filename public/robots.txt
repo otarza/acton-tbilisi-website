@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /design-system
 
-Sitemap: https://acton-tbilisi-website.pages.dev/sitemap-index.xml
+Sitemap: https://actonsaburtalo.edu.ge/sitemap-index.xml

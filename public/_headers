@@ -11,3 +11,7 @@
 # Keep preview deployments out of search engines.
 https://:version.:project.pages.dev/*
   X-Robots-Tag: noindex
+
+# The live site is actonsaburtalo.edu.ge; keep the bare pages.dev copy out of search engines too.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex

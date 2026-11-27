@@ -2,8 +2,8 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// The public address of the site. Change it here once the real domain is live.
-const SITE = process.env.SITE_URL || 'https://acton-tbilisi-website.pages.dev';
+// The public address of the site (canonical URLs, sitemap, Open Graph).
+const SITE = process.env.SITE_URL || 'https://actonsaburtalo.edu.ge';
 
 export default defineConfig({
   site: SITE,

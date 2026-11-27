@@ -1,0 +1,46 @@
+# Preview deployments for pull requests from forks, step 1 of 2: build.
+#
+# Cloudflare Pages' GitHub integration builds previews for branches in this repository,
+# but not for pull requests from forks. This workflow fills that gap. It builds the fork's
+# code with no secrets and no write access, then hands the result to
+# fork-preview-deploy.yml, which runs from main with the Cloudflare token and only uploads it.
+name: Fork preview (build)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    # Same-repository PRs already get a preview from Cloudflare itself.
+    if: github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build
+        run: npm run build
+        env:
+          # Same as a Cloudflare preview build: shows the yellow "ნიმუში" placeholder outlines.
+          CF_PAGES_BRANCH: pr-${{ github.event.pull_request.number }}
+      - name: Package
+        run: |
+          mkdir -p preview
+          cp -r dist preview/dist
+          cp -r functions preview/functions
+          echo "${{ github.event.pull_request.number }}" > preview/pr-number
+          echo "${{ github.event.pull_request.head.sha }}" > preview/head-sha
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fork-preview
+          path: preview
+          retention-days: 3
