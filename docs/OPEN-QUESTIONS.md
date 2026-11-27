@@ -7,8 +7,8 @@ unconfirmed. `npm run placeholders` shows the files; this list explains what to 
 | --- | --- | --- |
 | 1 | ~~**State authorisation (NCEQE)**~~ Answered 2026-11-25 by Vakho: the school is authorised (FAQ + about card) | `faq/ka/state-authorisation.md`, `about.yaml` accreditation card, assistant |
 | 2 | **Naming**: "Acton Academy (ექტონის აკადემია)" vs "American School (ამერიკული სკოლა)"; which name, which domain, which Facebook page? | `settings/ka.yaml` (logoSubtitle, email, social links), footer, testimonial #1 |
-| 3 | Prices: 1000 ₾/month confirmed? Registration fee (300 ₾?), sibling discount (10%?), annual payment discount, what's included | `home.yaml` price, `faq/ka/price*.md`, `extra-costs.md`, `payment.md` |
-| 4 | Price comparison numbers (other schools) — keep, source, or remove? | `home.yaml` price.comparison |
+| 3 | ~~Prices~~ Answered 2026-11-25/27 by Vakho (FAQ + price section: 1000 ₾/month, 12 000 ₾/year, no registration or booking fee, 15% sibling discount). Was: Prices: 1000 ₾/month confirmed? Registration fee (300 ₾?), sibling discount (10%?), annual payment discount, what's included | `home.yaml` price, `faq/ka/price*.md`, `extra-costs.md`, `payment.md` |
+| 4 | ~~Price comparison numbers~~ Removed 2026-11-27 (Vakho): replaced by a per-school-day calculator, no other schools' prices. | `home.yaml` price.comparison |
 | 5 | Daily schedule (hours confirmed 2026-11-25: 09:00–15:30, FAQ) | `home.yaml` day, `faq/ka/hours.md` |
 | 6 | Studio group sizes, ratios and descriptions (names and ages confirmed 2026-11-25: Spark 5–7, Elementary 8–11, Middle 12–14, LaunchPad 15+ in special cases) | `studios/ka/*.md`, `about.yaml` stats/safety |
 | 7 | Address (street number) | `settings/ka.yaml` |

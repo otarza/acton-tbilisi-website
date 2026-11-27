@@ -29,7 +29,7 @@ to hide), `nextExhibition` (`date`, `title` → countdowns on the homepage), `na
 `seo`, `hero`, `marquee`, `honest` (01 quote + 3 values), `studios` (02 heading), `day` (03 schedule),
 `progress` (04 portfolio sample, badges), `fit` (05 "for you / not for you" + quiz with 2 audiences × 4
 questions × exactly 3 options, best answer first), `videos` (06; add `youtubeId` to make a video play),
-`testimonials` (07 heading), `trust` (08 cards), `price` (09), `join` (10 steps + form text), `faqPreview`,
+`testimonials` (07 heading), `trust` (08 cards), `price` (09: amount, `includes`, `calc` = per-school-day calculator with `ourYear`/`ourDays` and add-ons, `honest` notes, `extras`), `join` (10 steps + form text), `faqPreview`,
 `clubs` (after-school clubs section, shown right after `day`: `kicker`, `title`/`accent`/`titleAfter`, `lead`,
 `facts`, exactly 3 `photos`, interest-chip label, CTA text; the tiles themselves come from `clubs/ka/`).
 
