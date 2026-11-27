@@ -1,11 +1,11 @@
 ---
 name: "ოთარ ზაკალაშვილი"
-group: contributor   # writes articles; not listed in the About page team block (he is in the investors list there)
-role: "ინვესტორი · მშობელი"
+group: contributor   # writes articles; listed with the other founders in about.yaml → founders
+role: "დამფუძნებელი · მშობელი"
 isParent: true
 order: 50
 facts:
-  - "სკოლის ინვესტორი"
+  - "სკოლის დამფუძნებელი"
   - "სკოლის მშობელი"
 placeholder: true  # bio must be confirmed by the person
 ---

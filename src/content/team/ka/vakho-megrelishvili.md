@@ -1,7 +1,8 @@
 ---
 name: ვახო მეგრელიშვილი
-group: founder
+group: contributor   # article author; listed with the other founders in about.yaml → founders
 role: "დამფუძნებელი"
+isParent: true
 order: 3
 facts: []
 placeholder: true  # bio and facts must be confirmed by the person

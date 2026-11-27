@@ -1,7 +1,7 @@
 ---
 /**
- * Founders and guides come from src/content/team/<lang>/*.md (body = bio).
- * Investors are a simple list in pages/<lang>/about.yaml → team.investors.
+ * Guides and administration come from src/content/team/<lang>/*.md (body = bio).
+ * Founders are a separate block: components/about/Founders.astro.
  */
 import { render } from 'astro:content';
 import { getLocalized, getPage } from '@/lib/content';
@@ -12,8 +12,8 @@ const ui = t().team;
 const members = (await getLocalized('team')).sort((a, b) => a.data.order - b.data.order);
 const withBio = await Promise.all(members.map(async (m) => ({ ...m, Content: (await render(m)).Content })));
 const groups = [
-  { key: 'founder', ...team.groups.founder, people: withBio.filter((m) => m.data.group === 'founder') },
   { key: 'guide', ...team.groups.guide, people: withBio.filter((m) => m.data.group === 'guide') },
+  { key: 'admin', ...team.groups.admin, people: withBio.filter((m) => m.data.group === 'admin') },
 ] as const;
 const colors = ['#E6EEF8', '#D6ECFB', '#FFF3C4', '#DDF7F8', '#FBE2E2'];
 ---
@@ -22,13 +22,12 @@ const colors = ['#E6EEF8', '#D6ECFB', '#FFF3C4', '#DDF7F8', '#FBE2E2'];
     <div class="row" style="justify-content: space-between; align-items: flex-end; --row-gap: 20px">
       <SectionHeading num="02" label={team.label} title={team.title} accent={team.accent} />
       <div class="row" style="--row-gap: 8px" role="tablist">
-        {groups.map((g, i) => <button type="button" class="choice" role="tab" aria-selected={i === 1 ? 'true' : 'false'} data-tab={g.key}>{g.label}</button>)}
-        <button type="button" class="choice" role="tab" aria-selected="false" data-tab="investor">{team.groups.investor.label} ({team.investors.length})</button>
+        {groups.map((g, i) => <button type="button" class="choice" role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-tab={g.key}>{g.label}</button>)}
       </div>
     </div>
 
     {groups.map((g, gi) => (
-      <div class="stack" style="--stack-gap: 20px" data-panel={g.key} hidden={gi !== 1}>
+      <div class="stack" style="--stack-gap: 20px" data-panel={g.key} hidden={gi !== 0}>
         <p class="team__intro">{g.intro}</p>
         <div class="team__grid">
           <div class="team__people">
@@ -36,7 +35,7 @@ const colors = ['#E6EEF8', '#D6ECFB', '#FFF3C4', '#DDF7F8', '#FBE2E2'];
               <button type="button" class="person" aria-pressed={i === 0 ? 'true' : 'false'} data-person={`${g.key}-${i}`}>
                 <span class="av" style={`background:${colors[i % colors.length]}`}>{p.data.name.charAt(0)}</span>
                 <b>{p.data.name}</b>
-                <span class="xs">{p.data.isParent ? `${ui[g.key]} · ${ui.parent}` : ui[g.key]}</span>
+                <span class="xs">{p.data.isParent ? `${p.data.role} · ${ui.parent}` : p.data.role}</span>
               </button>
             ))}
           </div>
@@ -54,14 +53,6 @@ const colors = ['#E6EEF8', '#D6ECFB', '#FFF3C4', '#DDF7F8', '#FBE2E2'];
       </div>
     ))}
 
-    <div class="stack" style="--stack-gap: 20px" data-panel="investor" hidden>
-      <p class="team__intro">{team.groups.investor.intro}</p>
-      <ul class="investors">
-        {team.investors.map((p, i) => (
-          <li><span class="av" style={`background:${colors[i % colors.length]}`}>{p.name.charAt(0)}</span><span><b>{p.name}</b><br /><span class="xs">{p.isParent ? `${ui.investor} · ${ui.parent}` : ui.investor}</span></span></li>
-        ))}
-      </ul>
-    </div>
   </div>
 </section>
 <script>
@@ -88,7 +79,5 @@ const colors = ['#E6EEF8', '#D6ECFB', '#FFF3C4', '#DDF7F8', '#FBE2E2'];
   .bio[hidden], [data-panel][hidden] { display: none; }
   .av--lg { width: 72px; height: 72px; font-size: 26px; background: var(--color-cyan); }
   .bio :global(.tag) { background: var(--color-bg-sky); color: var(--color-navy); padding: 6px 12px; }
-  .investors { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
-  .investors li { display: flex; align-items: center; gap: 12px; background: var(--color-white); border-radius: var(--radius-control); padding: 12px 14px; color: var(--color-navy); }
   @media (max-width: 860px) { .team__grid { grid-template-columns: 1fr; } .team__people { grid-template-columns: repeat(2, 1fr); } }
 </style>

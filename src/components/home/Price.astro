@@ -1,7 +1,14 @@
 ---
+/**
+ * PRICE (home section 10): the monthly/yearly price, a per-school-day calculator and four honest notes.
+ * Text and numbers: pages/ka/home.yaml → price. Per-day figures are computed (yearly fee ÷ school days).
+ */
 import { getPage } from '@/lib/content';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 const { price: p } = await getPage('homePage');
+const c = p.calc;
+const ourPerDay = Math.round(c.ourYear / c.ourDays);
+const uid = 'price-calc';
 ---
 <section id="price" class="wrap sec stack" style="--stack-gap: 24px">
   <SectionHeading num="10" label={p.label} title={p.title} accent={p.accent} />
@@ -9,26 +16,86 @@ const { price: p } = await getPage('homePage');
     <div class="price">
       <div class="display price__amount">{p.amount}</div>
       <span class="strong-navy" style="font-weight: 700">{p.period}</span>
+      <b class="display price__day">{c.perDayLabel.replace('{n}', String(ourPerDay))}</b>
       <ul class="price__inc">{p.includes.map((x) => <li>✓ {x}</li>)}</ul>
     </div>
-    <div class="card card--float stack" style="flex: 1 1 400px; --stack-gap: 16px">
-      <b class="strong-navy">{p.comparison.title}</b>
-      {p.comparison.rows.map((r) => (
-        <div>
-          <div class="bar-row">{r.ours ? <b class="strong-navy">{r.label}</b> : <span>{r.label}</span>}<b class={r.ours ? 'strong-navy' : ''}>{r.value}</b></div>
-          <div class="bar"><span style={`width: ${r.percent}%; ${r.ours ? '' : 'background: var(--color-line-dashed)'}`}></span></div>
-        </div>
+
+    <form class="card card--float stack calc" style="--stack-gap: 12px" data-price-calc
+      data-our-year={c.ourYear} data-our-days={c.ourDays} data-more={c.moreDays} data-empty={c.empty}
+      onsubmit="return false">
+      <b class="strong-navy calc__title">{c.title}</b>
+      <p class="small">{c.intro}</p>
+      <label for={`${uid}-fee`}>{c.otherFee}</label>
+      <input id={`${uid}-fee`} type="number" inputmode="numeric" min="0" step="100" data-fee />
+      <label for={`${uid}-days`}>{c.otherDays}</label>
+      <input id={`${uid}-days`} type="number" inputmode="numeric" min="1" max="365" value={c.otherDaysDefault} data-days aria-describedby={`${uid}-hint`} />
+      <span class="xs muted" id={`${uid}-hint`}>{c.otherDaysHint}</span>
+      <fieldset class="calc__addons">
+        <legend>{c.addonsTitle}</legend>
+        {c.addons.map((a) => <label class="calc__check"><input type="checkbox" value={a.yearly} data-addon /> <span>{a.label}</span></label>)}
+      </fieldset>
+      <div class="calc__out" aria-live="polite">
+        <div class="bar-row"><span>{c.resultOther}</span><b data-out-other>—</b></div>
+        <div class="bar-row"><b class="strong-navy">{c.resultOurs}</b><b class="strong-navy" data-out-ours>{ourPerDay} ₾</b></div>
+        <p class="small strong-navy" data-out-msg>{c.empty}</p>
+      </div>
+      <span class="xs muted">{c.note}</span>
+    </form>
+  </div>
+
+  <div class="stack" style="--stack-gap: 16px">
+    <b class="display honest__title">{p.honest.title}</b>
+    <div class="grid-auto" style="--min: 240px; --grid-gap: 16px">
+      {p.honest.items.map((h) => (
+        <div class="card stack" style="--stack-gap: 8px"><b class="strong-navy">{h.title}</b><p class="small">{h.text}</p></div>
       ))}
-      <span class="xs muted">{p.comparison.note}</span>
+    </div>
+    <div class="card stack" style="--stack-gap: 0">
       {p.extras.map((x, i) => <div class:list={['bar-row extra', { 'extra--first': i === 0 }]}><span>{x.label}</span><b>{x.value}</b></div>)}
     </div>
   </div>
 </section>
+<script>
+  for (const root of document.querySelectorAll<HTMLFormElement>('[data-price-calc]')) {
+    const ourYear = Number(root.dataset.ourYear);
+    const ourDays = Number(root.dataset.ourDays);
+    const fee = root.querySelector<HTMLInputElement>('[data-fee]')!;
+    const days = root.querySelector<HTMLInputElement>('[data-days]')!;
+    const addons = root.querySelectorAll<HTMLInputElement>('[data-addon]');
+    const outOther = root.querySelector<HTMLElement>('[data-out-other]')!;
+    const outOurs = root.querySelector<HTMLElement>('[data-out-ours]')!;
+    const msg = root.querySelector<HTMLElement>('[data-out-msg]')!;
+    const fmt = (n: number) => `${Math.round(n).toLocaleString('ka-GE')} ₾`;
+    const update = () => {
+      const extra = [...addons].filter((a) => a.checked).reduce((s, a) => s + Number(a.value), 0);
+      outOurs.textContent = fmt((ourYear + extra) / ourDays);
+      const f = Number(fee.value), d = Number(days.value);
+      if (!(f > 0) || !(d > 0)) { outOther.textContent = '—'; msg.textContent = root.dataset.empty!; return; }
+      outOther.textContent = fmt(f / d);
+      const more = ourDays - d;
+      msg.textContent = more > 0 ? root.dataset.more!.replace('{n}', String(more)) : '';
+    };
+    root.addEventListener('input', update);
+    root.addEventListener('change', update);
+    update();
+  }
+</script>
 <style>
-  .price { flex: 1 1 360px; background: var(--color-hl); border-radius: var(--radius-big); padding: 40px; }
+  .price { flex: 1 1 360px; background: var(--color-hl); border-radius: var(--radius-big); padding: 40px; display: flex; flex-direction: column; }
   .price__amount { font-size: clamp(64px, 10vw, 140px); line-height: 1; }
+  .price__day { font-size: 22px; line-height: 1.25; margin-top: 18px; }
   .price__inc { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 16px; color: var(--color-navy); }
-  .extra { font-size: 16px; }
-  .extra--first { border-top: 1px solid var(--color-line); padding-top: 12px; }
+  .calc { flex: 1 1 400px; }
+  .calc__title { font-size: 20px; }
+  .calc label { font-size: 14px; font-weight: 700; color: var(--color-navy); }
+  .calc input[type="number"] { min-height: var(--tap); border: 1px solid var(--color-line-strong); border-radius: var(--radius-card); padding: 0 14px; font-family: inherit; font-size: 16px; background: var(--color-white); color: var(--color-navy); }
+  .calc__addons { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .calc__addons legend { font-size: 14px; font-weight: 700; color: var(--color-navy); padding: 0; margin-bottom: 6px; }
+  .calc__check { display: flex; gap: 10px; align-items: center; min-height: var(--tap); font-weight: 500 !important; }
+  .calc__check input { width: 20px; height: 20px; flex: none; }
+  .calc__out { border-top: 1px solid var(--color-line); padding-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .honest__title { font-size: clamp(24px, 2.6vw, 32px); }
+  .extra { font-size: 16px; padding: 8px 0; }
+  .extra + .extra { border-top: 1px solid var(--color-line); }
   @media (max-width: 860px) { .price { padding: 28px; } }
 </style>

@@ -118,15 +118,30 @@ const homePage = defineCollection({
     trust: sectionHeading.extend({
       cards: z.array(z.object({ kind: z.enum(['accreditation', 'team', 'safety']), title: z.string(), big: z.string().optional(), text: z.string(), href: z.string() })),
     }),
+    /** Price section. Per-day numbers are computed from `calc` (yearly fee ÷ school days), not typed in. */
     price: sectionHeading.extend({
       amount: z.string(),
       period: z.string(),
       includes: z.array(z.string()),
-      comparison: z.object({
+      calc: z.object({
         title: z.string(),
-        rows: z.array(z.object({ label: z.string(), value: z.string(), percent: z.number(), ours: z.boolean().default(false) })),
+        intro: z.string(),
+        ourYear: z.number(),          // our yearly tuition, GEL
+        ourDays: z.number(),          // our school days per year
+        perDayLabel: z.string(),      // "{n}" = our price per school day
+        otherFee: z.string(),         // input label: other school's yearly fee
+        otherDays: z.string(),        // input label: other school's school days
+        otherDaysDefault: z.number(),
+        otherDaysHint: z.string(),
+        addonsTitle: z.string(),
+        addons: z.array(z.object({ label: z.string(), yearly: z.number() })),  // added to OUR yearly cost when ticked
+        resultOther: z.string(),
+        resultOurs: z.string(),
+        moreDays: z.string(),         // "{n}" = how many more school days we have
+        empty: z.string(),
         note: z.string(),
       }),
+      honest: z.object({ title: z.string(), items: z.array(z.object({ title: z.string(), text: z.string() })) }),
       extras: z.array(z.object({ label: z.string(), value: z.string() })),
     }),
     join: sectionHeading.extend({
@@ -161,9 +176,15 @@ const aboutPage = defineCollection({
     hero: z.object({ label: z.string(), title: z.string(), accent: z.string(), after: z.string().optional(), lead: z.string(), stats: z.array(z.object({ big: z.string(), text: z.string() })), placeholder }),
     story: sectionHeading.extend({ items: z.array(z.object({ when: z.string(), title: z.string(), text: z.string() })) }),
     team: sectionHeading.extend({
-      groups: z.object({ founder: z.object({ label: z.string(), intro: z.string() }), guide: z.object({ label: z.string(), intro: z.string() }), investor: z.object({ label: z.string(), intro: z.string() }) }),
-      investors: z.array(z.object({ name: z.string(), isParent: z.boolean().default(false) })),
+      groups: z.object({ guide: z.object({ label: z.string(), intro: z.string() }), admin: z.object({ label: z.string(), intro: z.string() }) }),
       bioNote: z.string(),
+    }),
+    /** Founders (owners) block. People only, no shares. `intro` may use {n} (all founders) and {p} (parents). */
+    founders: sectionHeading.extend({
+      intro: z.string(),
+      parentLabel: z.string(),
+      memoryLabel: z.string(),
+      people: z.array(z.object({ name: z.string(), isParent: z.boolean().default(false), inMemory: z.boolean().default(false), photo: photoId.optional() })),
     }),
     accreditation: sectionHeading.extend({
       cards: z.array(z.object({ status: z.enum(['confirmed', 'pending', 'info']), statusLabel: z.string(), title: z.string(), text: z.string(), link: z.object({ text: z.string(), href: z.string() }).optional() })),
@@ -396,8 +417,9 @@ const team = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/team' }),
   schema: z.object({
     name: z.string(),
-    /** founder / guide = shown on the About page team block. contributor = only an article author (a parent, an investor…). */
-    group: z.enum(['founder', 'guide', 'contributor']),
+    /** guide / admin = shown on the About page team block. contributor = only an article author (a founder, a parent…).
+     *  Founders are a plain list in pages/<lang>/about.yaml → founders. */
+    group: z.enum(['guide', 'admin', 'contributor']),
     role: z.string(),
     isParent: z.boolean().default(false),
     facts: z.array(z.string()).default([]),
