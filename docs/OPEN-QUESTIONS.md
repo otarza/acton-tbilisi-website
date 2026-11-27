@@ -6,7 +6,7 @@ unconfirmed. `npm run placeholders` shows the files; this list explains what to 
 | # | Question | Where it is used |
 | --- | --- | --- |
 | 1 | ~~**State authorisation (NCEQE)**~~ Answered 2026-11-25 by Vakho: the school is authorised (FAQ + about card) | `faq/ka/state-authorisation.md`, `about.yaml` accreditation card, assistant |
-| 2 | **Naming**: "Acton Academy (ექტონის აკადემია)" vs "American School (ამერიკული სკოლა)"; which name, which domain, which Facebook page? | `settings/ka.yaml` (logoSubtitle, email, social links), footer, testimonial #1 |
+| 2 | ~~**Naming**~~ Decided 2026-11-27 by Vakho: "ექტონის აკადემია - საბურთალო" everywhere on the site. Still open: email/booking addresses on americanschool.ge, Facebook page. | `settings/ka.yaml` (logoSubtitle, email, social links), footer, testimonial #1 |
 | 3 | Prices: 1000 ₾/month confirmed? Registration fee (300 ₾?), sibling discount (10%?), annual payment discount, what's included | `home.yaml` price, `faq/ka/price*.md`, `extra-costs.md`, `payment.md` |
 | 4 | Price comparison numbers (other schools) — keep, source, or remove? | `home.yaml` price.comparison |
 | 5 | Daily schedule (hours confirmed 2026-11-25: 09:00–15:30, FAQ) | `home.yaml` day, `faq/ka/hours.md` |
