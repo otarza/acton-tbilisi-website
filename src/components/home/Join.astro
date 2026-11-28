@@ -3,11 +3,12 @@ import { getPage } from '@/lib/content';
 import SectionLabel from '@/components/ui/SectionLabel.astro';
 import LeadForm from '@/components/shared/LeadForm.astro';
 const { join } = await getPage('homePage');
+const { num = '11' } = Astro.props as { num?: string };
 ---
 <section id="join" class="join-wrap">
   <div class="join">
     <div class="stack" style="flex: 1 1 460px; --stack-gap: 26px">
-      <SectionLabel num="11" text={join.label} onDark />
+      <SectionLabel num={num} text={join.label} onDark />
       <h2 class="display join__h">{join.title} <span class="hl">{join.accent}</span></h2>
       <ol class="join__steps">
         {join.steps.map((s, i) => <li><b>{String(i + 1).padStart(2, '0')} · {s.title}</b> {s.text}</li>)}

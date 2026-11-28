@@ -33,6 +33,8 @@ questions × exactly 3 options, best answer first), `videos` (06; add `youtubeId
 `clubs` (after-school clubs section, shown right after `day`: `kicker`, `title`/`accent`/`titleAfter`, `lead`,
 `facts`, exactly 3 `photos`, interest-chip label, CTA text; the tiles themselves come from `clubs/ka/`).
 
+Homepage sections can be switched off with `hidden: true` (e.g. `progress`, `videos`, `trust`); the visible sections are numbered 01, 02, … automatically (`src/pages/index.astro`). `honest.quoteHidden: true` hides only the quote. `day.schedule[].text` is optional.
+
 ### `pages/ka/about.yaml`
 `hero` (+ `stats`), `story.items`, `team` (group names/intros: `guide`, `admin`), `founders` (heading, `intro` with {n}/{p}, `people`: `name`, `isParent`, `inMemory`, optional `photo`),
 `accreditation.cards` (`status`: confirmed | pending | info), `safety.items`, `privacy` (`details` Q&A,

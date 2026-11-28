@@ -2,6 +2,7 @@
 /**
  * HOMEPAGE. Section order follows the S4 design (articles section 08 added 2026-11-21). Copy lives in src/content/pages/ka/home.yaml;
  * each section is a component in src/components/home/. To reorder or remove a section, edit this list.
+ * A section with `hidden: true` in home.yaml is skipped, and the visible sections are numbered 01, 02, … without gaps.
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import HomeHero from '@/components/home/HomeHero.astro';
@@ -19,23 +20,34 @@ import Price from '@/components/home/Price.astro';
 import Join from '@/components/home/Join.astro';
 import FaqPreview from '@/components/home/FaqPreview.astro';
 import LatestArticles from '@/components/home/LatestArticles.astro';
-import { getPage } from '@/lib/content';
-const { seo } = await getPage('homePage');
+import { getLocalized, getPage } from '@/lib/content';
+const home = await getPage('homePage');
+const { seo } = home;
+const hasQuotes = (await getLocalized('testimonials')).some((x) => x.data.approved);
+const show = {
+  progress: !home.progress.hidden,
+  videos: !home.videos.hidden,
+  testimonials: hasQuotes && !home.testimonials.hidden,
+  trust: !home.trust.hidden,
+} as Record<string, boolean>;
+const numbered = ['honest', 'studios', 'day', 'progress', 'fit', 'videos', 'testimonials', 'articles', 'trust', 'price', 'join'];
+const visible = numbered.filter((k) => show[k] ?? true);
+const num = (k: string) => String(visible.indexOf(k) + 1).padStart(2, '0');
 ---
 <BaseLayout title={seo.title} description={seo.description} bigQmark>
   <HomeHero slot="hero" />
   <Marquee />
-  <Honest />
-  <StudioFinder />
-  <DaySection />
+  <Honest num={num('honest')} />
+  <StudioFinder num={num('studios')} />
+  <DaySection num={num('day')} />
   <Clubs />
-  <ProgressSection />
-  <FitCheck />
-  <Videos />
-  <Testimonials />
-  <LatestArticles />
-  <Trust />
-  <Price />
-  <Join />
+  {show.progress && <ProgressSection num={num('progress')} />}
+  <FitCheck num={num('fit')} />
+  {show.videos && <Videos num={num('videos')} />}
+  {show.testimonials && <Testimonials num={num('testimonials')} />}
+  <LatestArticles num={num('articles')} />
+  {show.trust && <Trust num={num('trust')} />}
+  <Price num={num('price')} />
+  <Join num={num('join')} />
   <FaqPreview />
 </BaseLayout>

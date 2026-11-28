@@ -16,7 +16,7 @@ facebookUrl: https://www.facebook.com/AmericanSchoolTbilisi
 instagramUrl: https://www.instagram.com/american.school.tbilisi/
 
 announcement:
-  enabled: true
+  enabled: false   # no event planned (Vakho, 2026-11-27)
   text: ღია კარის დღე · შაბათი, 5 დეკემბერი, 11:00
   linkText: ადგილის დაჯავშნა →
   href: /#join

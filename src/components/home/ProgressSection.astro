@@ -8,10 +8,11 @@ const s = await getSettings();
 const ui = t();
 const barColor = { blue: 'var(--color-blue)', teal: 'var(--color-teal-bright)', red: 'var(--color-red-bright)' };
 const badgeColor = { blue: 'var(--color-blue)', teal: 'var(--color-teal)', red: 'var(--color-red)', gold: 'var(--color-gold)' };
+const { num = '04' } = Astro.props as { num?: string };
 ---
 <section class="bg-navy sec">
   <div class="wrap stack" style="--stack-gap: 40px">
-    <SectionHeading num="04" label={p.label} title={p.title} accent={p.accent} after={p.titleAfter} onDark />
+    <SectionHeading num={num} label={p.label} title={p.title} accent={p.accent} after={p.titleAfter} onDark />
     <div class="row" data-placeholder={p.placeholder || undefined}>
       <div class="card stack" style="flex: 2 1 520px; --stack-gap: 18px; color: var(--color-ink)">
         <div class="row" style="justify-content: space-between; align-items: center; --row-gap: 10px">

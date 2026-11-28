@@ -2,10 +2,11 @@
 import { getPage } from '@/lib/content';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 const { trust } = await getPage('homePage');
+const { num = '09' } = Astro.props as { num?: string };
 ---
 <section class="bg-sky sec">
   <div class="wrap stack" style="--stack-gap: 32px">
-    <SectionHeading num="09" label={trust.label} title={trust.title} accent={trust.accent} />
+    <SectionHeading num={num} label={trust.label} title={trust.title} accent={trust.accent} />
     <div class="grid-auto" style="--min: 300px" data-placeholder={trust.placeholder || undefined}>
       {trust.cards.map((c) => (
         <a href={c.href} class="card trust">

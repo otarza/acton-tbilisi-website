@@ -56,6 +56,8 @@ const sectionHeading = z.object({
   accent: z.string().optional(),
   titleAfter: z.string().optional(),
   placeholder,
+  /** true = the section is not shown (e.g. until real content exists). Homepage section numbers close the gap. */
+  hidden: z.boolean().default(false),
 });
 
 const homePage = defineCollection({
@@ -76,11 +78,13 @@ const homePage = defineCollection({
     honest: sectionHeading.extend({
       quote: z.string(),
       quoteAuthor: z.string(),
+      /** true = the quote is not shown (until a confirmed quote exists); the values list stays. */
+      quoteHidden: z.boolean().default(false),
       values: z.array(z.string()),
     }),
     studios: sectionHeading,
     day: sectionHeading.extend({
-      schedule: z.array(z.object({ time: z.string(), title: z.string(), text: z.string() })),
+      schedule: z.array(z.object({ time: z.string(), title: z.string(), text: z.string().default('') })),
     }),
     progress: sectionHeading.extend({
       sample: z.object({

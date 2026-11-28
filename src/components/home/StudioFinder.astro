@@ -14,10 +14,11 @@ const ages = Array.from({ length: maxAge - minAge + 1 }, (_, i) => minAge + i);
 const DEFAULT = 9;
 const openTop = studios.some((s) => s.data.openEnded && s.data.ageMax === maxAge);
 const ui = t();
+const { num = '02' } = Astro.props as { num?: string };
 ---
 <section id="studios" class="bg-sky sec">
   <div class="wrap stack" style="--stack-gap: 32px" data-studio-finder>
-    <SectionHeading num="02" label={h.label} title={h.title} accent={h.accent} />
+    <SectionHeading num={num} label={h.label} title={h.title} accent={h.accent} />
     <div class="row ages" style="--row-gap: 10px" role="group" aria-label={ui.childAge}>
       {ages.map((n) => <button type="button" class="age" aria-pressed={n === DEFAULT ? 'true' : 'false'} data-age={n}>{openTop && n === maxAge ? `${n}+` : n}</button>)}
     </div>
